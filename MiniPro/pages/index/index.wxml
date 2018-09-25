@@ -1,0 +1,55 @@
+<!--index.wxml-->
+<view class="container">
+  <!-- banner -->
+  <view class='banner'>
+    <swiper autoplay="true" duration="1000">
+      <block wx:for="{{banner}}" wx:key="">
+        <swiper-item>
+          <image src='{{item.img}}'></image>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+  <!-- 项目列表 -->
+  <view class='project-list'>
+    <view class='project-item img-container'>
+      <image src='/images/test.jpg'></image>
+    </view>
+    <view class='project-item img-container'>
+      <image src='/images/test.jpg'></image>
+    </view>
+    <view class='project-item img-container'>
+      <image src='/images/test.jpg'></image>
+    </view>
+  </view>
+  <!-- 教练推荐 -->
+  <view class='coach-list'>
+    <view class='coach-item'>
+      <view class='coach-item-image img-container'>
+        <image src='/images/logo.jpg'></image>
+      </view>
+      <view class='coach-item-info'>
+        <view class='coach-item-info-name'>张三</view>
+        <view class='coach-item-info-detail'>男 29岁 金牌教练</view>
+      </view>
+    </view>
+    <view class='coach-item'>
+      <view class='coach-item-image img-container'>
+        <image src='/images/logo.jpg'></image>
+      </view>
+      <view class='coach-item-info'>
+        <view class='coach-item-info-name'>张三</view>
+        <view class='coach-item-info-detail'>男 29岁 金牌教练</view>
+      </view>
+    </view>
+    <view class='coach-item'>
+      <view class='coach-item-image img-container'>
+        <image src='/images/logo.jpg'></image>
+      </view>
+      <view class='coach-item-info'>
+        <view class='coach-item-info-name'>张三</view>
+        <view class='coach-item-info-detail'>男 29岁 金牌教练</view>
+      </view>
+    </view>
+  </view>
+</view>

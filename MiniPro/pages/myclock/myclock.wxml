@@ -1,0 +1,27 @@
+<view class="container" wx:if="{{clockList.length > 0}}">
+  <block wx:for="{{clockList}}" wx:key="idx">
+    <view class='class-item'>
+      <view class='class-item-title'>
+        <text class='clock_at'>{{item.clock_at}}</text>
+        <text wx:if="{{item.clock_type == 1}}" class="normal-clock">{{item.clock_type_conv}}</text>
+        <text wx:if="{{item.clock_type == 2}}" class="late-clock">{{item.clock_type_conv}}</text>
+        <text wx:if="{{item.clock_type == 3}}" class="absent-clock">{{item.clock_type_conv}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>班级名称</text>
+        <text class='class-item-right'>{{item.class_name}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>教师信息</text>
+        <view class='class-item-right right-special'>
+          <image src='{{item.avatar_url}}'></image>
+          <text>{{item.teacher_name}}</text>
+        </view>
+      </view>
+      <view class='class-item-bottom'></view>
+    </view>
+  </block>
+</view>
+<view class='nothing' wx:else>
+  暂无所带班级，请及时联系管理员
+</view>

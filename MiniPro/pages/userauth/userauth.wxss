@@ -1,0 +1,140 @@
+@import '/style/weui.wxss';
+
+page {
+  background: #fff;
+}
+
+.container {
+  font-size: 16px;
+  align-items: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.pro-name {
+  display: flex;
+  flex-direction: row;
+  height: 150rpx;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.pro-img image {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.title {
+  line-height: 150rpx;
+  font-size: 32rpx;
+  color: #999;
+}
+
+.code-text {
+  font-size: 30rpx;
+  color: #999;
+}
+
+.line {
+  width: 80%;
+  height: 1rpx;
+  border-bottom: 1rpx solid rgba(220, 220, 220, 0.6);
+  margin: 20rpx 10%;
+}
+
+.explain {
+  font-size: 28rpx;
+  color: #333;
+  width: 80%;
+  line-height: 50rpx;
+  text-indent: 2em;
+}
+
+.explain-detail {
+  font-size: 26rpx;
+  color: #999;
+  text-indent: 0;
+  margin-bottom: 30rpx;
+}
+
+.explain-title {
+  font-weight: 500;
+  color: #333;
+  text-indent: 0;
+}
+
+.weui-btn-area {
+  margin: 0;
+  width: 60%;
+  margin-top: 80rpx;
+}
+
+.weui-btn {
+  font-size: 28rpx;
+}
+
+.clause {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 55%;
+}
+
+.weui-agree__link, .weui-agree {
+  font-size: 26rpx;
+}
+
+/* user-info */
+
+.user-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 28rpx;
+  line-height: 80rpx;
+  color: #333;
+  text-align: center;
+  width: 80%;
+}
+
+.user-info-left {
+  width: 20%;
+}
+
+.user-info-middle {
+  width: 60%;
+}
+
+.middle-checkbox, .usertype{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.usertype image{
+  width: 35rpx;
+  height: 35rpx;
+  margin-right: 15rpx;
+}
+
+.user-info-middle input {
+  border-bottom: 1rpx solid rgba(220, 220, 220, 0.5);
+}
+
+.user-info-right {
+  width: 20%;
+  font-size: 28rpx;
+}
+
+.user-info-right button {
+  font-size: 24rpx;
+  color: #1ca7f5;
+  line-height: 50rpx;
+  padding: 0 5rpx;
+  width: 85%;
+}

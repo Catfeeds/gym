@@ -1,0 +1,52 @@
+<view class="selected_date">
+  <view bindtap="preMonth">
+    <image class="select_icon" src="/images/icon-left.png"></image>
+  </view>
+  <view class="text_center">{{curYear+'-'+curMonth}}</view>
+  <view style="text-align:right;" bindtap="nextMonth">
+    <image class="select_icon" src="/images/icon-right.png"></image>
+  </view>
+</view>
+<view class="calendar_panel">
+  <view class="calendar_box">
+    <view class="weekday_label">日</view>
+    <view class="weekday_label">一</view>
+    <view class="weekday_label">二</view>
+    <view class="weekday_label">三</view>
+    <view class="weekday_label">四</view>
+    <view class="weekday_label">五</view>
+    <view class="weekday_label">六</view>
+  </view>
+  <view class="calendar_box" wx:for="{{dateList}}" wx:for-item="week" wx:key="">
+    <view class="weekday_label" wx:for="{{week}}" wx:key="">
+      <text class="{{item.value==selectedDate ? 'active_date' : ''}}" bindtap="selectDate" data-date="{{item}}">{{item.date}}</text>
+    </view>
+  </view>
+</view>
+<view class='container' wx:if="{{schedule.length > 0}}">
+  <block wx:for="{{schedule}}" wx:key="class_id">
+    <view class='class-item'>
+      <view class='class-item-title'>
+        班级名称：{{item.class_name}}
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>课程名称</text>
+        <text class='class-item-right'>{{item.subject_name}} {{item.course_name}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>上课时间</text>
+        <text class='class-item-right'>{{item.class_time}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>班级人数</text>
+        <text class='class-item-right'>{{item.class_stu_num}}</text>
+      </view>
+      <view class='class-item-bottom' bindtap='navToClassDetail' data-classid='{{item.class_id}}'>
+        查看详情
+      </view>
+    </view>
+  </block>
+</view>
+<view class='show_box' wx:else>
+  今日暂无课程安排
+</view>

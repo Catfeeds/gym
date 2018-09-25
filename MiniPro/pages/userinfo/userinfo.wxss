@@ -1,0 +1,85 @@
+/*  引入weui  */
+@import '../../style/weui.wxss';
+
+.container {
+  font-size: 16px;
+}
+
+.weui-cells{
+  width: 100%;
+}
+
+.code-text {
+  font-size: 15px;
+  color: #999;
+}
+
+.weui-label {
+  font-size: 28rpx;
+  line-height: 80rpx;
+}
+
+.weui-input {
+  font-size: 28rpx;
+  line-height: 80rpx;
+  height: 80rpx;
+  min-height: 80rpx;
+}
+
+.weui-vcode-btn{
+  line-height: 80rpx;
+  font-size: 28rpx;
+  padding: 0 0.5rem;
+  width: 90rpx;
+}
+
+.weui-cell__ft{
+  text-align: center;
+}
+
+.weui-cell::before{
+  border-top: none;
+}
+
+.weui-cell{
+  border-bottom: 1rpx solid #d9d9d9;
+  padding: 0;
+  margin-left: 30rpx;
+}
+
+.nopadding{
+  margin: 0;
+  padding-left: 30rpx;
+}
+
+.border-top{
+  border-top: 1rpx solid #d9d9d9;
+}
+
+.no-border{
+  border-bottom: none;
+}
+
+.user-wx-info{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 28rpx;
+  color: #333;
+}
+.user-wx-info image{
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  margin-right: 15rpx;
+}
+
+.weui-btn-area{
+  margin-top: 80rpx;
+}
+
+.weui-btn{
+  line-height: 70rpx;
+  font-size: 30rpx;
+  width: 400rpx;
+}

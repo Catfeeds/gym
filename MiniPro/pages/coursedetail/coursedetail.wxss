@@ -1,0 +1,77 @@
+
+.container {
+  align-items: left;
+}
+
+.banner {
+  width: 100%;
+}
+
+.banner image {
+  height: 280rpx;
+  width: 100%;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  padding: 0 2%;
+  width: 96%;
+  line-height: 28px;
+  font-size: 32rpx;
+  color: #333;
+}
+
+.brief {
+  color: #666;
+  font-size: 30rpx;
+}
+
+.time {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.desc-split {
+  font-size: 32rpx;
+  border-bottom: 1rpx solid rgba(220, 220, 220, 0.6);
+  width: 96%;
+  padding: 0 2%;
+  line-height: 28px;
+  color: #333;
+}
+
+.desc {
+  font-size: 30rpx;
+  color: #333;
+  padding: 20rpx 2%;
+  width: 96%;
+}
+
+.bottom {
+  display: flex;
+  bottom: 0;
+  left: 0;
+  height: 80rpx;
+  width: 100%;
+  position: absolute;
+  z-index: 2;
+}
+
+.bottom button {
+  line-height: 80rpx;
+  height: 80rpx;
+  border-radius: 0;
+  width: 100%;
+  color: #333;
+  font-size: 30rpx;
+  position: absolute;
+}
+
+.price {
+  color: #f4c327;
+}
+
+.already-buy {
+  background: #f4c327;
+}

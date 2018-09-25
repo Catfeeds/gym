@@ -1,0 +1,32 @@
+<view class="page">
+  <!-- 图片 -->
+  <view class='msg-img'>
+    <image src='{{msgInfo.msg_img}}' bindtap='previewImage'></image>
+  </view>
+  <!-- 文字 -->
+  <!-- <view class='msg-title'>消息内容</view> -->
+  <view class='msg-content'>
+    {{msgInfo.msg_content}}
+  </view>
+  <view class='msg-info'>
+    <view class='msg-info-left'>发送时间</view>
+    <view class='msg-info-right'>{{msgInfo.send_at}}</view>
+  </view>
+  <view class='msg-info'>
+    <view class='msg-info-left'>发送者</view>
+    <view class='msg-info-right'>{{msgInfo.send_by_name}}</view>
+  </view>
+  <view class='msg-info'>
+    <view class='msg-info-left'>班级名称</view>
+    <view class='msg-info-right'>{{msgInfo.class_name}}</view>
+  </view>
+  <view class='msg-info'>
+    <view class='msg-info-left'>上课时间</view>
+    <view class='msg-info-right'>{{msgInfo.class_day_conv}} {{msgInfo.class_time}}</view>
+  </view>
+  <view class='msg-info'>
+    <view class='msg-info-left'>班级名称</view>
+    <view class='msg-info-right'>{{msgInfo.class_name}}</view>
+  </view>
+
+</view>

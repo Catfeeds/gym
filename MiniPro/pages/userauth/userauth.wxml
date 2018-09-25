@@ -1,0 +1,68 @@
+<view class="container">
+  <view class='pro-name'>
+    <view class='pro-img'>
+      <image src='/images/logo.jpg'></image>
+    </view>
+    <view class='title'>吸铁石美术兄弟小程序</view>
+  </view>
+  <view class='explain'>吸铁石美术兄弟小程序需要使用您授权使用微信相关信息，请您在阅读《用户协议》并确认授权后，方可正常使用该小程序相关功能。</view>
+  <view class='line'></view>
+  <view class='explain explain-title'>该程序将获取以下授权：</view>
+  <view class='explain explain-detail'> · 获得您的公开信息（昵称、头像等）</view>
+  <!-- 用户填写认证信息区域 手机号 姓名 -->
+  <view class='user-info'>
+    <view class='user-info-left'>身份</view>
+    <view class='user-info-middle middle-checkbox'>
+      <view class='usertype' bindtap='chooseUserType' data-id='0'>
+        <image src="{{userType == 0 ? '/images/icon-select-active.png' : '/images/icon-select.png'}}"></image>
+        <text>会员</text>
+      </view>
+      <view class='usertype' bindtap='chooseUserType' data-id='1'>
+        <image src="{{userType == 1 ? '/images/icon-select-active.png' : '/images/icon-select.png'}}"></image>
+        <text>教练</text>
+      </view>
+    </view>
+  </view>
+  <view class='user-info'>
+    <view class='user-info-left'>姓名</view>
+    <view class='user-info-middle'>
+      <input maxlength='11' bindblur='inputName' value='{{userName}}' placeholder='请输入姓名'></input>
+    </view>
+  </view>
+  <view class='user-info'>
+    <view class='user-info-left'>手机</view>
+    <view class='user-info-middle'>
+      <input maxlength='11' bindblur='inputTel' value='{{userTel}}' placeholder='请输入手机号' type='number'></input>
+    </view>
+    <view class='user-info-right'>
+      <form report-submit='true' bindsubmit='getIdentifyCode'>
+        <button form-type='submit' disabled='{{!isCanGetCode}}'>{{isCanGetCode ? '验证码' : codeCountdown}}</button>
+      </form>
+    </view>
+  </view>
+  <view class='user-info'>
+    <view class='user-info-left'>验证码</view>
+    <view class='user-info-middle'>
+      <input maxlength='6' bindblur='inputCode' value='{{identifyCode}}' placeholder='请输入验证码' type='number'></input>
+    </view>
+  </view>
+  <!-- 微信登陆按钮 -->
+  <view class="weui-btn-area">
+    <button class="weui-btn" type="primary" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="getUserInfo" disabled="{{isAgree && userTel && userName && identifyCode ? false : true}}">微信登陆</button>
+  </view>
+  <view class='clause'>
+    <checkbox-group bindchange="bindAgreeChange">
+      <label class="weui-agree" for="weuiAgree">
+        <view class="weui-agree__text">
+          <checkbox class="weui-agree__checkbox" id="weuiAgree" value="agree" checked="{{isAgree}}" />
+          <view class="weui-agree__checkbox-icon">
+            <icon class="weui-agree__checkbox-icon-check" type="success_no_circle" size="9" wx:if="{{isAgree}}"></icon>
+          </view>
+          阅读并同意
+        </view>
+      </label>
+    </checkbox-group>
+    <navigator url="../clause/clause" class="weui-agree__link" hover-stop-propagation="true">《用户协议》</navigator>
+  </view>
+
+</view>

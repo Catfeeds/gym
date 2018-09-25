@@ -1,0 +1,54 @@
+<view class="container" wx:if="{{stuList.length > 0}}">
+  <block wx:for="{{stuList}}" wx:key="class_id">
+    <view class='class-item'>
+      <view class='class-item-line'>
+        <text class='class-item-left'>学生姓名</text>
+        <text class='class-item-right'>{{item.username}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>学生学号</text>
+        <text class='class-item-right'>{{item.stu_no}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>学生课时</text>
+        <text class='class-item-right fonts-bold'>{{item.course_times - item.course_left_times}}/{{item.course_times}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>课程结束</text>
+        <text class='class-item-right fonts-bold'>{{item.course_end_at}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>学生性别</text>
+        <text class='class-item-right'>{{item.user_gender == 1 ? '男' : '女'}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>学生生日</text>
+        <text class='class-item-right'>{{item.birth}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>家长昵称</text>
+        <view class='class-item-right right-special'>
+          <image src='{{item.avatar_url}}'></image>
+          <text>{{item.nickname}}</text>
+        </view>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>家长姓名</text>
+        <text class='class-item-right'>{{item.auth_name}}</text>
+      </view>
+      <view class='class-item-line'>
+        <text class='class-item-left'>家长电话</text>
+        <view class='class-item-right right-special' bindtap='callStuParent' data-phone='{{item.phone}}'>
+          <image src='/images/icon-phone.png'></image>
+          <text>{{item.phone}}</text>
+        </view>
+      </view>
+      <!-- <view class='class-item-bottom'>
+        查看详情
+      </view> -->
+    </view>
+  </block>
+</view>
+<view class='nothing' wx:else>
+  当前班级已停课，请及时联系管理员
+</view>

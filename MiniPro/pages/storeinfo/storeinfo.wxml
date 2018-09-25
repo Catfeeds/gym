@@ -1,0 +1,13 @@
+<view class="container">
+  <view class='pro-name'>
+    <view class='pro-img'>
+      <image src='/images/logo.jpg'></image>
+    </view>
+    <view class='title'>吸铁石美术兄弟小程序</view>
+  </view>
+  <view class='explain'>{{storeInfo}}</view>
+  <!-- 底部按钮 联系店家 -->
+  <view class='bottom-btn'>
+    <form report-submit='true' bindtap='callStoreService'></form>
+  </view>
+</view>

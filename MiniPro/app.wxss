@@ -1,0 +1,21 @@
+view, image{
+  box-sizing: border-box;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.img-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+/* button-border */
+button::after {
+  border: none;
+}

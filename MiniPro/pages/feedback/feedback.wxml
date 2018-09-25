@@ -1,0 +1,40 @@
+<view class="container">
+  <block wx:if="{{feedbackList.length > 0}}">
+    <block wx:for="{{feedbackList}}" wx:key="idx">
+      <view class='feedback-item'>
+        <!-- title -->
+        <view class='feedback-title'>
+          <view class='feedback-title-left'>{{item.created_at}}</view>
+          <view class="feedback-title-right {{item.status == 1 ? 'not-replay' : ''}}">{{item.status_conv}}</view>
+        </view>
+        <!-- content -->
+        <view class='feedback-content'>
+          <view class='feedback-content-img' wx:if="{{item.img}}">
+            <image src='{{item.img}}'></image>
+          </view>
+          <view class='feedback-content-text'>{{item.message}}</view>
+        </view>
+        <!-- reply -->
+        <view class='feedback-bottom'>
+          <view class='reply-content' wx:if="{{item.reply_at}}">
+            {{item.reply}}
+          </view>
+          <view class='reply-time'>
+            <text wx:if="{{item.reply_at}}">'回复时间：' + item.reply_at</text>
+            <text wx:else>等待回复</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <!-- 新建反馈圆角标志 -->
+  <view class='new-feedback' bindtap='navToNewFeedback'>
+    <image src='/images/icon-plus.png'></image>
+  </view>
+
+</view>
+
+<view class='nothing' wx:if="{{feedbackList.length == 0}}">
+  暂无反馈
+</view>

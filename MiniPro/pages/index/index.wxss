@@ -1,0 +1,69 @@
+/**index.wxss**/
+
+.banner, swiper {
+  height: 300rpx;
+  width: 100%;
+}
+
+.banner image {
+  height: 300rpx;
+  width: 100%;
+}
+
+/* project-list coach-list */
+
+.project-list, .coach-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 15rpx;
+}
+
+.project-item {
+  width: 50%;
+  height: 180rpx;
+}
+
+.project-item image {
+  width: 350rpx;
+  height: 160rpx;
+  border-radius: 5px;
+}
+
+/* coach-list */
+.coach-item{
+  width: 48%;
+  display: flex;
+  flex-direction: row;
+  height: 130rpx;
+  border: 1rpx solid #dcdcdc;
+  margin: 0 1% 15rpx 1%;
+  border-radius: 6px;
+}
+
+.coach-item-image{
+  width: 30%;
+}
+
+.coach-item-image image{
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+}
+
+.coach-item-info{
+  display: flex;
+  flex-direction: column;
+  line-height: 65rpx;
+}
+
+.coach-item-info-name{
+  font-size: 28rpx;
+  color: #353535;
+}
+
+.coach-item-info-detail{
+  font-size: 26rpx;
+  color: #666;
+}

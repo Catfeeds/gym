@@ -1,0 +1,157 @@
+<view class="container">
+  <view class="weui-cells weui-cells_after-title">
+    <block wx:if="{{!isTeacher}}">
+      <!-- 学生信息 -->
+      <view class="weui-cell weui-cell_input nopadding">
+        <view class="weui-cell__hd">
+          <view class="weui-label">学生信息</view>
+        </view>
+      </view>
+      <!-- 学生姓名 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">姓名</view>
+        </view>
+        <view class="weui-cell__bd">
+          <view class="weui-label">{{userInfo.username}}</view>
+        </view>
+      </view>
+      <!-- 学生年级 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">年级</view>
+        </view>
+        <view class="weui-cell__bd">
+          <view class="weui-label">{{userInfo.grade}}</view>
+        </view>
+      </view>
+      <!-- 学生学号 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">学号</view>
+        </view>
+        <view class="weui-cell__bd">
+          <view class="weui-label">{{userInfo.stu_no}}</view>
+        </view>
+      </view>
+      <!-- 学生性别 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">性别</view>
+        </view>
+        <view class="weui-cell__bd">
+          <view class="weui-label">{{userInfo.user_gender}}</view>
+        </view>
+      </view>
+      <!-- 学生生日 -->
+      <view class="weui-cell weui-cell_input no-border">
+        <view class="weui-cell__hd">
+          <view class="weui-label">生日</view>
+        </view>
+        <view class="weui-cell__bd">
+          <view class="weui-label">{{userInfo.birth}}</view>
+        </view>
+      </view>
+      <!-- 家长信息 -->
+      <view class="weui-cell weui-cell_input nopadding border-top">
+        <view class="weui-cell__hd">
+          <view class="weui-label">家长信息</view>
+        </view>
+      </view>
+      <!-- 昵称 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">昵称</view>
+        </view>
+        <view class="weui-cell__bd user-wx-info">
+          <image src='{{userInfo.avatar_url}}'></image>
+          <text>{{userInfo.nickname}}</text>
+        </view>
+      </view>
+      <!-- 姓名 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">姓名</view>
+        </view>
+        <view class="weui-cell__bd">
+          <view class="weui-label">{{userInfo.auth_name}}</view>
+        </view>
+      </view>
+    </block>
+    <!-- 教师信息 -->
+    <block wx:else>
+      <!-- 教师姓名 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">姓名</view>
+        </view>
+        <view class="weui-cell__bd">
+          <view class="weui-label">{{userInfo.teacher_name}}</view>
+        </view>
+      </view>
+      <!-- 昵称 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">昵称</view>
+        </view>
+        <view class="weui-cell__bd user-wx-info">
+          <image src='{{userInfo.avatar_url}}'></image>
+          <text>{{userInfo.nickname}}</text>
+        </view>
+      </view>
+      <!-- 教师性别 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">性别</view>
+        </view>
+        <view class="weui-cell__bd">
+          <view class="weui-label">{{userInfo.teacher_gender == 1 ? '男' : '女'}}</view>
+        </view>
+      </view>
+      <!-- 教师生日 -->
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">生日</view>
+        </view>
+        <view class="weui-cell__bd">
+          <view class="weui-label">{{userInfo.teacher_birth}}</view>
+        </view>
+      </view>
+    </block>
+    <!-- 手机号 -->
+    <view class="weui-cell weui-cell_input weui-cell_vcode">
+      <view class="weui-cell__hd">
+        <view class="weui-label">手机号</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input type='number' value="{{userTel}}" disabled='{{!isTelCanInput}}' bindinput='inputTel' maxlength='11' class="weui-input" placeholder="请输入手机号" />
+      </view>
+      <view class="weui-cell__ft">
+        <block wx:if="{{showSendCode}}">
+          <view class="weui-vcode-btn" bindtap='getValidCode'>验证码</view>
+        </block>
+        <block wx:else>
+          <view class="weui-vcode-btn code-text">{{codeCountdown}}</view>
+        </block>
+      </view>
+    </view>
+    <!-- 验证码窗口 -->
+    <block wx:if="{{showValidateInput}}">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">验证码</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input type='number' disabled='{{isValidate}}' bindinput='inputValidateCode' maxlength='6' class="weui-input" placeholder="请输入验证码" />
+        </view>
+      </view>
+    </block>
+  </view>
+  <!-- 信息修改确认按钮 -->
+  <view class="weui-btn-area">
+    <form bindsubmit='userChangePhone' report-submit='true'>
+      <button class="weui-btn" type="primary" form-type='submit' disabled='{{!isValidate}}'>确定</button>
+    </form>
+  </view>
+
+</view>

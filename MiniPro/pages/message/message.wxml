@@ -1,0 +1,40 @@
+<view class="page">
+  <view class="page__bd">
+    <view class="weui-tab">
+      <scroll-view class='scroll-view' scroll-x="true">
+        <view class="weui-navbar">
+          <block wx:for="{{tabs}}" wx:key="msgType">
+            <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+              <view class="weui-navbar__title">{{item.name}}</view>
+            </view>
+          </block>
+          <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);width:96px;"></view>
+        </view>
+      </scroll-view>
+      <view class="weui-tab__panel">
+        <!--  循环构造tabPanel  -->
+        <block wx:for="{{tabs}}" wx:key="msgType">
+          <view class="weui-tab__content" hidden="{{activeIndex != index}}">
+            <!--  收藏的小程序列表  -->
+            <view class='container' wx:if="{{item.list.length > 0}}">
+              <!--  小程序信息  -->
+              <block wx:for="{{item.list}}" wx:key="msg_id" wx:for-index="idx">
+                <view class='course-item column-display' bindtap='navToMsgDetail' data-msgid="{{item.msg_id}}">
+                  <view class='course-time'>{{item.send_at}}</view>
+                  <view class='course-img'>
+                    <image src='{{item.msg_img}}'></image>
+                  </view>
+                  <view class='course-name'>{{item.msg_content}}</view>
+                </view>
+              </block>
+            </view>
+            <view class='container' wx:else>
+              <text class='no-info'>暂无消息</text>
+            </view>
+          </view>
+          <!--  循环构造tabPanel END  -->
+        </block>
+      </view>
+    </view>
+  </view>
+</view>
