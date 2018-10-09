@@ -23,7 +23,7 @@
     </view>
   </view>
   <!-- 教练推荐 -->
-  <view class='coach-list'>
+  <!-- <view class='coach-list'>
     <view class='coach-item'>
       <view class='coach-item-image img-container'>
         <image src='/images/logo.jpg'></image>
@@ -51,5 +51,5 @@
         <view class='coach-item-info-detail'>男 29岁 金牌教练</view>
       </view>
     </view>
-  </view>
+  </view> -->
 </view>

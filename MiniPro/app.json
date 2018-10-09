@@ -21,32 +21,32 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
+    "navigationBarBackgroundColor": "#cab9d7",
     "navigationBarTitleText": "Reshape重塑身形",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "white"
   },
   "tabBar": {
-    "color": "#666",
-    "selectedColor": "#333",
+    "color": "#333",
+    "selectedColor": "#cab9d7",
     "borderStyle": "white",
     "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "iconPath": "images/icon-select.png",
-        "selectedIconPath": "images/icon-select-active.png",
+        "iconPath": "images/index.png",
+        "selectedIconPath": "images/index-select.png",
         "text": "首页"
       },
       {
         "pagePath": "pages/feedback/feedback",
-        "iconPath": "images/icon-select.png",
-        "selectedIconPath": "images/icon-select-active.png",
+        "iconPath": "images/clock.png",
+        "selectedIconPath": "images/clock-select.png",
         "text": "活动"
       },
       {
         "pagePath": "pages/my/my",
-        "iconPath": "images/icon-select.png",
-        "selectedIconPath": "images/icon-select-active.png",
+        "iconPath": "images/my.png",
+        "selectedIconPath": "images/my-select.png",
         "text": "我的"
       }
     ]

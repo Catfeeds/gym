@@ -35,7 +35,12 @@
 		"miniprogram": {
 			"current": 0,
 			"list": [
-				
+				{
+					"id": 0,
+					"name": "我的",
+					"pathName": "pages/my/my",
+					"query": ""
+				}
 			]
 		}
 	}
