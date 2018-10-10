@@ -47,7 +47,7 @@ App({
         that.globalData.uid = res.uid || res.tid;
         // that.globalData.uid = 1;
         that.globalData.isAuth = res.isAuth || false;
-        // 0 学生家长 1 教师
+        // 1 会员 2 教练
         that.globalData.userType = res.userType;
         return util.post('minibase/getSystemSetting', {
           openid: res.openid

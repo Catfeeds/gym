@@ -2,20 +2,13 @@
   "pages": [
     "pages/index/index",
     "pages/userauth/userauth",
-    "pages/coursedetail/coursedetail",
     "pages/message/message",
     "pages/messagedetail/messagedetail",
-    "pages/course/course",
     "pages/myclock/myclock",
     "pages/clause/clause",
-    "pages/sendmsg/sendmsg",
     "pages/feedback/feedback",
     "pages/sendfeedback/sendfeedback",
     "pages/userinfo/userinfo",
-    "pages/startclock/startclock",
-    "pages/classmanage/classmanage",
-    "pages/tschedule/tschedule",
-    "pages/classdetail/classdetail",
     "pages/storeinfo/storeinfo",
     "pages/my/my"
   ],
@@ -38,7 +31,7 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/feedback/feedback",
+        "pagePath": "pages/storeinfo/storeinfo",
         "iconPath": "images/clock.png",
         "selectedIconPath": "images/clock-select.png",
         "text": "活动"

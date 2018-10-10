@@ -15,40 +15,18 @@ use app\index\model\Coach;
  * 通过用户ID获取用户相关信息
  *
  * @param int $uid 用户id
- * @param boolean $profile 是否需要查询用户资料
- * @param boolean $course 是否需要查询用户课程信息
- * @param boolean $clock 是否需要查询用户打卡记录
  * @return array 用户信息详情
  */
-function getUserInfoById($uid, $course = true, $clock = true)
+function getUserInfoById($uid)
 {
     // 获取用户信息
     $user = new User;
-    $field = "uid, openid, username, nickname, avatar_url, stu_no, grade, birth, phone, class_id, auth_name, user_gender";
-    $userProfile = $user->field($field)->where('uid', $uid)->select();
-    $userProfile = $userProfile && count($userProfile) > 0 ? collection($userProfile)->toArray() : null;
-    $userInfo['profile'] = $userProfile[0];
+    $field = "uid, openid, user_name, user_gender, user_mobile, user_birth";
+    $userProfile = $user->field($field)->where('uid', $uid)->find();
     // 数据简单处理
-    $userInfo['profile']['grade'] = $userInfo['profile']['grade'] == 1 ? '幼儿园' : '小学';
-    $userInfo['profile']['user_gender'] = $userInfo['profile']['user_gender'] == 1 ? '男' : '女';
-    // 判断是否需要查询购买课程记录
-    // 用户的课程可能是多个
-    if ($course) {
-        $course_user = new Course_user;
-        $courseInfo = $course_user->alias('u')->join('course c', 'u.course_id = c.course_id', 'LEFT')->where('u.uid', $uid)->field('c.course_name, c.course_brief, c.course_period, c.subject_id')->select();
-        $courseInfo = $courseInfo && count($courseInfo) > 0 ? collection($courseInfo)->toArray() : null;
-        $userInfo['course'] = $courseInfo;
-    }
-    // 判断是否需要查询打卡记录
-    if ($clock) {
-        $clockField = "idx, course_id, clock_at, clock_type, clock_by";
-        $user_clock = new User_clock;
-        $userClock = $user_clock->where('uid', $uid)->field($clockField)->select();
-        $userClock = $userClock && count($userClock) > 0 ? collection($userClock)->toArray() : null;
-        $userInfo['clock'] = $userClock;
-    }
+    $userProfile['user_gender'] = $userProfile['user_gender'] == 1 ? '男' : '女';
 
-    return $userInfo;
+    return $userProfile;
 }
 
 /**
@@ -302,9 +280,9 @@ function makeClock($clockArr)
  * @param int $pageNum 需要查询的页码
  * @return void
  */
-function getFeedBack($uid = null, $pageNum = null)
+function getFeedBack($uid = null, $userType = 1, $pageNum = null)
 {
-    $field = "idx, uid, message, img, reply, created_at, reply_at, reply_by, status";
+    $field = "idx, uid, content, img, reply, created_at, reply_at, reply_by, status";
     $limit = isset($pageNum) ? $pageNum * 10 . ', 10' : '';
     // 如果有传用户ID 则查询指定用户的反馈记录
     $feedback = new Feedback;
@@ -318,9 +296,7 @@ function getFeedBack($uid = null, $pageNum = null)
     foreach ($feedbackList as &$info) {
         if (!empty($info['reply_at'])) $info['reply_at'] = date('Y-m-d H:i:s', $info['reply_at']);
         if (!empty($info['img'])) $info['img'] = config('SITEROOT') . $info['img'];
-        if (!empty($info['reply'])) $info['reply'] = htmlspecialchars_decode($info['reply']);
         $info['created_at'] = date('Y-m-d H:i:s', $info['created_at']);
-        $info['message'] = htmlspecialchars_decode($info['message']);
         $info['status_conv'] = $info['status'] == 1 ? '待回复' : '已回复';
     }
     return $feedbackList;

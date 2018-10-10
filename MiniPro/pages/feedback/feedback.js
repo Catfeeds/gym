@@ -8,7 +8,10 @@ Page({
     pageNum: 0
   },
 
-  onLoad: function() {
+  onShow: function() {
+    this.setData({
+      pageNum: 0
+    })
     this.getUserFeedback();
   },
 
@@ -23,14 +26,17 @@ Page({
     })
     util.post('user/getUserFeedback', {
       uid: app.globalData.uid,
-      pageNum: that.data.pageNum
+      pageNum: that.data.pageNum,
+      userType: app.globalData.userType
     }).then(res => {
       if (!res) {
-        wx.showToast({
-          title: '没有更多了',
-          icon: 'loading',
-          duration: 1000
-        })
+        if (that.data.pageNum != 0) {
+          wx.showToast({
+            title: '没有更多了',
+            icon: 'loading',
+            duration: 1000
+          })
+        }
         return;
       }
       that.setData({

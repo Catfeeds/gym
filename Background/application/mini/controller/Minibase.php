@@ -80,6 +80,8 @@ class Minibase extends Controller
             $userInfo['isAuth'] = $teacherInfo['status'] == 2 ? true : false;
         }
 
+        // 设置用户身份
+        $userInfo['userType'] = $userInfo ? 1 : 2;
         return objReturn(0, 'Get UserInfo Success', $userInfo ? $userInfo : $teacherInfo);
     }
 
@@ -139,7 +141,7 @@ class Minibase extends Controller
     {
         $openid = request()->param('openid');
         if (empty($openid)) return objReturn(400, 'Invaild Param');
-        $setting = Db::name('mini_setting')->where('setting_id', 1)->field('mini_name, share_text, service_phone')->find();
+        $setting = Db::name('mini_setting')->where('setting_id', 1)->field('mini_name, share_text, service_phone, location')->find();
         return objReturn(0, 'success', $setting);
     }
 

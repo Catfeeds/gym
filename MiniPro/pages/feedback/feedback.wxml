@@ -12,7 +12,7 @@
           <view class='feedback-content-img' wx:if="{{item.img}}">
             <image src='{{item.img}}'></image>
           </view>
-          <view class='feedback-content-text'>{{item.message}}</view>
+          <view class='feedback-content-text'>{{item.content}}</view>
         </view>
         <!-- reply -->
         <view class='feedback-bottom'>

@@ -8,7 +8,7 @@
   <view class='func-list'>
     <view class='func-list-item border-radius-top'>
       <view class='item-image img-container'>
-        <image src='/images/icon-course.png'></image>
+        <image src='/images/icon-clock.png'></image>
       </view>
       <view class='item-desc'>我的课程</view>
     </view>
@@ -24,7 +24,7 @@
       </view>
       <view class='item-desc'>关于我们</view>
     </view>
-    <view class='func-list-item no-border border-radius-bottom'>
+    <view class='func-list-item no-border border-radius-bottom' bindtap='myInfo'>
       <view class='item-image img-container'>
         <image src='/images/icon-info.png'></image>
       </view>
@@ -32,25 +32,27 @@
     </view>
   </view>
   <view class='func-list func-list-second'>
-    <view class='func-list-item border-radius-top'>
+    <view class='func-list-item border-radius-top' bindtap='navToLocation'>
       <view class='item-image img-container'>
         <image src='/images/icon-nav.png'></image>
       </view>
       <view class='item-desc'>一键导航</view>
     </view>
     <view class='func-list-item'>
-      <view class='item-image img-container'>
-        <image src='/images/icon-service.png'></image>
-      </view>
-      <view class='item-desc'>微信客服</view>
+      <button class='service-btn' open-type="contact">
+        <view class='item-image img-container'>
+          <image src='/images/icon-service.png'></image>
+        </view>
+        <view class='item-desc'>微信客服</view>
+      </button>
     </view>
-    <view class='func-list-item'>
+    <view class='func-list-item' bindtap='phoneCall'>
       <view class='item-image img-container'>
         <image src='/images/icon-phone.png'></image>
       </view>
       <view class='item-desc'>电话联系</view>
     </view>
-    <view class='func-list-item no-border border-radius-bottom'>
+    <view class='func-list-item no-border border-radius-bottom' bindtap='navToFeedback'>
       <view class='item-image img-container'>
         <image src='/images/icon-feedback.png'></image>
       </view>

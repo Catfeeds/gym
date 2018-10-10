@@ -112,14 +112,15 @@
 .feedback-btn {
   position: fixed;
   bottom: 0;
-  height: 80rpx;
+  height: 90rpx;
   width: 100%;
 }
 
 .feedback-btn button {
-  line-height: 80rpx;
+  line-height: 90rpx;
   font-size: 30rpx;
   color: #fff;
   font-weight: 500;
   border-radius: 0;
+  background: #cab9d7;
 }

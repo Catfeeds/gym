@@ -24,28 +24,28 @@ Page({
     })
     util.post('user/getUserInfo', {
       uid: app.globalData.uid,
-      usertype: app.globalData.usertype
+      userType: app.globalData.userType
     }).then(res => {
-      if (app.globalData.userType == 0) {
-        that.setData({
-          userInfo: res.profile,
-          userTel: res.profile.phone,
-          isTeacher: app.globalData.userType == 1 ? true : false
+      // 如果是会员
+      let isMember = app.globalData.userType == 1 ? true : false;
+      that.setData({
+        isMember: isMember,
+        userInfo: res
+      })
+    }).catch(res => {
+      if (res.data.code == 401) {
+        util.modalPromisified({
+          title: '系统提示',
+          content: '参数错误，请及时联系管理员',
+          showCancel: false
         })
       } else {
-        that.setData({
-          userInfo: res,
-          isTeacher: app.globalData.userType == 1 ? true : false,
-          userTel: res.teacher_phone
+        util.modalPromisified({
+          title: '系统提示',
+          content: '网络错误，请尝试检查网络后重试',
+          showCancel: false
         })
       }
-    }).catch(res => {
-      console.log(res)
-      util.modalPromisified({
-        title: '系统提示',
-        content: '网络错误，请尝试检查网络后重试',
-        showCancel: false
-      })
     })
   },
 

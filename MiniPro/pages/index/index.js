@@ -82,91 +82,13 @@ Page({
   },
 
   /**
-   * 跳转到我的打卡界面
+   * 用户点击右上角分享
    */
-  navToMyClock: function() {
-    wx.navigateTo({
-      url: '/pages/myclock/myclock',
-    })
-  },
-
-  /**
-   * 跳转到我的消息界面
-   */
-  navToMyMsg: function() {
-    wx.navigateTo({
-      url: '/pages/message/message',
-    })
-  },
-
-  /**
-   * 跳转到课程详情
-   */
-  navToCourse: function() {
-    wx.navigateTo({
-      url: '/pages/course/course',
-    })
-  },
-
-  /**
-   * 教师开始课程打卡
-   */
-  startClock: function() {
-    wx.navigateTo({
-      url: '/pages/startclock/startclock',
-    })
-  },
-
-  /**
-   * 教师发送消息
-   */
-  sendMsg: function() {
-    wx.navigateTo({
-      url: '/pages/sendmsg/sendmsg'
-    })
-  },
-
-  navToClassManage: function() {
-    wx.navigateTo({
-      url: '/pages/classmanage/classmanage',
-    })
-  },
-
-  /**
-   * 用户发送反馈
-   */
-  sendFeedback: function() {
-    wx.navigateTo({
-      url: '/pages/feedback/feedback'
-    })
-  },
-
-  /**
-   * 跳转到教师课表
-   */
-  navToTeacherSchedule: function() {
-    wx.navigateTo({
-      url: '/pages/tschedule/tschedule',
-    })
-  },
-
-  /**
-   * 用户个人信息查看与修改
-   */
-  myInfo: function() {
-    wx.navigateTo({
-      url: '/pages/userinfo/userinfo',
-    })
-  },
-
-  /**
-   * 用户分享
-   */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
     return {
-      title: app.globalData.setting.share_text || '这样子的美术课程你一定很喜欢~',
+      title: app.globalData.setting.share_text || 'Reshape带你重塑身形~',
       path: '/pages/index/index'
     }
-  }
+  },
 
 })

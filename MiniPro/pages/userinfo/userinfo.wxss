@@ -5,12 +5,12 @@
   font-size: 16px;
 }
 
-.weui-cells{
+.weui-cells {
   width: 100%;
 }
 
 .code-text {
-  font-size: 15px;
+  font-size: 30rpx;
   color: #999;
 }
 
@@ -26,60 +26,88 @@
   min-height: 80rpx;
 }
 
-.weui-vcode-btn{
+.weui-vcode-btn {
   line-height: 80rpx;
   font-size: 28rpx;
   padding: 0 0.5rem;
-  width: 90rpx;
 }
 
-.weui-cell__ft{
+.weui-cell__ft {
   text-align: center;
 }
 
-.weui-cell::before{
+.weui-cell::before {
   border-top: none;
 }
 
-.weui-cell{
+.weui-cell {
   border-bottom: 1rpx solid #d9d9d9;
   padding: 0;
   margin-left: 30rpx;
 }
 
-.nopadding{
+.nopadding {
   margin: 0;
   padding-left: 30rpx;
 }
 
-.border-top{
+.border-top {
   border-top: 1rpx solid #d9d9d9;
 }
 
-.no-border{
+.no-border {
   border-bottom: none;
 }
 
-.user-wx-info{
+.user-wx-info {
   display: flex;
   flex-direction: row;
   align-items: center;
   font-size: 28rpx;
   color: #333;
 }
-.user-wx-info image{
+
+.user-wx-info image {
   width: 50rpx;
   height: 50rpx;
   border-radius: 50%;
   margin-right: 15rpx;
 }
 
-.weui-btn-area{
+.weui-btn-area {
   margin-top: 80rpx;
 }
 
-.weui-btn{
+.weui-btn {
   line-height: 70rpx;
-  font-size: 30rpx;
+  font-size: 28rpx;
   width: 400rpx;
+}
+
+/* info-cell */
+
+.info-cell-title, .info-cell-item {
+  line-height: 80rpx;
+  height: 80rpx;
+  border-bottom: 1rpx solid #d9d9d9;
+  width: 100%;
+  font-size: 28rpx;
+}
+
+.info-cell-title {
+  padding-left: 30rpx;
+}
+
+.info-cell-item {
+  display: flex;
+  flex-direction: row;
+  margin-left: 60rpx;
+}
+
+.info-cell-left, .info-cell-right {
+  width: 20%;
+}
+
+.info-cell-middle {
+  width: 60%;
 }

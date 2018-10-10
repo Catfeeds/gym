@@ -97,7 +97,7 @@ Page({
       } else {
         // 如果没有图片就直接上传
         util.post('user/submitFeedback', {
-          uid: 123,
+          uid: app.globalData.uid,
           message: that.data.message
         }, 400).then(res => {
           wx.showToast({

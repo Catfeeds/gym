@@ -15,8 +15,6 @@ class User extends Controller
     function __construct()
     {
         if (!request()->isPost()) return objReturn(400, 'Invaild Method');
-        // $uid = intval(request()->param('uid'));
-        // if (empty($uid)) return objReturn(400, 'Invaild Param');
     }
 
     /**
@@ -30,16 +28,16 @@ class User extends Controller
         $file = request()->file('file');
         if ($file) {
             $targetDir = ROOT_PATH . 'public' . DS . 'feedback';
-            // dump($targetDir);die;
             $save = $file->move($targetDir);
             if (!$save) return objReturn(400, 'System Error', $save);
         }
 
         // 数据上传
-        $feedback['message'] = htmlspecialchars(request()->param('message'));
-        $feedback['uid'] = $uid;
+        $feedback['content'] = htmlspecialchars(request()->param('message'));
+        $feedback['uid'] = request()->param('uid');
         $feedback['created_at'] = time();
         $feedback['img'] = $file ? DS . 'feedback' . DS . $save->getSaveName() : '';
+        $feedback['user_type'] = request()->param('userType') ? 1 : 2;
 
         $insert = Db::name('feedback')->insert($feedback);
         if (!$insert) return objReturn(400, 'Insert Failed', $insert);
@@ -54,7 +52,9 @@ class User extends Controller
     public function getUserFeedback()
     {
         $pageNum = intval(request()->param('pageNum'));
-        $feedbackList = getFeedBack($uid, $pageNum);
+        $uid = intval(request()->param('uid'));
+        $userType = request()->param('userType');
+        $feedbackList = getFeedBack($uid, $userType, $pageNum);
         return objReturn(0, 'success', $feedbackList);
     }
 
@@ -68,11 +68,13 @@ class User extends Controller
         $uid = intval(request()->param('uid'));
         if (empty($uid)) return objReturn(400, 'Invaild Param');
 
-        $userType = request()->param('usertype');
-        if ($userType == 0) {
+        $userType = request()->param('userType');
+        if ($userType == 1) {
             $userInfo = getUserInfoById($uid, false, false);
-        } else if ($userType == 1) {
-            $userInfo = Db::name('teacher')->where('teacher_id', $uid)->field('teacher_id, teacher_name, teacher_phone, teacher_gender, teacher_birth, avatar_url, nickname, status')->find();
+        } else if ($userType == 2) {
+            $userInfo = Db::name('coach')->where('coach_id', $uid)->field('coach_id, coach_name, coach_phone, coach_gender, coach_birth')->find();
+        } else {
+            return objReturn(401, 'failed');
         }
 
         if (!$userInfo) return objReturn(400, 'failed');
