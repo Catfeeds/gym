@@ -19,34 +19,29 @@ Page({
       wx.setNavigationBarTitle({
         title: '关于我们',
       })
+    } else if (options.scene == 2 && !options.id) {
+      util.modalPromisified({
+        title: '系统提示',
+        content: '参数错误，请及时联系管理员',
+        showCancel: false
+      }).then(res => {
+        wx.navigateBack({
+          delta: 1
+        })
+      })
+      return;
     }
+    this.setData({
+      scene: options.scene,
+      sceneId: options.id || ""
+    })
+    this.getCommonShow();
   },
 
   /**
-   * 生命周期函数--监听页面初次渲染完成
+   * 获取通用展示界面
    */
-  onReady: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {
+  getCommonShow: function() {
 
   },
 

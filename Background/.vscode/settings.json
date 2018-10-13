@@ -1,0 +1,5 @@
+{
+    "emmet.showSuggestionsAsSnippets": false,
+    "emmet.showExpandedAbbreviation": "inMarkupAndStylesheetFilesOnly",
+    "emmet.showAbbreviationSuggestions": false
+}
