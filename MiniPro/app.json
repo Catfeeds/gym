@@ -10,7 +10,8 @@
     "pages/sendfeedback/sendfeedback",
     "pages/userinfo/userinfo",
     "pages/storeinfo/storeinfo",
-    "pages/my/my"
+    "pages/my/my",
+    "pages/commonshow/commonshow"
   ],
   "window": {
     "backgroundTextStyle": "light",

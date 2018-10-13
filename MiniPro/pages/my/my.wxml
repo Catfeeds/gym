@@ -8,7 +8,7 @@
   <view class='func-list'>
     <view class='func-list-item border-radius-top'>
       <view class='item-image img-container'>
-        <image src='/images/icon-clock.png'></image>
+        <image src='/images/icon-course.png'></image>
       </view>
       <view class='item-desc'>我的课程</view>
     </view>
@@ -18,7 +18,7 @@
       </view>
       <view class='item-desc'>我的打卡</view>
     </view>
-    <view class='func-list-item'>
+    <view class='func-list-item' bindtap='navToAboutUs'>
       <view class='item-image img-container'>
         <image src='/images/icon-about.png'></image>
       </view>

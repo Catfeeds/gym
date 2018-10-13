@@ -21,7 +21,7 @@ Page({
   /**
    * 用户个人信息查看与修改
    */
-  myInfo: function () {
+  myInfo: function() {
     wx.navigateTo({
       url: '/pages/userinfo/userinfo',
     })
@@ -35,6 +35,15 @@ Page({
       title: app.globalData.setting.share_text || 'Reshape带你重塑身形~',
       path: '/pages/index/index'
     }
+  },
+
+  /**
+   * 跳转到关于我们界面
+   */
+  navToAboutUs: function() {
+    wx.navigateTo({
+      url: '/pages/commonshow/commonshow?scene=1',
+    })
   },
 
   /**
