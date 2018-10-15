@@ -17,8 +17,8 @@
 	<link rel="stylesheet" type="text/css" href="static/lib/h-ui.admin/css/style.css" />
 
 	<title>Reshape重塑形体</title>
-	<meta name="keywords" content="后台管理系统">
-	<meta name="description" content="网站后台模板系统">
+	<meta name="keywords" content="Reshape,重塑形体,健身">
+	<meta name="description" content="Reshape重塑形体">
 </head>
 
 <body>
@@ -40,7 +40,6 @@
 								<li><a href="index/index/logout">退出</a></li>
 							</ul>
 						</li>
-						<!-- <li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li> -->
 						<li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i
 								 class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
 							<ul class="dropDown-menu menu radius box-shadow">
@@ -66,26 +65,83 @@
 				<dd>
 					<ul>
 						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 2"}
-						<li><a data-href="index/banner/bannerlist" data-title="banner管理" href="javascript:void(0)">Banner</a></li>
+						{if condition="$vol.menu_id == 11"}
+						<li><a data-href="index/system/adminlist" data-title="管理员管理" href="javascript:;">管理员列表</a></li>
 						{/if}
 						{/volist}
 
 						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 3 "}
-						<li><a data-href="index/admin/adminlist" data-title="管理员管理" href="javascript:;">管理员列表</a></li>
+						{if condition="$vol.menu_id == 12"}
+						<li><a data-href="index/system/minisetting" data-title="小程序设置" href="javascript:;">小程序设置</a></li>
 						{/if}
 						{/volist}
+					</ul>
+				</dd>
+			</dl>
+			{/if}
+			{/volist}
 
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 18"}
-						<li><a data-href="index/system/miniproset" data-title="小程序设置" href="javascript:;">小程序设置</a></li>
-						{/if}
-						{/volist}
-
+			{volist name="$menuList" id="vol"}
+			{if condition="$vol.menu_id == 2"}
+			<dl id="menu-user">
+				<dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+				<dd>
+					<ul>
 						{volist name="$menuList" id="vol"}
 						{if condition="$vol.menu_id == 21"}
-						<li><a data-href="index/system/feedback" data-title="用户反馈" href="javascript:;">用户反馈</a></li>
+						<li><a data-href="index/user/userlist" data-title="会员列表" href="javascript:void(0)">会员列表</a></li>
+						{/if}
+						{/volist}
+
+						{volist name="$menuList" id="vol"}
+						{if condition="$vol.menu_id == 22"}
+						<li><a data-href="index/user/coachlist" data-title="教练列表" href="javascript:void(0)">教练列表</a></li>
+						{/if}
+						{/volist}
+					</ul>
+				</dd>
+			</dl>
+			{/if}
+			{/volist}
+
+			{volist name="$menuList" id="vol"}
+			{if condition="$vol.menu_id == 3"}
+			<dl id="menu-tongji">
+				<dt><i class="Hui-iconfont">&#xe61a;</i> 内容管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+				<dd>
+					<ul>
+						{volist name="$menuList" id="vol"}
+						{if condition="$vol.menu_id == 31"}
+						<li><a data-href="index/content/bannerlist" data-title="banner管理" href="javascript:void(0)">Banner</a></li>
+						{/if}
+						{/volist}
+
+						{volist name="$menuList" id="vol"}
+						{if condition="$vol.menu_id == 32"}
+						<li><a data-href="index/content/feedback" data-title="用户反馈" href="javascript:;">用户反馈</a></li>
+						{/if}
+						{/volist}
+
+						{volist name="$menuList" id="vol"}
+						{if condition="$vol.menu_id == 33"}
+						<li><a data-href="index/clause/clause" data-title="用户协议" href="javascript:void(0)">用户协议</a></li>
+						{/if}
+						{/volist}
+					</ul>
+				</dd>
+			</dl>
+			{/if}
+			{/volist}
+
+			{volist name="$menuList" id="vol"}
+			{if condition="$vol.menu_id == 4"}
+			<dl id="menu-course">
+				<dt><i class="Hui-iconfont">&#xe616;</i> 项目管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+				<dd>
+					<ul>
+						{volist name="$menuList" id="vol"}
+						{if condition="$vol.menu_id == 41"}
+						<li><a data-href="index/project/projectlist" data-title="项目列表" href="javascript:void(0)">项目列表</a></li>
 						{/if}
 						{/volist}
 					</ul>
@@ -101,8 +157,14 @@
 				<dd>
 					<ul>
 						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 22"}
-						<li><a data-href="index/chart/clockchart" data-title="打卡统计" href="javascript:void(0)">打卡统计</a></li>
+						{if condition="$vol.menu_id == 51"}
+						<li><a data-href="index/chart/userclockchart" data-title="会员打卡统计" href="javascript:void(0)">会员打卡统计</a></li>
+						{/if}
+						{/volist}
+
+						{volist name="$menuList" id="vol"}
+						{if condition="$vol.menu_id == 52"}
+						<li><a data-href="index/chart/coachclockchart" data-title="教练打卡统计" href="javascript:void(0)">教练打卡统计</a></li>
 						{/if}
 						{/volist}
 					</ul>
@@ -112,83 +174,20 @@
 			{/volist}
 
 			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 9"}
-			<dl id="menu-course">
-				<dt><i class="Hui-iconfont">&#xe616;</i>课程管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-				<dd>
-					<ul>
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 12"}
-						<li><a data-href="index/course/courselist" data-title="课程管理" href="javascript:void(0)">课程管理</a></li>
-						{/if}
-						{/volist}
-
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 20"}
-						<li><a data-href="index/course/classlist" data-title="班级管理" href="javascript:void(0)">班级管理</a></li>
-						{/if}
-						{/volist}
-					</ul>
-				</dd>
-			</dl>
-			{/if}
-			{/volist}
-
-			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 19"}
-			<dl id="menu-user">
-				<dt><i class="Hui-iconfont">&#xe60d;</i>用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-				<dd>
-					<ul>
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 6"}
-						<li><a data-href="index/system/userprofile" data-title="会员列表" href="javascript:void(0)">会员列表</a></li>
-						{/if}
-						{/volist}
-
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 11"}
-						<li><a data-href="index/course/teacher" data-title="教练列表" href="javascript:void(0)">教练列表</a></li>
-						{/if}
-						{/volist}
-					</ul>
-				</dd>
-			</dl>
-			{/if}
-			{/volist}
-
-			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 13"}
+			{if condition="$vol.menu_id == 6"}
 			<dl id="menu-message">
-				<dt><i class="Hui-iconfont">&#xe613;</i>消息管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+				<dt><i class="Hui-iconfont">&#xe613;</i> 消息管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
 						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 14"}
-						<li><a data-href="index/msg/tomsg" data-title="公告信息" href="javascript:void(0)">公告信息</a></li>
+						{if condition="$vol.menu_id == 61"}
+						<li><a data-href="index/msg/notice" data-title="公告列表" href="javascript:void(0)">公告列表</a></li>
 						{/if}
 						{/volist}
 
 						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 15"}
-						<li><a data-href="index/msg/pushmsg" data-title="推送信息" href="javascript:void(0)">推送信息</a></li>
-						{/if}
-						{/volist}
-					</ul>
-				</dd>
-			</dl>
-			{/if}
-			{/volist}
-
-			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 16"}
-			<dl id="menu-clause">
-				<dt><i class="Hui-iconfont">&#xe692;</i> 用户协议<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-				<dd>
-					<ul>
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 17"}
-						<li><a data-href="index/system/clause" data-title="用户协议" href="javascript:void(0)">用户协议</a></li>
+						{if condition="$vol.menu_id == 62"}
+						<li><a data-href="index/msg/notification" data-title="推送列表" href="javascript:void(0)">推送列表</a></li>
 						{/if}
 						{/volist}
 					</ul>
@@ -204,7 +203,7 @@
 			<div class="Hui-tabNav-wp">
 				<ul id="min_title_list" class="acrossTab cl">
 					<li class="active">
-						<span title="我的桌面" data-href="index/index/welcome.html">我的桌面</span>
+						<span title="系统首页" data-href="index/index/welcome.html">系统首页</span>
 						<em></em></li>
 				</ul>
 			</div>
@@ -240,21 +239,21 @@
 							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
 							<div class="formControls col-xs-8 col-sm-9">
 								<input style="width: 200px;" type="password" class="input-text valid" autocomplete="off" value="" placeholder="密码"
-								 id="password" name="password">
+								 id="pwd" name="pwd">
 							</div>
 						</div>
 						<div class="row cl" style="margin-left: 60px;">
 							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>新密码：</label>
 							<div class="formControls col-xs-8 col-sm-9">
-								<input style="width: 200px;" type="password" class="input-text valid" autocomplete="off" placeholder="新密码" id="password1"
-								 name="password1">
+								<input style="width: 200px;" type="password" class="input-text valid" autocomplete="off" placeholder="新密码" id="pwd1"
+								 name="pwd1">
 							</div>
 						</div>
 						<div class="row cl" style="margin-left: 60px;">
 							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
 							<div class="formControls col-xs-8 col-sm-9">
-								<input style="width: 200px;" type="password" class="input-text valid" autocomplete="off" placeholder="确认新密码" id="password2"
-								 name="password2">
+								<input style="width: 200px;" type="password" class="input-text valid" autocomplete="off" placeholder="确认新密码" id="pwd2"
+								 name="pwd2">
 							</div>
 						</div>
 					</form>
