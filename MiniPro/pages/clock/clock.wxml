@@ -1,0 +1,23 @@
+<view class="container">
+
+  <!-- 打卡数据 -->
+  <view class='data-section'>
+    <view class='data-section-left'>
+      <text class='data-section-number'>1</text>
+      <text class='data-section-text'>累计打卡/天</text>
+    </view>
+    <view class='data-section-right'>
+      <text class='data-section-number'>0</text>
+      <text class='data-section-text'>连续打卡/天</text>
+    </view>
+  </view>
+  <!-- 打卡按钮 -->
+  <!-- <view class='clock-section' style="background-image: url('/images/bg-clock.png')"> -->
+  <view class='clock-section' style="background-image: url('https://xnps.up.maikoo.cn/bg-clock.png')">
+    <!-- <image class='clock-img' src='/images/bg-clock.png'></image> -->
+    <view class='clock-area'>
+      <text class='clock-area-text'>我要打卡</text>
+      <text class='clock-area-time'>{{timeStr}}</text>
+    </view>
+  </view>
+</view>

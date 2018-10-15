@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/style.css" />
+    <style>
+        .Hui-iconfont{
+            font-size: 20px;
+        }
+        .table-sort td{
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 课程管理 <span
+            class="c-gray en">&gt;</span> 课程详情</nav>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="l">
+            <span class="c-red">
+                {if condition="sizeof($detailData) == 0"}
+
+                {else /}
+                学生姓名：{$detailData[0]['username']}
+                {/if}
+            </span>
+        </span>
+    </div>
+    <div class="page-container">
+        <p class="text-c f-24"><strong>家长详情</strong></p>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg table-hover table-responsive">
+                <thead>
+                    <tr class="text-c">
+                        <th width="100">家长信息</th>
+                        <th width="60">家长姓名</th>
+                        <th width="60">家长性别</th>
+                        <th width="60">是否认证</th>
+                        <th width="60">认证时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if condition="sizeof($detailData) == 0"}
+
+                    {else /}
+
+                    {volist name="$detailData" id="vol"}
+                    <tr class="text-c">
+                        <td>
+                            {if condition = "$vol.avatar_url eq '' "}
+                            <span>无</span>
+                            {else/}
+                            <img src="{$vol.avatar_url}" width="50px" height="50px" style="border-radius: 50%;">
+                            <p>{$vol.nickname}</p>
+                            {/if}
+                        </td>
+                        <td>
+                            {if condition = "$vol.auth_name eq '' "}
+                            <span>无</span>
+                            {else/}
+                            {$vol.auth_name}
+                            {/if}
+                        </td>
+                        <td>
+                            {if condition = "$vol.auth_name eq '' "}
+                            <span>无</span>
+                            {else/}
+
+                            {if condition = "$vol.gender eq 1"}
+                            <span class="label label-success radius" style="background-color: dodgerblue">男</span>
+                            {elseif condition = "$vol.gender eq 0"}
+                            <span class="label label-defaunt radius" style="background-color: hotpink">女</span>
+                            {/if}
+
+                            {/if}
+                        </td>
+                        <td>
+                            {if condition = "$vol.auth_name eq '' "}
+                            <span class="label label-defaunt radius" title="未认证">未认证</span>
+                            {else/}
+                            <span class="label label-success radius" title="已认证">已认证</span>
+                            {/if}
+                        </td>
+                        <td>
+                            {if condition = "$vol.auth_name eq '' "}
+                            <span>无</span>
+                            {else/}
+                            <span>{:date('Y-m-d H:i', intval($vol.auth_at))}</span>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/volist}
+
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="page-container" style="margin-top: 20px;">
+        <p class="text-c f-24"><strong>班级详情</strong></p>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg table-hover table-responsive">
+                <thead>
+                    <tr class="text-c">
+                        <th width="100">ID</th>
+                        <th width="100">班级名称</th>
+                        <th width="100">班级教师</th>
+                        <th width="100">上课时间</th>
+                        <!-- <th width="30">科目</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {if condition="sizeof($userClass) == 0"}
+
+                    {else /}
+                    {volist name="$userClass" id="v"}
+                    <tr class="text-c">
+                        <td>{$v.class_id}</td>
+                        <td>{$v.class_name}</td>
+                        <td>{$v.teacher_name}</td>
+                        <td>{$v.class_day} {$v.class_time}</td>
+                    </tr>
+                    {/volist}
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="page-container" style="margin-top: 20px;">
+            <p class="text-c f-24"><strong>打卡详情</strong></p>
+            <span class="r" style="margin-top:5px;">共有打卡记录：<strong>{:count($userClock)}</strong> 条</span> </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                <thead>
+                    <tr class="text-c">
+                        <th width="100">打卡时间</th>
+                        <th width="100">打卡教师</th>
+                        <th width="100">打卡班级</th>
+                        <th width="100">打卡状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if condition="sizeof($userClock) == 0"}
+
+                    {else/}
+
+                    {volist name="$userClock" id="vol"}
+                    <tr class="text-c">
+                        <td>{$vol.clock_at}</td>
+                        <td>
+                            {if condition = "$vol.avatar_url eq '' "}
+                            <span>无头像</span>
+                            {else/}
+                            <img src="{$vol.avatar_url}" width="50px" height="50px" style="border-radius: 50%;">
+                            <p class="c-red lh-26">{$vol.teacher_name}</p>
+                            {/if}
+                        </td>
+                        <td>{$vol.class_name}</td>
+                        <td>
+                            {if condition = "$vol.clock_type eq 1"}
+                            <span class="label label-success radius">正常打卡</span>
+                            {elseif condition = "$vol.clock_type eq 2"}
+                            <span class="label label-warning radius">迟到</span>
+                            {elseif condition = "$vol.clock_type eq 3"}
+                            <span class="label label-danger radius">旷课</span>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/volist}
+                    {/if}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <footer class="footer mt-20">
+        <div class="container">
+            <p>Powered By 福建麦口信息科技有限公司</p>
+        </div>
+    </footer>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/static/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/static/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/static/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/static/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__ROOT__/static/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript" src="__ROOT__/static/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/static/lib/laypage/laypage.js"></script>
+    <script type="text/javascript" src="__ROOT__/static/js/userdetail.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="__ROOT__/public/static/lib/html5shiv.js"></script>
+        <script type="text/javascript" src="__ROOT__/public/static/lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/style.css" />
+    <style>
+        .Hui-iconfont{
+            font-size: 15px;
+        }
+        #couponlist td{
+            text-align: center;
+        }
+        .couponlist-span{
+            display:block;
+        }
+        .span_one{
+            color:purple;
+        }
+        .span_two{
+            color:gray;
+        }
+    </style>
+    <title>教师管理</title>
+    </head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 课程管理 <span class="c-gray en">&gt;</span> 教师管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="l">
+            <a class="btn btn-primary radius"  onclick="add_teacher()" href="javascript:;">
+                <i class="Hui-iconfont">&#xe600;</i>
+                添加教师
+            </a>
+            <a href="javascript:;" onClick="excel_download()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe641;</i> 下载excel模板</a> 
+            <span class="btn-upload">
+            <a href="javascript:void();" class="btn btn-primary radius btn-upload"><i class="Hui-iconfont">&#xe642;</i> 上传excel</a>
+            <input type="file" name="ecxel" class="input-file" id="excel" accept=".xlsx" />
+            </span>
+        </span>
+        <span class="r">
+            共有数据：
+            <strong>{:sizeof($data)}</strong>
+            条
+        </span>
+    </div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-hover table-bg table-sort">
+            <thead>
+            <tr class="text-c">
+                <th width="15">ID</th>
+                <th width="30">教师名称</th>
+                <th width="15">性别</th>
+                <th width="30">手机号码</th>
+                <th width="30">生日日期</th>
+                <th width="50">所带班级</th>
+                <th width="30">状态</th>
+                <th width="20">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+                {if condition="sizeof($data) == 0"}
+
+                {else /}
+                {foreach name="$data" key="k" item="v"}
+                <tr class="text-c">
+                    <td>{$v.teacher_id}</td>  
+                    <td>{$v.teacher_name}</td>
+                    <td>
+                        {if condition="$v.teacher_gender eq 0"}
+                        <span class="label label-defaunt radius" style="background-color: hotpink">女</span>
+                        {else/}
+                        <span class="label label-success radius" style="background-color: dodgerblue">男</span>
+                        {/if}
+                    </td>
+                    <td>{$v.teacher_phone}</td>
+                    <td>{$v.teacher_birth}</td>
+                    <td>
+                        {foreach name="$v['teacher_class']" key="ke" item="va"}
+                        <p style="margin: 0;">{$va}</p>
+                        {/foreach}
+                    </td>
+                    <td class="td-status">
+                        {if condition="$v.status eq 1"}
+                            <span class="label label-defaunt radius">未认证</span>
+                        {elseif condition="$v.status eq 2"}
+                            <span class="label label-success radius" onClick="teacher_stop(this,'{$v.teacher_id}');" style="cursor: pointer;">在职</span>
+                        {elseif condition="$v.status eq 3"}
+                            <span class="label label-defaunt radius" onClick="teacher_restart(this,'{$v.teacher_id}');" style="cursor: pointer;">已离职</span>
+                        {/if}
+                    </td>
+                    <td class="td-manage">
+                        <a style="text-decoration:none" class="ml-5" onclick="edit_teacher('{$v.teacher_id}')" href="javascript:;" title="修改"><i class="Hui-iconfont">&#xe60c;</i>
+                        </a>
+                        <!-- <a style="text-decoration:none" class="ml-5" onClick="teacher_detail('{$v.teacher_id}')" href="javascript:;" title="教师详情"><i class="Hui-iconfont">&#xe715;</i></a> -->
+                        <a style="text-decoration:none" class="ml-5" onclick="teacher_del(this,'{$v.teacher_id}')" href="javascript:;" title="删除">   <i class="Hui-iconfont">&#xe6e2;</i>
+                        </a>
+                    </td>
+                </tr>
+                {/foreach}
+                {/if}
+            </tbody>
+        </table>
+    </div>
+</div>
+<footer class="footer mt-20">
+    <div class="container">
+    <p>Powered By 福建麦口信息科技有限公司</p>  
+    </div>
+</footer>
+</body>
+</html>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__ROOT__/static/lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/h-ui.admin/js/H-ui.admin.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__ROOT__/static/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="__ROOT__/static/js/teacher.js"></script>

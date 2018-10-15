@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="__ROOT__/public/static/lib/html5shiv.js"></script>
+    <script type="text/javascript" src="__ROOT__/public/static/lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/style.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="static/css/demo.css" /> -->
+    <!--[if IE 6]>
+    <script type="text/javascript" src="__ROOT__/public/static/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <style>
+        .Hui-iconfont{
+            font-size: 15px;
+        }
+    </style>
+    <title>科目管理</title>
+</head>
+<body>
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 课程管理 <span class="c-gray en">&gt;</span> 科目管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div class="cl pd-5 bg-1 bk-gray mt-20">
+            <span class="l">
+                <a class="btn btn-primary radius"  onclick="subject_public('/index/course/addsubject')" href="javascript:;">
+                    <i class="Hui-iconfont">&#xe600;</i>
+                    添加科目
+                </a>
+            </span>
+            <span class="r" style="margin-top:5px;">
+                共有数据：
+                <strong>
+                    {:count($data)}
+                </strong>
+                条
+            </span> 
+        </div>
+    	<div class="mt-20">
+            <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                <thead>
+                <tr class="text-c">
+                    <th width="30">ID</th>
+                    <th width="50">科目名称</th>
+                    <th width="50">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                	{if condition="count($data) == 0"}
+                
+                	{else /}
+                	{foreach name="data" key="k" item="v"}
+                	<tr class="text-c">
+    	                <td>{$v.subject_id}</td>
+    	                <td>{$v.subject_name}</td>
+    	                <td class="f-14 td-manage">
+    	                    <a style="text-decoration:none" class="ml-5" onclick="subject_public('/index/course/editsubject','{$v.subject_id}',this)" href="javascript:;" title="修改">	<i class="Hui-iconfont">&#xe60c;</i>
+    	                    </a>
+    	                    <a style="text-decoration:none" class="ml-5" onclick="subject_delete(this,'{$v.subject_id}')" href="javascript:;" title="删除">	<i class="Hui-iconfont">&#xe6e2;</i>
+    	                    </a>
+    	                </td>
+    	            </tr>
+                	{/foreach}
+                	{/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="modal-demotwo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <span>添加科目</span>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+                </div>
+                <div class="modal-body">
+                    <!-- <p>对话框内容…</p> -->
+                    <form action="" method="post" class="form form-horizontal" id="form-public">
+                        <div class="row cl active merchantlist-div" id="pause_reason_div">
+                            <label class="form-label col-xs-4 col-sm-3">
+                                <span class="c-red">*</span>
+                                科目名称：
+                            </label>
+                            <div class="formControls col-xs-6 col-sm-6">
+                                <input style="width: 200px;" type="text" class="input-text valid" autocomplete="off" id="subject_name" value="" placeholder="科目名称" name="subject_name" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="change" class="btn btn-primary" onclick="subjectSendChange()">确定</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	<footer class="footer mt-20">
+		<div class="container">
+			<p>Powered By 福建麦口信息科技有限公司</p>  
+		</div>
+	</footer>
+</body>
+</html>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__ROOT__/static/lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/h-ui.admin/js/H-ui.admin.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__ROOT__/static/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="__ROOT__/static/js/subject.js"></script>

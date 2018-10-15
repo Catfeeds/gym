@@ -82,11 +82,20 @@ Page({
   },
 
   /**
+   * 跳转到通用展示界面
+   */
+  navToCommonshow: function(){
+    wx.navigateTo({
+      url: '/pages/commonshow/commonshow?scene=1',
+    })
+  },
+
+  /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
     return {
-      title: app.globalData.setting.share_text || 'Reshape带你重塑身形~',
+      title: app.globalData.setting.share_text || 'Reshape带你重塑形体~',
       path: '/pages/index/index'
     }
   },

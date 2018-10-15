@@ -1,10 +1,12 @@
 <view class="container">
 
   <!-- 视频展示区 -->
-
+  <video id="myVideo" src="{{src}}" controls autoplay="true" page-gesture="true" class='video-class' wx:if="{{isHaveVideo}}"></video>
   <!-- 视频展示区结束 -->
 
   <!-- 图片展示区 -->
-
+  <block wx:for="{{imgsec}}" wx:key="">
+    <image src='{{item}}' class='image-class' mode='widthFix'></image>
+  </block>
   <!-- 图片展示区结束 -->
 </view>

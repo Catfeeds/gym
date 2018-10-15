@@ -4,14 +4,14 @@
     "pages/userauth/userauth",
     "pages/message/message",
     "pages/messagedetail/messagedetail",
-    "pages/myclock/myclock",
     "pages/clause/clause",
     "pages/feedback/feedback",
     "pages/sendfeedback/sendfeedback",
     "pages/userinfo/userinfo",
     "pages/storeinfo/storeinfo",
     "pages/my/my",
-    "pages/commonshow/commonshow"
+    "pages/commonshow/commonshow",
+    "pages/clock/clock"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -32,10 +32,10 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/storeinfo/storeinfo",
+        "pagePath": "pages/clock/clock",
         "iconPath": "images/clock.png",
         "selectedIconPath": "images/clock-select.png",
-        "text": "活动"
+        "text": "打卡"
       },
       {
         "pagePath": "pages/my/my",

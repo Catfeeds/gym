@@ -1,0 +1,63 @@
+page {
+  background: #f8f8f8;
+}
+
+/* 打卡数据 */
+
+.data-section {
+  height: 300rpx;
+  width: 90%;
+  margin: 60rpx 60rpx 0;
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.data-section-left, .data-section-right {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+  color: #7e68a9;
+}
+
+.data-section-number {
+  font-size: 100rpx;
+}
+
+.data-section-text {
+  font-size: 30rpx;
+}
+
+/* clock */
+
+.clock-section {
+  width: 380rpx;
+  height: 380rpx;
+  margin-top: 50rpx;
+  background-size: 380rpx 380rpx;
+  /* background-position: 0 12rpx; */
+}
+
+.clock-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 380rpx;
+  width: 380rpx;
+}
+
+.clock-area-text {
+  color: #fefeff;
+  font-size: 36rpx;
+  font-weight: 500;
+}
+
+.clock-area-time {
+  color: #e8dff4;
+  font-size: 32rpx;
+  margin-top: 24rpx;
+}

@@ -33,12 +33,24 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 2,
 			"list": [
 				{
 					"id": 0,
 					"name": "我的",
 					"pathName": "pages/my/my",
+					"query": ""
+				},
+				{
+					"id": 1,
+					"name": "通用展示界面",
+					"pathName": "pages/commonshow/commonshow",
+					"query": "scene=1"
+				},
+				{
+					"id": -1,
+					"name": "打卡",
+					"pathName": "pages/clock/clock",
 					"query": ""
 				}
 			]

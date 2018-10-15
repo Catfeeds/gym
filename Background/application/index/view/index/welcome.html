@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/Hui-iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/style.css" />
+    <style>
+        .todaycontainer{
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        margin: 0 10%;
+        width: 70%;
+        margin-top: 30px;
+    }
+    .today{
+        display: flex;
+        flex-direction: row;
+        background: white;
+        margin-left: 5%;
+        margin-bottom: 15px;
+    }
+    .toda-border{
+        border: 1px solid gainsboro;
+        padding: 10px;
+    }
+    .today-item{
+        width: 48%;
+        align-items: center;
+        height: 200px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+    }
+    .item-border,.block-border{
+        border: 1px solid gainsboro;
+    }
+    .block-width{
+        width: 100%;
+    }
+    .today-item-block{
+        height: 50%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .block-border-bottom{
+        margin-top: 2%;
+    }
+    .today-margin{
+        margin-left: 5%;
+    }
+    .today-item img{
+        height: 40px;
+        margin-right: 20px;
+    }
+    .today-middle img{
+        height: 40px;
+    }
+    .tk-left{
+        width: 30%;
+        text-align: right;
+    }
+    .tk-right{
+        padding-left: 5%;
+    }
+    .today-header{
+        line-height: 30px;
+        font-size: 15px;
+        color: #333;
+        margin-left: 5%;
+        vertical-align: middle;
+        background: #e8e8e8;
+        /* border: 1px solid gainsboro; */
+        border-top: 1px solid gainsboro;
+        border-left: 1px solid gainsboro;
+        border-right: 1px solid gainsboro;
+        padding-left: 15px;
+    }
+    .user-half{
+        width: 49%;
+        display: flex;
+        flex-direction: column;
+        height: 200px;
+        border: 1px solid gainsboro;
+    }
+   .user-half-margin{
+        margin-right: 2%;
+    }
+    .user-head{
+        display: flex;
+        flex-direction: row;
+        height: 40px;
+        border-bottom: 1px solid gainsboro;
+        margin: 0 2%;
+    }
+    .user-head span{
+        line-height: 40px;
+    }
+    .head-img{
+        width: 7%;
+        padding-left: 1%;
+        text-align: left;
+    }
+    .head-title{
+        width: 43%;
+        text-align: left;
+    }
+    .user-head img{
+        height: 26px;
+        margin-top: 7px;
+    }
+    .head-danwei{
+        width: 50%;
+        text-align: right;
+        padding-right: 1%;
+    }
+    .user-content{
+        display: flex;
+        flex-direction: row;
+        height: 160px;
+        align-items: center;
+        text-align: center;
+    }
+    .user-content-item{
+        width: 25%;
+        display: flex;
+        flex-direction: column;
+    }
+    .user-content-item span{
+        margin: 15px 0;
+    }
+    .tx-content-item{
+        display: flex;
+        flex-direction: column;
+        width: 34%;
+        margin: 0 8%;
+        line-height: 50px;
+    }
+    .tx-item{
+        display: flex;
+        flex-direction: row;
+    }
+    .tx-item-content{
+        width: 50%;
+        color: #666;
+    }
+</style>
+
+    <title>系统首页</title>
+</head>
+
+<body>
+    <!-- <p class="f-20 text-success"> <span class="f-14"></span>欢迎登陆小程序后台！</p> -->
+    <div class="todaycontainer">
+        <div class="today-header"><span>用户信息</span></div>
+        <div class="today toda-border">
+            <div class="user-half user-half-margin">
+                <div class="user-head">
+                    <div class="head-img">
+                        <img src="__ROOT__/static/img/welcome/hyxx.png" alt="会员信息">
+                    </div>
+                    <div class="head-title">
+                        <span>学员信息</span>
+                    </div>
+                    <div class="head-danwei">
+                        <span>单位（人）</span>
+                    </div>
+                </div>
+                <div class="user-content">
+                    <div class="user-content-item">
+                        <span>{$userCal['today_auth']}</span>
+                        <span>今日认证</span>
+                    </div>
+                    <div class="user-content-item">
+                        <span>{$userCal['not_auth']}</span>
+                        <span>总未认证</span>
+                    </div>
+                    <div class="user-content-item">
+                        <span>{$userCal['al_auth']}</span>
+                        <span>总已认证</span>
+                    </div>
+                    <div class="user-content-item">
+                        <span>{$userCal['total']}</span>
+                        <span>学员总数</span>
+                    </div>
+                </div>
+            </div>
+            <div class="user-half">
+                <div class="user-head">
+                    <div class="head-img">
+                        <img src="__ROOT__/static/img/welcome/hyxx.png" alt="会员信息">
+                    </div>
+                    <div class="head-title">
+                        <span>教师信息</span>
+                    </div>
+                    <div class="head-danwei">
+                        <span>单位（人）</span>
+                    </div>
+                </div>
+                <div class="user-content">
+                    <div class="user-content-item">
+                        <span>{$teacherCal['today_auth']}</span>
+                        <span>今日认证</span>
+                    </div>
+                    <div class="user-content-item">
+                        <span>{$teacherCal['not_auth']}</span>
+                        <span>总未认证</span>
+                    </div>
+                    <div class="user-content-item">
+                        <span>{$teacherCal['al_auth']}</span>
+                        <span>总已认证</span>
+                    </div>
+                    <div class="user-content-item">
+                        <span>{$teacherCal['total']}</span>
+                        <span>教师总数</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-20">
+        <div class="container">
+            <p>Powered By 福建麦口信息科技有限公司</p>
+        </div>
+    </footer>
+    <script type="text/javascript" src="__ROOT__/static/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/static/lib/h-ui/js/H-ui.min.js"></script>
+</body>
+
+</html>

@@ -12,13 +12,13 @@
   </view>
   <!-- 项目列表 -->
   <view class='project-list'>
-    <view class='project-item img-container'>
+    <view class='project-item img-container' bindtap='navToCommonshow'>
       <image src='/images/test.jpg'></image>
     </view>
-    <view class='project-item img-container'>
+    <view class='project-item img-container' bindtap='navToCommonshow'>
       <image src='/images/test.jpg'></image>
     </view>
-    <view class='project-item img-container'>
+    <view class='project-item img-container' bindtap='navToCommonshow'>
       <image src='/images/test.jpg'></image>
     </view>
   </view>

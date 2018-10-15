@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+            <meta content="webkit|ie-comp|ie-stand" name="renderer">
+                <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+                    <meta content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport"/>
+                    <meta content="no-siteapp" http-equiv="Cache-Control"/>
+                    <!--[if lt IE 9]>
+    <script type="text/javascript" src="__ROOT__/public/static/lib/html5shiv.js"></script>
+    <script type="text/javascript" src="__ROOT__/public/static/lib/respond.min.js"></script>
+    <![endif]-->
+                    <link href="__ROOT__/static/lib/h-ui/css/H-ui.min.css" rel="stylesheet" type="text/css"/>
+                    <link href="__ROOT__/static/lib/h-ui.admin/css/H-ui.admin.css" rel="stylesheet" type="text/css"/>
+                    <link href="__ROOT__/static/lib/Hui-iconfont/1.0.8/iconfont.css" rel="stylesheet" type="text/css"/>
+                    <link href="__ROOT__/static/lib/h-ui.admin/skin/default/skin.css" id="skin" rel="stylesheet" type="text/css"/>
+                    <link href="__ROOT__/static/lib/h-ui.admin/css/style.css" rel="stylesheet" type="text/css"/>
+                    <!-- <link rel="stylesheet" type="text/css" href="static/css/demo.css" /> -->
+                    <!--[if IE 6]>
+    <script type="text/javascript" src="__ROOT__/public/static/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+                    <style>
+                        .Hui-iconfont{
+            font-size: 20px;
+        }
+                    </style>
+                    <title>
+                        课程班级信息
+                    </title>
+                </meta>
+            </meta>
+        </meta>
+    </head>
+    <body>
+        <!-- <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 课程管理 <span class="c-gray en">&gt;</span> 课程详情 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav> -->
+        <div class="page-container">
+            <div class="cl pd-5 bg-1 bk-gray mt-20">
+                <span class="l">
+                    <!-- <a class="btn btn-primary radius"  onclick="course_add()" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加课程信息</a> -->
+                </span>
+                <span class="r" style="margin-top:5px;">
+                    共有数据：
+                    <strong>
+                        {:count($courseClassData)}
+                    </strong>
+                    条
+                </span>
+            </div>
+            <div class="mt-20">
+                <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                    <thead>
+                        <tr class="text-c">
+                            <th width="30">
+                                ID
+                            </th>
+                            <th width="50">
+                                班级名称
+                            </th>
+                            <th width="50">
+                                班级人数
+                            </th>
+                            <th width="100">
+                                上课时间
+                            </th>
+                            <th width="100">
+                                教师信息
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            {if condition="sizeof($courseClassData) == 0"}
+            
+            {else /}
+
+            {volist name="$courseClassData" id="vol"}
+                <tr class="text-c">
+                    <td>
+                        {$vol.class_id}
+                    </td>
+                    <td>
+                        {$vol.class_name}
+                    </td>
+                    <td>
+                        {$vol.class_stu_num} 人
+                    </td>
+                    <td>
+                        {$vol.class_day} {$vol.class_time}
+                    </td>
+                    <td>
+                        {if condition = "$vol.avatar_url eq '' "}
+                        <span>无</span>
+                        {else/}
+                        <img src="{$vol.avatar_url}" width="50px" height="50px" style="border-radius: 50%;">
+                        <p>{$vol.teacher_name}</p>
+                        {/if}
+                        {if condition = "$vol.teacher_status eq 3"}
+                            <span class="c-danger">（已离职）</span>
+                        {elseif condition = "$vol.teacher_status eq 2"}
+                            <span class="c-green">（在职）</span>
+                        {/if}                                      
+                    </td>
+                </tr>
+            {/volist}
+
+            {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer class="footer mt-20">
+            <div class="container">
+                <p>
+                    Powered By 福建麦口信息科技有限公司
+                </p>
+            </div>
+        </footer>
+        <!--_footer 作为公共模版分离出去-->
+        <script src="__ROOT__/static/lib/jquery/jquery.min.js" type="text/javascript">
+        </script>
+        <script src="__ROOT__/static/lib/layer/2.4/layer.js" type="text/javascript">
+        </script>
+        <script src="__ROOT__/static/lib/h-ui/js/H-ui.min.js" type="text/javascript">
+        </script>
+        <script src="__ROOT__/static/lib/h-ui.admin/js/H-ui.admin.js" type="text/javascript">
+        </script>
+        <!--/_footer 作为公共模版分离出去-->
+        <!--请在下方写此页面业务相关的脚本-->
+        <script src="__ROOT__/static/lib/My97DatePicker/4.8/WdatePicker.js" type="text/javascript">
+        </script>
+        <script src="__ROOT__/static/lib/datatables/1.10.16/jquery.dataTables.min.js" type="text/javascript">
+        </script>
+        <script src="__ROOT__/static/lib/laypage/laypage.js" type="text/javascript">
+        </script>
+        <script type="text/javascript" src="__ROOT__/static/js/coursedetail.js"></script> 
+    </body>
+</html>

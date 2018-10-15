@@ -6,5 +6,4 @@ use think\Model;
 class Mini_setting extends Model
 {
 
-
 }

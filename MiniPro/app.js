@@ -20,9 +20,9 @@ App({
     })
 
     // 用户登陆记录本地存储
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
+    // var logs = wx.getStorageSync('logs') || []
+    // logs.unshift(Date.now())
+    // wx.setStorageSync('logs', logs)
   },
 
   /**
@@ -67,7 +67,7 @@ App({
    * 全局变量
    */
   globalData: {
-    siteroot: 'https://art.up.maikoo.cn/mini/'
+    siteroot: 'https://test.kekexunxun.com/mini/'
   }
 
 })

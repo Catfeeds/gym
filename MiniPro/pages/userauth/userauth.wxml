@@ -3,9 +3,9 @@
     <view class='pro-img'>
       <image src='/images/logo.jpg'></image>
     </view>
-    <view class='title'>吸铁石美术兄弟小程序</view>
+    <view class='title'>Reshape重塑形体</view>
   </view>
-  <view class='explain'>吸铁石美术兄弟小程序需要使用您授权使用微信相关信息，请您在阅读《用户协议》并确认授权后，方可正常使用该小程序相关功能。</view>
+  <view class='explain'>『Reshape重塑形体』小程序需要使用您授权使用微信相关信息，请您在阅读《用户协议》并确认授权后，方可正常使用该小程序相关功能。</view>
   <view class='line'></view>
   <view class='explain explain-title'>该程序将获取以下授权：</view>
   <view class='explain explain-detail'> · 获得您的公开信息（昵称、头像等）</view>

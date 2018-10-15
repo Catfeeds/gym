@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="__ROOT__/public/static/lib/html5shiv.js"></script>
+    <script type="text/javascript" src="__ROOT__/public/static/lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/style.css" />
+    <!--[if IE 6]>
+    <script type="text/javascript" src="__ROOT__/public/static/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>banner管理</title> 
+    <style>
+    .Hui-iconfont{
+        font-size: 15px;
+    }
+    </style>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统管理<span class="c-gray en">&gt;</span> banner管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+
+<div class="page-container">
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <a href="javascript:;" onclick="banner_add('添加banner','banneradd.html')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加banner</a></span> <span class="r">共有数据：<strong>{:sizeof($bannerData)}</strong> 条</span> </div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-hover table-bg table-sort">
+            <thead>
+            <tr class="text-c">
+                <th width="30">ID</th>
+                <th width="100">Banner图片</th>
+                <th width="50">排序</th>
+                <th width="50">是否展示</th>    
+                <th width="50">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {if condition="sizeof($bannerData) == 0"}
+            {else /}
+            {volist name="$bannerData" id="vol"}
+            <tr class="text-c">
+                <td>{$vol.banner_id}</td>
+                <td>
+                    {if condition = "$vol.img eq '' "}
+                    <span>无</span>
+                    {else/}
+                    <img src="{$vol.img}" width="200px" height="100px">
+                    {/if}
+                </td> 
+                <td>{$vol.sort}</td>
+                <td class="td-status">
+                {if condition = "$vol.status eq 1 "}
+                <span class="label label-defaunt radius" title="不展示" onClick="banner_start(this,'{$vol.banner_id}');" style="cursor: pointer;">不展示</span>
+                {elseif condition = "$vol.status eq 2" /}
+                <span class="label label-success radius" title="展示" onClick="banner_stop(this,'{$vol.banner_id}');" style="cursor: pointer;">已展示</span>
+                {/if}
+                </td>
+                <td class="td-manage">
+                    <a style="text-decoration:none" onclick="banner_edit('{$vol.banner_id}')" href="javascript:;" title="修改"><i class="Hui-iconfont">&#xe60c;</i></a>
+                    <a style="text-decoration:none"  href="javascript:;" onClick="banner_del(this,'{$vol.banner_id}');" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                </td>
+            {/volist}
+            {/if}
+            </tbody>
+        </table>
+    </div>
+</div>
+    <div id="modal-demotwo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <span>修改排序</span>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+                </div>
+                <div class="modal-body">
+                    <!-- <p>对话框内容…</p> -->
+                    <form action="" method="post" class="form form-horizontal" id="form-public">
+                        <input type="hidden" id="sort_id" name="sort_id">
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">
+                                <span class="c-red">*</span>
+                                新排序：
+                            </label>
+                            <div class="formControls col-xs-6 col-sm-6">
+                                <input style="width: 200px;" type="text" class="input-text valid" autocomplete="off" id="banner_sort" value="" placeholder="banner排序" name="subject_name" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="change" class="btn btn-primary" onclick="banner_sort_edit()">确定</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__ROOT__/static/lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__ROOT__/static/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__ROOT__/static/lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="__ROOT__/static/js/bannerlist.js"></script>
+</body>
+</html>

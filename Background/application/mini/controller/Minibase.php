@@ -145,6 +145,40 @@ class Minibase extends Controller
         return objReturn(0, 'success', $setting);
     }
 
+    /**
+     * 获取 关于我们 界面的相关数据
+     *
+     * @return void
+     */
+    public function getAboutUs()
+    {
+        $uid = request()->param('uid');
+        $aboutUs = Db::name('mini_setting')->where('setting_id', 1)->field('about_us, about_us_video')->find();
+        if (!$aboutUs) {
+            return objReturn(401, 'No About');
+        }
+        // 对aboutus 进行简单处理
+        if (!empty($aboutUs['about_us'])) {
+            $imgArrTemp = explode(',', $aboutUs['about_us']);
+            $imgSort = [];
+            $imgArr = [];
+            foreach ($imgArrTemp as $k => $v) {
+                $temp = explode(':', $v);
+                $imgArr[] = $v[0];
+                $imgSort[] = $v[1];
+            }
+            if (count($imgSort) > 1) {
+                array_multisort($imgSort, SORT_ASC, SORT_NUMERIC, $imgArr);
+            }
+            $aboutUs['about_us'] = $imgArr;
+        }
+        // 视频前加url处理
+        if (!empty($aboutUs['about_us_video'])) {
+            $aboutUs['about_us_video'] = config('SITEROOT') . $aboutUs['about_us_video'];
+        }
+        return objReturn(0, 'success', $aboutUs);
+    }
+
 
 
 }
