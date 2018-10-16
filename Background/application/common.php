@@ -8,8 +8,9 @@ use app\index\model\User;
 use app\index\model\Banner;
 use app\index\model\Feedback;
 use app\index\model\Admin;
-use app\index\model\Teacher;
 use app\index\model\Coach;
+use app\index\model\Clock;
+use app\index\model\Clock_count;
 
 /**
  * 通过用户ID获取用户相关信息
@@ -172,42 +173,55 @@ function getBanner($isAll = true)
 
 /**
  * 获取打卡列表
- * 可通过courseId获取制定课程的用户打卡记录
  * 或通过uid获取用户的所有打卡记录
  *
  * @param int $uid 用户ID
- * @param int $classId 班级ID
+ * @param int $userType 用户类别 1 会员 2 教练
+ * @param int $status 打卡记录的状态 1 正常 2 删除
  * @return void
  */
-function getClockList($uid = null, $classId = null, $pageNum = null)
+function getClockList($uid, $userType = 1, $pageNum = null, $status = 1)
 {
     $limit = isset($pageNum) ? $pageNum * 10 . ', 10' : '';
-    $user_clock = new User_clock;
-    if (isset($uid) && isset($courseId)) {
-        $clockList = $user_clock->alias('u')->join('art_classes c', 'u.class_id = c.class_id', 'LEFT')->join('art_teacher t', 'u.clock_by = t.teacher_id', 'LEFT')->field('u.idx, u.uid, u.class_id, u.clock_at, u.clock_type, u.clock_by, c.class_name, t.teacher_name, t.avatar_url')->where('u.uid', $uid)->where('u.class_id', $courseId)->limit($limit)->order('u.clock_at desc')->select();
-    } else if (isset($uid) && !isset($courseId)) {
-        $clockList = $user_clock->alias('u')->join('art_classes c', 'u.class_id = c.class_id', 'LEFT')->join('art_teacher t', 'u.clock_by = t.teacher_id', 'LEFT')->field('u.idx, u.uid, u.class_id, u.clock_at, u.clock_type, u.clock_by, c.class_name, t.teacher_name, t.avatar_url')->where('u.uid', $uid)->limit($limit)->order('u.clock_at desc')->select();
-    } else if (!isset($uid) && isset($courseId)) {
-        $clockList = $user_clock->alias('u')->join('art_classes c', 'u.class_id = c.class_id', 'LEFT')->join('art_teacher t', 'u.clock_by = t.teacher_id', 'LEFT')->field('u.idx, u.uid, u.class_id, u.clock_at, u.clock_type, u.clock_by, c.class_name, t.teacher_name, t.avatar_url')->where('u.class_id', $classId)->limit($limit)->order('u.clock_at desc')->select();
-    } else {
-        return null;
-    }
+    $status = !is_int($status) ? 1 : $status;
+    $clock = new Clock;
+    $clockList = $clock->where('user_type', $userType)->where('uid', $uid)->where('status', $status)->field('clock_id, clock_start_at, clock_start_location')->limit($limit)->select();
     if (!$clockList || count($clockList) == 0) return null;
     foreach ($clockList as &$info) {
-        switch ($info['clock_type']) {
-            case 1:
-                $info['clock_type_conv'] = '正常';
-                break;
-            case 2:
-                $info['clock_type_conv'] = '迟到';
-                break;
-            case 3:
-                $info['clock_type_conv'] = '旷课';
-                break;
-        }
-        $info['clock_at'] = date('Y-m-d H:i:s', $info['clock_at']);
+        $info['clock_start_at'] = date('Y-m-d H:i:s', $info['clock_start_at']);
     }
     return $clockList;
+}
+
+/**
+ * 获取用户打卡信息
+ * 1. 获取用户总共打卡记录
+ * 2. 获取用户累计打卡记录
+ *
+ * @param [type] $uid
+ * @param integer $userType
+ * @return void
+ */
+function getUserClockInfo($uid, $userType = 1)
+{
+    // 初始化data值
+    $res['clockCount'] = 0;
+    $res['nonStopClockCount'] = 0;
+    $clock_count = new Clock_count;
+    $clockCountList = $clock_count->where('uid', $uid)->where('user_type', $userType)->select();
+    // 没有打卡记录
+    if (!$clockCountList || count($clockCountList) == 0) {
+        return $res;
+    }
+    // 有打卡记录
+    $clockCountList = collection($clockCountList)->toArray();
+    foreach ($clockCountList as $k => $v) {
+        $res['clockCount'] += $v['non_stop_count'];
+        if ($v['status'] == 1) {
+            $res['nonStopClockCount'] = $v['non_stop_count'];
+        }
+    }
+    return $res;
 }
 
 /**

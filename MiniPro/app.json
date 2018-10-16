@@ -11,7 +11,8 @@
     "pages/storeinfo/storeinfo",
     "pages/my/my",
     "pages/commonshow/commonshow",
-    "pages/clock/clock"
+    "pages/clock/clock",
+    "pages/clocklist/clocklist"
   ],
   "window": {
     "backgroundTextStyle": "light",

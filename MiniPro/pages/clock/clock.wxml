@@ -3,11 +3,11 @@
   <!-- 打卡数据 -->
   <view class='data-section'>
     <view class='data-section-left'>
-      <text class='data-section-number'>1</text>
+      <text class='data-section-number'>{{clockCount}}</text>
       <text class='data-section-text'>累计打卡/天</text>
     </view>
     <view class='data-section-right'>
-      <text class='data-section-number'>0</text>
+      <text class='data-section-number'>{{nonStopClockCount}}</text>
       <text class='data-section-text'>连续打卡/天</text>
     </view>
   </view>

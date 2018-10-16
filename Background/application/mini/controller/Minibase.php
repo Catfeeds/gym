@@ -1,11 +1,4 @@
 <?php
-
-/**
- * 小程序商城
- * @author Locked
- * createtime 2018-05-03
- */
-
 namespace app\mini\controller;
 
 use think\Controller;
@@ -15,9 +8,9 @@ use think\Db;
 use think\Session;
 
 use app\index\model\User;
-use app\index\model\Banner;
 use app\index\model\Course;
 use app\index\model\Clause;
+use app\index\model\Banner;
 
 class Minibase extends Controller
 {

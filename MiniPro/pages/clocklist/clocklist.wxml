@@ -1,0 +1,22 @@
+<view class="container" wx:if="{{clocklist.length > 0}}">
+  <block wx:for="{{clocklist}}" wx:key="clock_id">
+    <view class='list-item'>
+      <view class='list-item-line'>
+        <text class='list-item-left'>打卡时间</text>
+        <text class='list-item-right'>{{item.clock_start_at}}</text>
+      </view>
+      <view class='list-item-line'>
+        <text class='list-item-left'>打卡地点</text>
+        <view class='list-item-right'>{{item.clock_start_location}}</view>
+      </view>
+      <view class='list-item-line'>
+        <text class='list-item-left'>运动时间</text>
+        <view class='list-item-right'>{{item.fit_time ? '45min' : item.fit_time}}</view>
+      </view>
+    </view>
+  </block>
+</view>
+<view class='nothing' wx:else>
+  <view>暂时还没有打卡记录哦</view>
+  <view>快去来一次酣畅淋漓的运动吧</view>
+</view>

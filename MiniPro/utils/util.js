@@ -82,8 +82,17 @@ const post = (url, data, timeout = 600) => {
           wx.hideLoading();
           if (res.statusCode == 200 && res.data.code == 0) {
             resolve(res.data.data);
+          } else if (res.data.code != 200) {
+            modalPromisified({
+              title: '系统提示',
+              content: '网络错误，请检查网络后重试',
+              showCancel: false
+            }).then(res => {
+              wx.navigateBack({
+                delta: 1
+              })
+            })
           } else { //返回错误提示信息
-            console.log(res)
             reject(res);
           }
         },
