@@ -126,14 +126,24 @@ function getBanner($isAll = true)
  * @param int $status 打卡记录的状态 1 正常 2 删除
  * @return void
  */
-function getClockList($uid, $userType = 1, $pageNum = null, $status = 1)
+function getClockList($uid, $userType = 1, $pageNum = null)
 {
     $limit = isset($pageNum) ? $pageNum * 10 . ', 10' : '';
-    $status = !is_int($status) ? 1 : $status;
     $clock = new Clock;
-    $clockList = $clock->where('user_type', $userType)->where('uid', $uid)->where('status', $status)->field('clock_id, clock_start_at, clock_start_location')->limit($limit)->select();
+    $clockList = $clock->alias('c')->join('gym_course gc', 'c.course_id = gc.course_id', 'LEFT')->where('c.user_type', $userType)->where('c.uid', $uid)->where('c.status', '<>', 3)->field('c.clock_id, c.clock_start_at, c.clock_start_location, c.clock_end_at, c.course_id, gc.course_name, gc.course_period')->limit($limit)->order('c.created_at desc')->select();
     if (!$clockList || count($clockList) == 0) return null;
     foreach ($clockList as &$info) {
+        if (!empty($info['clock_end_at'])) {
+            $fitTimeSec = $info['clock_end_at'] - $info['clock_start_at'];
+            $fitTimeMin = floor($fitTimeSec / 60);
+            $fitTimeSec = $fitTimeSec % 60;
+            $fitTime = $fitTimeMin . '分' . $fitTimeSec . '秒';
+            $info['clock_end_at'] = date('Y-m-d H:i:s', $info['clock_end_at']);
+        } else {
+            $info['clock_end_at'] = '暂未结束';
+            $fitTime = '暂未结束';
+        }
+        $info['fit_time'] = $fitTime;
         $info['clock_start_at'] = date('Y-m-d H:i:s', $info['clock_start_at']);
     }
     return $clockList;

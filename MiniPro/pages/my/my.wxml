@@ -12,7 +12,7 @@
       </view>
       <view class='item-desc'>我的课程</view>
     </view>
-    <view class='func-list-item'>
+    <view class='func-list-item' bindtap='navToClocklist'>
       <view class='item-image img-container'>
         <image src='/images/icon-clock.png'></image>
       </view>

@@ -29,7 +29,7 @@ Page({
       pageNum: that.data.pageNum
     }).then(res => {
       that.setData({
-        clocklist: that.data.clocklist.concat(res),
+        clocklist: res ? that.data.clocklist.concat(res) : [],
         pageNum: that.data.pageNum + 1
       })
     }).catch(res => {
@@ -58,10 +58,18 @@ Page({
    */
   showLocation: function(evt) {
     let location = evt.currentTarget.dataset.location;
+    if (!location) {
+      util.modalPromisified({
+        title: '系统提示',
+        content: '打卡地点为空',
+        showCancel: false
+      })
+      return;
+    }
     location = location.split(',');
     wx.openLocation({
-      latitude: location[0],
-      longitude: location[1],
+      latitude: parseFloat(location[0]),
+      longitude: parseFloat(location[1]),
     })
   },
 

@@ -28,6 +28,15 @@ Page({
   },
 
   /**
+   * 跳转到打卡列表
+   */
+  navToClocklist: function() {
+    wx.navigateTo({
+      url: '/pages/clocklist/clocklist',
+    })
+  },
+
+  /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function() {
