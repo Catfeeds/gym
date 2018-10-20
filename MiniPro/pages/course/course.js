@@ -4,33 +4,31 @@ var util = require('../../utils/util.js');
 Page({
 
   data: {
-    clocklist: [], // 打卡列表
+    courselist: [], // 打卡列表
     pageNum: 0, // 页码
   },
 
   onLoad: function() {
-    this.getClocklist();
+    this.getCourselist();
   },
 
   /**
    * 获取打卡列表
    */
-  getClocklist: function() {
+  getCourselist: function() {
     var that = this;
     wx.showLoading({
       title: '加载中',
       mask: 'true'
     })
-    util.post('clock/getClocklist', {
+    util.post('user/getCourse', {
       // uid: app.globalData.uid,
       uid: 1,
-      // userType: app.globalData.userType,
-      userType: 1,
       pageNum: that.data.pageNum
     }).then(res => {
       if (res) {
         that.setData({
-          clocklist: that.data.clocklist.concat(res || []),
+          courselist: that.data.courselist.concat(res || []),
           pageNum: that.data.pageNum + 1
         })
       } else if (that.data.pageNum != 0) {
@@ -57,41 +55,21 @@ Page({
   },
 
   /**
-   * 通过lat和lng 打开地图
-   */
-  showLocation: function(evt) {
-    let location = evt.currentTarget.dataset.location;
-    if (!location) {
-      util.modalPromisified({
-        title: '系统提示',
-        content: '打卡地点为空',
-        showCancel: false
-      })
-      return;
-    }
-    location = location.split(',');
-    wx.openLocation({
-      latitude: parseFloat(location[0]),
-      longitude: parseFloat(location[1]),
-    })
-  },
-
-  /**
    * 用户下拉刷新
    */
   onPullDownRefresh: function() {
     this.setData({
-      clocklist: [],
+      courselist: [],
       pageNum: 0,
     })
-    this.getClocklist();
+    this.getCourselist();
   },
 
   /**
    * 用户上拉加载
    */
   onReachBottom: function() {
-    this.getClocklist();
+    this.getCourselist();
   }
 
 })

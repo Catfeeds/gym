@@ -30,7 +30,16 @@ Page({
   /**
    * 跳转到打卡列表
    */
-  navToClocklist: function() {
+  navToCourse: function() {
+    wx.navigateTo({
+      url: '/pages/course/course',
+    })
+  },
+
+  /**
+   * 跳转到打卡列表
+   */
+  navToClock: function() {
     wx.navigateTo({
       url: '/pages/clocklist/clocklist',
     })

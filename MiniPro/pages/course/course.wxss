@@ -37,10 +37,6 @@ page {
   border-bottom: none;
 }
 
-.border-bottom {
-  border-bottom: 1rpx solid rgba(220, 220, 220, 0.6);
-}
-
 .list-item-left {
   width: 30%;
 }
@@ -50,5 +46,5 @@ page {
 }
 
 .location-text{
-  color: #cab9d7;
+  color: #3cc51f;
 }

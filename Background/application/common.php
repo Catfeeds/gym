@@ -149,6 +149,61 @@ function getClockList($uid, $userType = 1, $pageNum = null)
     return $clockList;
 }
 
+
+/**
+ * 通过用户ID获取用户相关信息
+ *
+ * @param int $uid 用户id
+ * @return array 用户信息详情
+ */
+function getUserInfoById($uid)
+{
+    // 获取用户信息
+    $user = new User;
+    $field = "uid, openid, user_name, user_gender, user_mobile, user_birth";
+    $userProfile = $user->field($field)->where('uid', $uid)->find();
+    // 数据简单处理
+    $userProfile['user_gender'] = $userProfile['user_gender'] == 1 ? '男' : '女';
+
+    return $userProfile;
+}
+
+/**
+ * 获取用户的课程ID
+ *
+ * @param int $uid 用户id
+ * @param int $pageNum 页码
+ * @return void
+ */
+function getCourseList($uid, $pageNum = null)
+{
+    $limit = isset($pageNum) ? $pageNum * 10 . ', 10' : '';
+    $user_course = new User_course;
+    $userCourseList = $user_course->alias('uc')->join('gym_course c', 'uc.course_id = c.course_id', 'LEFT')->where('uc.uid', $uid)->where('uc.status', '<>', 4)->field('uc.course_id, uc.course_left_times, uc.start_at, uc.end_at, uc.status, c.course_name, c.course_period')->limit($limit)->order('uc.created_at desc')->select();
+    if (!$userCourseList || count($userCourseList) == 0) {
+        return null;
+    }
+    foreach ($userCourseList as &$info) {
+        $info['start_at'] = date('Y-m-d H:i:s', $info['start_at']);
+        $info['end_at'] = date('Y-m-d H:i:s', $info['end_at']);
+        switch ($info['status']) {
+            case 1:
+                $info['status_conv'] = '正常';
+                break;
+            case 2:
+                $info['status_conv'] = '结束';
+                break;
+            case 3:
+                $info['status_conv'] = '超时结束';
+                break;
+            default:
+                $info['status_conv'] = '异常';
+                break;
+        }
+    }
+    return $userCourseList;
+}
+
 /**
  * 获取用户打卡信息
  * 1. 获取用户总共打卡记录

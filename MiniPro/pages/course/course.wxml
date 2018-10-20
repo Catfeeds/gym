@@ -1,0 +1,34 @@
+<view class="container" wx:if="{{courselist.length > 0}}">
+  <block wx:for="{{courselist}}" wx:key="clock_id">
+    <view class='list-item'>
+      <view class='list-item-line'>
+        <text class='list-item-left'>课程名称</text>
+        <text class='list-item-right'>{{item.course_name}}</text>
+      </view>
+      <view class='list-item-line'>
+        <text class='list-item-left'>课程周期</text>
+        <text class='list-item-right'>{{item.course_period + '分钟/课时'}}</text>
+      </view>
+      <view class='list-item-line'>
+        <text class='list-item-left'>剩余课时</text>
+        <text class='list-item-right'>{{item.course_left_times}}</text>
+      </view>
+      <view class='list-item-line'>
+        <text class='list-item-left'>开始时间</text>
+        <view class='list-item-right'>{{item.start_at}}</view>
+      </view>
+      <view class='list-item-line'>
+        <text class='list-item-left'>结束时间</text>
+        <text class='list-item-right'>{{item.end_at}}</text>
+      </view>
+      <view class='list-item-line'>
+        <text class='list-item-left'>当前状态</text>
+        <text class='list-item-right'>{{item.status_conv}}</text>
+      </view>
+    </view>
+  </block>
+</view>
+<view class='nothing' wx:else>
+  <view>暂时还没有打卡记录哦</view>
+  <view>快去来一次酣畅淋漓的运动吧</view>
+</view>

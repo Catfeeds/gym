@@ -6,13 +6,13 @@
   </view>
   <!-- 功能列表 -->
   <view class='func-list'>
-    <view class='func-list-item border-radius-top'>
+    <view class='func-list-item border-radius-top' bindtap='navToCourse'>
       <view class='item-image img-container'>
         <image src='/images/icon-course.png'></image>
       </view>
       <view class='item-desc'>我的课程</view>
     </view>
-    <view class='func-list-item' bindtap='navToClocklist'>
+    <view class='func-list-item' bindtap='navToClock'>
       <view class='item-image img-container'>
         <image src='/images/icon-clock.png'></image>
       </view>

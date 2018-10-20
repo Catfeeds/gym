@@ -12,7 +12,8 @@
     "pages/my/my",
     "pages/commonshow/commonshow",
     "pages/clock/clock",
-    "pages/clocklist/clocklist"
+    "pages/clocklist/clocklist",
+    "pages/course/course"
   ],
   "window": {
     "backgroundTextStyle": "light",
