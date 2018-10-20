@@ -27,26 +27,51 @@ class Clock extends Controller
         return objReturn(0, 'success', $clockList);
     }
 
-    public function userClock(Request $request)
+    public function startClock()
     {
-        $time = intval($request->param('time'));
-        $uid = intval($request->param('uid'));
-        $courseId = intval($request->param('courseId'));
-        $formId = $request->param('formId');
-        if (empty($time) || empty($uid) || empty($courseId)) {
-            return objReturn(402, "Invaild Param");
+        $timeStamp = intval(request()->param('timeStamp'));
+        $curTime = time();
+        // 如果timeStamp时间与服务器时间相差5s 则不允许打卡
+        if ($timeStamp - $curTime > 5) {
+            return objReturn(401, 'clock Overtime');
         }
-        if (time() - $time > 10) {
-            return objReturn(401, 'NetWork Over Time');
-        }
-        $success = makeClock($uid, $courseId, $time);
-        Db::name('formid')->insert(['uid' => $uid, 'course_id' => $courseId, 'formid' => $formId, 'created_at' => $time]);
-        if (empty($success)) {
+        $uid = intval(request()->param('uid'));
+        $userType = intval(request()->param('userType'));
+        $courseId = intval(request()->param('courseId'));
+        $location = request()->param('location');
+        // $formId = request()->param('formId');
+        $success = makeClock($uid, $userType, $courseId, $curTime, $location);
+        // Db::name('formid')->insert(['uid' => $uid, 'course_id' => $courseId, 'formid' => $formId, 'created_at' => $time]);
+        if ($success) {
             return objReturn(0, 'success');
-        } else if ($success == "Already Clocked") {
-            return objReturn(403, 'failed', $success);
         } else {
-            return objReturn(400, 'failed', $success);
+            return objReturn(400, 'failed');
+        }
+    }
+
+    /**
+     * 用户结束打卡
+     *
+     * @return void
+     */
+    public function finishClock()
+    {
+        $timeStamp = intval(request()->param('timeStamp'));
+        $curTime = time();
+        // 如果timeStamp时间与服务器时间相差5s 则不允许打卡
+        if ($timeStamp - $curTime > 5) {
+            return objReturn(401, 'clock Overtime');
+        }
+        $uid = intval(request()->param('uid'));
+        $clockId = intval(request()->param('clockId'));
+        $location = request()->param('location');
+
+        $success = endClock($clockId, $timeStamp, $location);
+
+        if ($success) {
+            return objReturn(0, 'success');
+        } else {
+            return objReturn(400, 'failed');
         }
     }
 

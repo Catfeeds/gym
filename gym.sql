@@ -250,4 +250,24 @@ CREATE TABLE `gym_user`  (
   PRIMARY KEY (`uid`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for gym_user_course
+-- ----------------------------
+
+DROP TABLE IF EXISTS `gym_user_course`;
+CREATE TABLE `gym_user_course`  (
+  `idx` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `course_id` int(11) UNSIGNED NOT NULL COMMENT '课程id',
+  `course_left_times` smallint(6) NOT NULL DEFAULT 0 COMMENT '课程剩余打卡次数',
+  `start_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '课程开始时间',
+  `end_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '课程结束时间',
+  `created_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '创建时间',
+  `created_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建者',
+  `updated_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '更新时间',
+  `updated_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新者',
+  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1正常2打卡结束3超时4已删除',
+  PRIMARY KEY (`idx`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;

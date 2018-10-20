@@ -75,3 +75,7 @@ page {
 .list-item-bottom-padding {
   height: 15rpx;
 }
+
+.location-text{
+  color: #3cc51f;
+}

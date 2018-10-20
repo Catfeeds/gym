@@ -11,24 +11,7 @@ use app\index\model\Admin;
 use app\index\model\Coach;
 use app\index\model\Clock;
 use app\index\model\Clock_count;
-
-/**
- * 通过用户ID获取用户相关信息
- *
- * @param int $uid 用户id
- * @return array 用户信息详情
- */
-function getUserInfoById($uid)
-{
-    // 获取用户信息
-    $user = new User;
-    $field = "uid, openid, user_name, user_gender, user_mobile, user_birth";
-    $userProfile = $user->field($field)->where('uid', $uid)->find();
-    // 数据简单处理
-    $userProfile['user_gender'] = $userProfile['user_gender'] == 1 ? '男' : '女';
-
-    return $userProfile;
-}
+use app\index\model\User_course;
 
 /**
  * 构造返回数据
@@ -45,43 +28,6 @@ function objReturn($code, $msg, $data = null)
     $res['msg'] = $msg;
     if ($data) $res['data'] = $data;
     return json($res);
-}
-
-/**
- * 更细数据库相关信息
- *
- * @param int $table 需要更新的表名
- * @param array $where 更新的字段
- * @param int $isUpdate 是更新还是新增
- * @return int $isSuccess 是否更新成功
- */
-function saveData($table, $where, $isUpdate = true)
-{
-    if (!$table || !is_string($table) || !$where || !is_array($where) || $isUpdate && !is_bool($isUpdate)) return 'Invaild Table';
-
-    // 表名
-    $tableName = null;
-    switch ($table) {
-        case 'user':
-            $tableName = new User;
-            break;
-        case 'msg':
-            $tableName = new Msg;
-            break;
-        case 'banner':
-            $tableName = new Banner;
-            break;
-        case 'admin':
-            $tableName = new Admin;
-            break;
-        case 'coach':
-            $tableName = new Coach;
-            break;
-    }
-    // 判断数据长度
-    $isSuccess = $tableName->isUpdate($isUpdate)->save($where);
-    // 结果返回
-    return $isSuccess;
 }
 
 /**
@@ -202,87 +148,205 @@ function getClockList($uid, $userType = 1, $pageNum = null, $status = 1)
  * @param integer $userType
  * @return void
  */
-function getUserClockInfo($uid, $userType = 1)
+function getUserClockInfo($uid, $userType)
 {
+    $curTime = time();
     // 初始化data值
-    $res['clockCount'] = 0;
     $res['nonStopClockCount'] = 0;
     $clock_count = new Clock_count;
-    $clockCountList = $clock_count->where('uid', $uid)->where('user_type', $userType)->select();
-    // 没有打卡记录
-    if (!$clockCountList || count($clockCountList) == 0) {
-        return $res;
-    }
+    $clockCount = $clock_count->where('uid', $uid)->where('user_type', $userType)->field('non_stop_count')->where('status', 1)->find();
     // 有打卡记录
-    $clockCountList = collection($clockCountList)->toArray();
-    foreach ($clockCountList as $k => $v) {
-        $res['clockCount'] += $v['non_stop_count'];
-        if ($v['status'] == 1) {
-            $res['nonStopClockCount'] = $v['non_stop_count'];
-        }
+    if ($clockCount) {
+        $clockCount = collection($clockCount)->toArray();
+        $res['nonStopClockCount'] = $clockCount['non_stop_count'];
     }
+    $res['clockCount'] = Db::name('clock')->where('uid', $uid)->where('user_type', $userType)->where('status', 1)->field('clock_id')->count();
+    // 是否有未结束打卡的记录
+    $isHaveUnfinishClock = false;
+    $unfinishClockInfo = [];
+    Db::startTrans();
+    try {
+        // 1. 判断是否有未结束打卡的记录
+        // 如果有未打卡记录要判断此记录是否需要更新
+        $unfinishClock = Db::name('clock')->where('uid', $uid)->where('user_type', $userType)->where('status', 1)->field('clock_id, course_id, clock_start_at, clock_start_at')->find();
+        if ($unfinishClock) {
+            $isHaveUnfinishClock = true;
+            // 查询当前课程的周期，判断是否需要自动结束打卡
+            $courseInfo = Db::name('course')->where('course_id', $unfinishClock['course_id'])->field('course_name, course_period')->find();
+            $courseFinishAt = $unfinishClock['clock_start_at'] + $courseInfo['course_period'] * 60;
+            if ($courseFinishAt < $curTime) {
+                $isHaveUnfinishClock = false;
+                $updateUserClock = Db::name('clock')->where('clock_id', $unfinishClock['clock_id'])->update(['clock_end_at' => $courseFinishAt, 'clock_end_at' => $unfinishClock['clock_start_at'], 'status' => 2]);
+                if (!$updateUserClock) {
+                    throw new \Exception('Update User Clock Failed');
+                }
+            } else {
+                // 整理返回数据
+                $unfinishClockInfo['clock_id'] = $unfinishClock['clock_id'];
+                $unfinishClockInfo['course_id'] = $unfinishClock['course_id'];
+                $unfinishClockInfo['clock_start_at'] = date('Y-m-d H:i:s', $unfinishClock['clock_start_at']);
+                $unfinishClockInfo['course_name'] = $courseInfo['course_name'];
+                $unfinishClockInfo['course_period'] = $courseInfo['course_period'];
+            }
+        }
+        // 提交事务
+        Db::commit();
+    } catch (\Exception $e) {
+        // 回滚事务
+        Db::rollback();
+        return $e->getMessage();
+    }
+    $res['isHaveUnfinishClock'] = $isHaveUnfinishClock;
+    $res['unfinishClock'] = $unfinishClockInfo;
     return $res;
 }
 
 /**
- * 给用户打卡操作
+ * 获取用户的课程
  *
- * @param array $clockArr 用户打卡的数组 其中包含uid, clock_by, clock_at, class_id, clock_type
- * @return boolean 是否打卡成功
+ * @param int $uid 用户id
+ * @param boolean $isAll 是否需要查询所有（包括删除）
+ * @return void
  */
-function makeClock($clockArr)
+function getUserCourse($uid, $isAll = false)
 {
-    if (!is_array($clockArr)) return false;
-    $classIds = [];
-    $uids = [];
-    foreach ($clockArr as &$info) {
-        $info['created_at'] = time();
-        $classIds[] = $info['class_id'];
-        $uids[] = $info['uid'];
+    $field = 'uc.idx, uc.uid, uc.course_id, uc.course_left_times, uc.start_at, uc.end_at, uc.created_at, uc.status, c.course_name, c.course_period';
+    $status = $isAll ? [1, 2, 3, 4, 5] : [1];
+    $user_course = new User_course;
+    $userCourseList = $user_course->alias('uc')->join('course c', 'uc.course_id = c.course_id', 'LEFT')->where('uc.uid', $uid)->where('uc.status', 'in', $status)->field($field)->order('uc.idx asc')->select();
+    if (!$userCourseList || count($userCourseList) == 0) {
+        return null;
     }
-
-    // 1 获取用户原有课程
-    $classUser = Db::name('classes_user')->where('class_id', 'in', $classIds)->where('uid', 'in', $uids)->field('idx, uid, class_id, course_left_times, course_end_at')->select();
-    if (!$classUser) return false;
-    // dump($classUser);
-    // dump($clockArr);die;
-    // 2 用户打卡后课程的处理
-    foreach ($classUser as $k => $v) {
-        foreach ($clockArr as $ke => $va) {
-            if ($v['uid'] == $va['uid'] && $v['class_id'] == $va['class_id']) {
-                if ($v['course_end_at'] > time() && $v['course_left_times'] > 0) {
-                    $classUser[$k]['course_left_times'] -= 1;
-                } else {
-                    $va['courseOutOfTime'] = $v['course_end_at'] < time() ? true : false;
-                    $va['noCourseLeftTimes'] = $v['course_left_times'] == 0 ? true : false;
-                    $va['course_end_at'] = date('Y-m-d', $v['course_end_at']);
-                    $va['course_left_times'] = $v['course_left_times'];
-                    $notClockArr[] = $va;
-                    unset($clockArr[$k]);
-                }
-                break 1;
-            }
+    $userCourseList = collection($userCourseList)->toArray();
+    // 如果有课程 判断每个课程是否都有效
+    $validCourse = [];
+    $updateArr = [];
+    $validSort = [];
+    foreach ($userCourseList as $k => $v) {
+        // 超时需要更新状态
+        if ($v['status'] == 1 && $v['end_at'] < time()) {
+            $v['status'] = 3;
+            $v['updated_at'] = time();
+            $updateArr[] = $v;
+            continue;
         }
+        // 当未到打卡时间时，此表示暂存状态 不可点击 但是同样展示 显示开始时间
+        if ($v['status'] == 1 && $v['start_at'] > time()) {
+            $v['status'] = 5;
+            $v['start_at_conv'] = date('Y-m-d', $v['start_at']);
+        }
+        // 正常情况
+        $validSort[] = $v['status'];
+        $validCourse[] = $v;
     }
-    // 事务处理
-    $notClockArr = [];
+    // 如果有需要update的data 则update
+    if (count($updateArr) > 0) {
+        $user_course->isUpdate()->saveAll($updateArr);
+    }
+    // 如果有效课程存在 将所有不展示的课程放在最后
+    if (count($validCourse) > 1) {
+        array_multisort($validSort, SORT_ASC, SORT_NUMERIC, $validCourse);
+    }
+    // 返回正常的课程字段
+    return $validCourse;
+}
+
+/**
+ * 用户打卡公共方法
+ * 根据不同的用户类型进行打卡操作
+ *
+ * @param int $uid 用户id
+ * @param int $userType 用户类别 1 会员 2 教练
+ * @param int $courseId 需要打卡的课程id
+ * @param int $timeStamp 打卡的时间戳
+ * @param string $location 打卡的地点
+ * @return boolean $result 是否打卡成功
+ */
+function makeClock($uid, $userType, $courseId, $timeStamp, $location)
+{
+    // 启动事务
     Db::startTrans();
     try {
-        // 3 插入打卡记录
-        $insert = Db::name('user_clock')->insertAll($clockArr);
-        // dump($insert);die;
-        // 4 更新课时记录
-        $classes_user = new Classes_user;
-        $update = $classes_user->isUpdate()->saveAll($classUser);
+        // 1 写入打卡记录
+        $insertClock = Db::name('clock')->insert(['uid' => $uid, 'user_type' => $userType, 'clock_start_at' => $timeStamp, 'clock_start_location' => $location, 'created_at' => time()]);
+        if (!$insertClock) {
+            throw new \Exception('Insert User Clock Failed');
+        }
+        // 只有当用户身份为 会员时 才去更新 课程相关
+        if ($userType == 1) {
+            // 2 判断用户是否有该课程 并且该课程 课时剩余量大于零
+            $userCourse = Db::name('user_course')->where('uid', $uid)->where('course_id', $courseId)->where('course_left_times', '>', 0)->where('status', 1)->where('end_at', '<', $timeStamp)->field('idx, end_at, course_left_times, status')->find();
+            if (!$userCourse) {
+                throw new \Exception('Invaild User Course');
+            }
+            // 3 课程相应减少 若课程剩余量为0则改变课程状态
+            $userCourse['course_left_times']--;
+            if ($userCourse['course_left_times'] == 0) {
+                $userCourse['status'] = 2;
+            } else if ($userCourse['end_at'] < time() && $userCourse['status'] == 1) {
+                $userCourse['status'] = 3;
+            }
+            $updateUserCourse = Db::name('user_course')->where('idx', $userCourse['idx'])->update($userCourse);
+            if (!$updateUserCourse) {
+                throw new \Exception('Update User Course Failed');
+            }
+        }
+        // 4 更新用户连续打卡次数及打卡总次数
+        $userClock = Db::name('clock_count')->where('uid', $uid)->where('user_type', $userType)->where('status', 1)->field('idx, non_stop_count, last_clock_at, status')->find();
+        if (!$userClock) {
+            // 如果没有 就插入
+            $insertUserClock = Db::name('clock_count')->insert(['uid' => $uid, 'user_type' => $userType, 'last_clock_at' => $timeStamp]);
+            if (!$insertUserClock) {
+                throw new \Exception('Insert User Clock Count Info Failed');
+            }
+        } else {
+            // 如果有 就去判断是否需要更新
+            if ($userClock['last_clock_at'] - $timeStamp <= 86400) {
+                $userClock['non_stop_count']++;
+            } else if ($userClock['last_clock_at'] - $timeStamp > 86400) {
+                $userClock['non_stop_count'] = 0;
+            }
+            $updateUserClock = Db::name('clock_count')->where('idx', $userClock['idx'])->update(['non_stop_count' => $userClock['non_stop_count']]);
+            if (!$updateUserClock) {
+                throw new \Exception('Insert User Clock Count Info Failed');
+            }
+        }
         // 提交事务
         Db::commit();
-        if (!$classUser || !$insert || !$update) throw new \Exception('Update Failed');
+    } catch (\Exception $e) {
+    // 回滚事务
+        Db::rollback();
+        return false;
+    }
+    return true;
+}
+
+/**
+ * 用户打卡公共方法
+ * 用户进行结束打卡操作
+ *
+ * @param int $clockId 打卡的id
+ * @param int $timeStamp 打卡的时间戳
+ * @param string $location 打卡的地点
+ * @return boolean $result 是否打卡成功
+ */
+function endClock($clockId, $timeStamp, $location)
+{
+    // 启动事务
+    Db::startTrans();
+    try {
+        // 1 更新打卡记录
+        $updateClock = Db::name('clock')->where('clock_id', $clockId)->update(['clock_end_location' => $location, 'clock_end_at' => $timeStamp, 'status' => 2]);
+        if (!$updateClock) {
+            throw new \Exception('Find User Clock Log Failed');
+        }
+        // 提交事务
+        Db::commit();
     } catch (\Exception $e) {
         // 回滚事务
         Db::rollback();
         return false;
     }
-    if (count($notClockArr) > 0) return $notClockArr;
     return true;
 }
 

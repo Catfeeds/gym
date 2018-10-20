@@ -7,7 +7,7 @@
       </view>
       <view class='list-item-line'>
         <text class='list-item-left'>打卡地点</text>
-        <view class='list-item-right'>{{item.clock_start_location}}</view>
+        <view class='list-item-right location-text' bindtap='showLocation' data-location='{{item.clock_start_location}}'>点击查看</view>
       </view>
       <view class='list-item-line'>
         <text class='list-item-left'>运动时间</text>

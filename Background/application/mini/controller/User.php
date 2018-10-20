@@ -67,7 +67,11 @@ class User extends Controller
     {
         $uid = intval(request()->param('uid'));
         $userType = intval(request()->param('userType'));
-        $res = getUserClockInfo($uid, $userType);
+        $userClockInfo = getUserClockInfo($uid, $userType);
+        // 获取用户拥有的课程列表及剩余打卡课时
+        $userCourse = getUserCourse($uid);
+        $res['course'] = $userCourse;
+        $res['clockInfo'] = $userClockInfo;
         return objReturn(0, 'success', $res);
     }
 

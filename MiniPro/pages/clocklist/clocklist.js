@@ -51,7 +51,18 @@ Page({
         })
       }
     })
+  },
 
+  /**
+   * 通过lat和lng 打开地图
+   */
+  showLocation: function(evt) {
+    let location = evt.currentTarget.dataset.location;
+    location = location.split(',');
+    wx.openLocation({
+      latitude: location[0],
+      longitude: location[1],
+    })
   },
 
   /**
@@ -68,7 +79,7 @@ Page({
   /**
    * 用户上拉加载
    */
-  onReachBottom: function(){
+  onReachBottom: function() {
     this.getClocklist();
   }
 
