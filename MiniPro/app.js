@@ -45,11 +45,10 @@ App({
         }
       }).then(res => {
         wx.setStorageSync('openid', res.openid);
-        that.globalData.uid = res.uid || res.tid;
-        // that.globalData.uid = 1;
+        that.globalData.uid = res.uid;
         that.globalData.isAuth = res.isAuth || false;
         // 1 会员 2 教练
-        that.globalData.userType = res.userType;
+        that.globalData.userType = res.user_type;
         return util.post('minibase/getSystemSetting', {
           openid: res.openid
         }, 100)

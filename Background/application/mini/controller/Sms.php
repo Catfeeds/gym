@@ -31,9 +31,9 @@ class Sms extends Controller
         if (!preg_match("/^1[3-9]\d{9}$/", $mobile)) return objReturn(402, 'Invaild Telnum', $mobile);
 
         // 去数据库查询是否有该手机号
-        $isCheck = request()->param('check');
+        $isNeedCheck = request()->param('isCheck');
 
-        if ($isCheck != 0) {
+        if ($isNeedCheck) {
             $userType = intval(request()->param('usertype'));
             $isUserTelExist = Db::name('user')->where('phone', $mobile)->count();
             if ($isUserTelExist != 1) return objReturn(401, 'This Mobile NOT EXIST');

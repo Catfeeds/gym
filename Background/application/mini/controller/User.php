@@ -51,7 +51,7 @@ class User extends Controller
         $feedback['uid'] = request()->param('uid');
         $feedback['created_at'] = time();
         $feedback['img'] = $file ? DS . 'feedback' . DS . $save->getSaveName() : '';
-        $feedback['user_type'] = request()->param('userType') ? 1 : 2;
+        $feedback['user_type'] = request()->param('userType');
 
         $insert = Db::name('feedback')->insert($feedback);
         if (!$insert) return objReturn(400, 'Insert Failed', $insert);
@@ -116,12 +116,13 @@ class User extends Controller
 
         $update = Db::name('user')->where('user_mobile', request()->param('mobile'))->update($user);
 
-        if (!$update) return objReturn(402, 'failed', $update);
+        if (!$update) return objReturn(403, 'failed', $update);
         return objReturn(0, 'success', $update);
     }
 
     /**
      * 获取用户信息
+     * 这里需要用户进行信息查看 所以要区分用户TYPE
      *
      * @return void
      */

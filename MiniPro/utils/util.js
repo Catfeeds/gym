@@ -79,11 +79,10 @@ const post = (url, data, timeout = 600) => {
         data: data,
         method: 'POST',
         success: function(res) { //服务器返回数据
-          console.log(res)
           wx.hideLoading();
           if (res.statusCode == 200 && res.data.code == 0) {
             resolve(res.data.data);
-          } else if (res.data.code != 200) {
+          } else if (res.statusCode != 200) {
             modalPromisified({
               title: '系统提示',
               content: '网络错误，请检查网络后重试',

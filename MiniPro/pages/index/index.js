@@ -9,6 +9,7 @@ Page({
     }], // 默认banner
     isCoach: false, // 用户身份是否为教练
     projectList: [], // 项目列表
+    pageNum: 1, // 需要查询的项目页码
   },
 
   onLoad: function() {
@@ -31,8 +32,8 @@ Page({
       if (!app.globalData.isAuth) {
         util.modalPromisified({
           title: '系统提示',
-          content: '您需要先绑定用户身份才可进行后续操作',
-          confirmText: '进行绑定',
+          content: '您需要先进行认证才可进行后续操作',
+          confirmText: '进行认证',
           showCancel: false
         }).then(res => {
           wx.redirectTo({
@@ -48,7 +49,7 @@ Page({
       let banner = that.data.banner;
       that.setData({
         banner: res || banner,
-        isCoach: app.globalData.userType == 1 ? true : false
+        isCoach: app.globalData.userType == 1 ? false : true
       })
       // 根据系统设置 修改小程序名称
       if (app.globalData.setting) {
@@ -82,9 +83,39 @@ Page({
   },
 
   /**
+   * 获取项目列表
+   */
+  getProjectList: function() {
+    var that = this;
+    util.post('project/getProject', {
+      uid: app.globalData.uid
+    }, 300).then(res => {
+      that.setData({
+        projectList: that.data.projectList.concat(res || []),
+        pageNum: that.data.pageNum + 1
+      })
+    }).catch(res => {
+      console.log(res.data.code)
+      if (res.data.code == 405) {
+        wx.showToast({
+          title: '没有更多啦',
+          icon: 'loading',
+          duration: 1200
+        })
+      } else {
+        util.modalPromisified({
+          title: '系统提示',
+          content: '系统错误，请尝试联系管理员',
+          confirmText: '重新连接'
+        })
+      }
+    })
+  },
+
+  /**
    * 跳转到通用展示界面
    */
-  navToCommonshow: function(){
+  navToCommonshow: function() {
     wx.navigateTo({
       url: '/pages/commonshow/commonshow?scene=1',
     })
@@ -93,11 +124,29 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
     return {
       title: app.globalData.setting.share_text || 'Reshape带你重塑形体~',
       path: '/pages/index/index'
     }
   },
+
+  /**
+   * 用户下拉刷新
+   */
+  onPullDownRefresh() {
+    this.setData({
+      pageNum: 0,
+      projectList: []
+    })
+    this.getProjectList();
+  },
+
+  /**
+   * 用户上拉加载
+   */
+  onReachBottom: function() {
+    this.getProjectList();
+  }
 
 })

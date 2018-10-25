@@ -58,9 +58,12 @@ page {
   font-size: 26rpx;
   color: #999;
   text-indent: 0;
-  margin-bottom: 30rpx;
 }
 
+.explain-detail:last-child {
+  margin-bottom: 30rpx;
+}
+    
 .explain-title {
   font-weight: 500;
   color: #333;
@@ -109,14 +112,14 @@ page {
   width: 60%;
 }
 
-.middle-checkbox, .usertype{
+.middle-checkbox, .usertype {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
 }
 
-.usertype image{
+.usertype image {
   width: 35rpx;
   height: 35rpx;
   margin-right: 15rpx;

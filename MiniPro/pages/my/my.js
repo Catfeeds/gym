@@ -8,15 +8,15 @@ Page({
   },
 
   onLoad: function(options) {
-
+    this.setData({
+      userType: app.globalData.userType
+    })
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {
-
-  },
+  onShow: function() {},
 
   /**
    * 用户个人信息查看与修改

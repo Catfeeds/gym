@@ -75,6 +75,7 @@ Page({
       if (that.data.image) {
         util.fileUpload('user/submitFeedback', that.data.image[0], {
           uid: app.globalData.uid,
+          userType: app.globalData.userType,
           message: that.data.message
         }, 300).then(res => {
           wx.showToast({
@@ -98,6 +99,7 @@ Page({
         // 如果没有图片就直接上传
         util.post('user/submitFeedback', {
           uid: app.globalData.uid,
+          userType: app.globalData.userType,
           message: that.data.message
         }, 400).then(res => {
           wx.showToast({

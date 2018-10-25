@@ -12,6 +12,7 @@ use app\index\model\Coach;
 use app\index\model\Clock;
 use app\index\model\Clock_count;
 use app\index\model\User_course;
+use app\index\model\Project;
 
 /**
  * 构造返回数据
@@ -28,73 +29,6 @@ function objReturn($code, $msg, $data = null)
     $res['msg'] = $msg;
     if ($data) $res['data'] = $data;
     return json($res);
-}
-
-/**
- * 获取管理员发送的消息
- * 如果有传用户的uid则为查找系统消息以及该用户的相关信息
- * 
- * @param string $msgType 需要查询的信息分类 0公告 1对指定用户发送
- * @param string $field 需要查询的字段
- * @param boolean $isAll 是否查看全部的消息
- * @param int $uid 用户的uid
- * @param int $pageNum 需要查看的页码
- * @return void
- */
-function getMessage($msgType = 0, $field = null, $isAll = true, $uid = null, $pageNum = null)
-{
-    // if ($msgType == 1 && !$uid) {
-    //     return "Invaild Param";
-    // }
-    $field = $field ? $field : 'msg_id, msg_type, msg_content, msg_img, target_uid, target_openid, send_at';
-    $status = $isAll ? [1, 2] : [2];
-    $limit = isset($pageNum) ? $pageNum * 10 . ', 10' : "";
-
-    $msg = new Msg;
-
-    if ($msgType == 0) {
-        $msgList = $msg->where('msg_type', $msgType)->where('status', 'in', $status)->field($field)->limit($limit)->order('created_at desc')->select();
-    } else if ($msgType == 1) {
-        if (isset($uid)) {
-            $msgList = $msg->where('msg_type', $msgType)->where('target_uid', $uid)->where('status', 'in', $status)->field($field)->select();
-        } else {
-            $msgList = $msg->where('msg_type', $msgType)->where('status', 'in', $status)->field($field)->limit($limit)->order('created_at desc')->select();
-        }
-    }
-
-    if (!$msgList || count($msgList) == 0) return null;
-    $msgList = collection($msgList)->toArray();
-
-    if (is_array($msgList) && count($msgList) > 0) {
-        foreach ($msgList as &$info) {
-            $info['msg_img'] = config('SITEROOT') . $info['msg_img'];
-            $info['send_at'] = isset($info['send_at']) && !empty($info['send_at']) ? date('Y-m-d H:i', $info['send_at']) : '';
-        }
-    }
-
-    return $msgList;
-}
-
-/**
- * 获取指定的MSG
- *
- * @param int $msgId
- * @param string $field
- * @param boolean $isInUse
- * @return void
- */
-function getMsgById($msgId, $isAll = true)
-{
-    $status = $isAll ? [2] : [1, 2];
-    $msg = new Msg;
-    $msgInfo = $msg->alias('m')->join('art_admin a', 'm.send_by = a.id', 'LEFT')->join('art_classes c', 'm.class_id = c.class_id', 'LEFT')->where('m.msg_id', $msgId)->where('m.status', 'in', $status)->field('m.msg_id, m.msg_content, m.msg_img, m.class_id, m.send_at, m.send_by, m.status, a.name as send_by_name, c.class_name, c.class_id, c.class_time, c.class_day')->select();
-    if (!$msgInfo || count($msgInfo) == 0) return null;
-    $msgInfo = collection($msgInfo)->toArray();
-    $msgInfo = $msgInfo[0];
-    $msgInfo['msg_img'] = config('SITEROOT') . $msgInfo['msg_img'];
-    $msgInfo['send_at'] = date('Y-m-d H:i', $msgInfo['send_at']);
-    $msgInfo['class_day_conv'] = convertDay($msgInfo['class_day']);
-    return $msgInfo;
 }
 
 /**
@@ -115,6 +49,74 @@ function getBanner($isAll = true)
         $info['img'] = config('SITEROOT') . $info['img'];
     }
     return $bannerList;
+}
+
+/**
+ * 获取项目
+ *
+ * @param string $field 需要查询的字段
+ * @param boolean $isAll 是否需要查询所有项目
+ * @param int $pageNum 需要获取的页码
+ * @return void
+ */
+function getProject($field = null, $isAll = false, $pageNum = null)
+{
+    $field = $field ? $field : 'project_id, project_name, project_img';
+    $status = $isAll ? [1, 2] : [1];
+    $limit = isset($pageNum) ? $pageNum . ', 10' : '';
+    $project = new Project;
+    $projectList = $project->where('status', 'in', $status)->field($field)->order('sort desc')->limit($limit)->select();
+    if (!$projectList || count($projectList) == 0) {
+        return null;
+    }
+    $projectList = collection($projectList)->toArray();
+    foreach ($projectList as &$info) {
+        if (isset($info['project_img'])) {
+            $info['project_img'] = config('SITEROOT') . $info['project_img'];
+        }
+    }
+    return $projectList;
+}
+
+/**
+ * 获取指定的项目
+ *
+ * @param int $projectId 项目ID
+ * @param boolean $isVaild 当前项目是否正常展示
+ * @return void
+ */
+function getProjectById($projectId, $isVaild = true)
+{
+    $field = "project_id, project_name, project_img, project_video, project_desc, created_at, status, sort";
+    $status = $isVaild ? [1] : [1, 2];
+    $project = new Project;
+    $projectInfo = $project->where('status', 'in', $status)->field($field)->select();
+    if (!$projectList || count($projectList) == 0) {
+        return null;
+    }
+    $projectInfo = collection($projectInfo)->toArray();
+    $projectInfo = $projectInfo[0];
+    if (!empty($projectInfo['project_video'])) {
+        $projectInfo['project_video'] = config('SITEROOT') . $projectInfo['project_video'];
+    }
+    $projectInfo['project_img'] = config('SITEROOT') . $projectInfo['project_img'];
+    // 处理desc
+    if (!empty($projectInfo['project_desc'])) {
+        $descTemp = $projectInfo['project_desc'];
+        $descTempArr = explode(',', $aboutUs['about_us']);
+        $descSort = [];
+        $descArr = [];
+        foreach ($descTempArr as $k => $v) {
+            $temp = explode(':', $v);
+            $descArr[] = $v[0];
+            $descSort[] = $v[1];
+        }
+        if (count($descSort) > 1) {
+            array_multisort($descSort, SORT_ASC, SORT_NUMERIC, $descArr);
+        }
+        $projectInfo['project_desc'] = $descArr;
+    }
+    return $projectInfo;
 }
 
 /**
@@ -467,55 +469,4 @@ function getAccessToken()
     }
 
     return $accessToken;
-}
-
-/**
- * 获取用户的模板消息
- *
- * @param int $uid 用户id
- * @param int $courseId 课程id
- * @return string fromid
- */
-function getFormId($uid)
-{
-    $formid = new Formid;
-    $formID = $formid->where('uid', $uid)->where('is_active', 0)->field('idx, formid')->limit(1)->select();
-    if (!$formID || count($formID) == 0) {
-        return null;
-    }
-    $formID = collection($formID)->toArray();
-    return $formID[0];
-}
-
-/**
- * 发送模板消息
- *
- * @param array $msgType 需要发送的 消息类型
- * @param array $msgId 需要发送的msgId
- * @param string $formId 模板消息ID
- * @param string $openid 用户的openid
- * @param string $content 发送的消息内容
- * 
- * @param json $msg 发送的消息内容
- * @return void
- */
-function sendTemplateMessage($msg)
-{
-    $accessToken = getAccessToken();
-    // $access_token = "4_Jy79EbZz8z04qBNdILIs6ZdAWWN1dAs0Dz7BJrLpDCUgBaNiaoL9o2ulH5Ki89Zx01BvYzRMvS4-ArKMgm4eAaMmNXlrWCWNhC8zyoi7BATKxplujaf_wW1Az2hnv9geHWgCL6P5psNtRr9ECYTjACASOJ";
-    $url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=" . $accessToken;
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    // 这句话很重要 因为是SSL加密协议
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
-    $output = curl_exec($ch);
-    curl_close($ch);
-    $info = json_decode($output);
-    $info = get_object_vars($info);
-    return $info['errcode'];
 }

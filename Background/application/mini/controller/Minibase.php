@@ -49,33 +49,23 @@ class Minibase extends Controller
         
         // 根据openid 去后台数据库取值
         // 教师和用户是两张表
-        $userInfo = Db::name('user')->where('openid', $openid)->field('uid, status, openid')->find();
-        // 如果没有在用户表找到
-        if (!$userInfo) $teacherInfo = Db::name('teacher')->where('openid', $openid)->field('teacher_id as uid, openid, status')->find();
-        
-        // 如果查到用户存在，但是用户已被删除
-        if ($userInfo && $userInfo['status'] == 3) return objReturn(403, 'User Deleted');
-
-        if (isset($teacherInfo) && $teacherInfo['status'] == 4) return objReturn(403, 'Teacher Deleted');
+        $userInfo = Db::name('user')->where('openid', $openid)->field('uid, status, openid, user_type')->find();
 
         // 如果未查询到用户 则该用户为新用户
-        if (!$userInfo && !$teacherInfo) {
+        if (!$userInfo) {
             $userInfo = [];
             $userInfo['openid'] = $openid;
             $userInfo['isAuth'] = false;
             return objReturn(0, 'New User', $userInfo);
         }
         
-        // 有查到用户要判断用户认证状态
-        if ($userInfo) {
-            $userInfo['isAuth'] = $userInfo['status'] == 2 ? true : false;
-        } else if (isset($teacherInfo)) {
-            $userInfo['isAuth'] = $teacherInfo['status'] == 2 ? true : false;
-        }
+        // 如果查到用户存在，但是用户已被删除
+        if ($userInfo && $userInfo['status'] == 3) return objReturn(403, 'User Deleted');
 
-        // 设置用户身份
-        $userInfo['userType'] = $userInfo ? 1 : 2;
-        return objReturn(0, 'Get UserInfo Success', $userInfo ? $userInfo : $teacherInfo);
+        // 有查到用户要判断用户认证状态
+        $userInfo['isAuth'] = $userInfo['status'] == 2 ? true : false;
+
+        return objReturn(0, 'Get UserInfo Success', $userInfo);
     }
 
 

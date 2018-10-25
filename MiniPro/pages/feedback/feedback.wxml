@@ -1,6 +1,6 @@
 <view class="container">
   <block wx:if="{{feedbackList.length > 0}}">
-    <block wx:for="{{feedbackList}}" wx:key="idx">
+    <block wx:for="{{feedbackList}}" wx:key="">
       <view class='feedback-item'>
         <!-- title -->
         <view class='feedback-title'>

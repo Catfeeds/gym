@@ -57,14 +57,14 @@
   <view class='info-cell-item'>
     <view class='info-cell-left'>手机号</view>
     <view class='info-cell-middle'>
-      <input type='number' value="{{userTel}}" disabled='{{!isTelCanInput}}' bindinput='inputTel' maxlength='11' class="weui-input" placeholder="请输入手机号" />
+      <input type='number' value="{{userTel}}" disabled='{{!isTelCanInput}}' bindinput='inputTel' maxlength='11' class="mobile-input" placeholder="请输入手机号" />
     </view>
     <view class='info-cell-right'>
       <block wx:if="{{showSendCode}}">
-        <view class="weui-vcode-btn" bindtap='getValidCode'>验证码</view>
+        <text class="vcode-btn" bindtap='getValidCode'>验证码</text>
       </block>
       <block wx:else>
-        <view class="weui-vcode-btn code-text">{{codeCountdown}}</view>
+        <text class="vcode-btn">{{codeCountdown}}</text>
       </block>
     </view>
   </view>
@@ -74,7 +74,7 @@
     <view class='info-cell-item'>
       <view class='info-cell-left'>验证码</view>
       <view class='info-cell-middle'>
-        <input type='number' disabled='{{isValidate}}' bindinput='inputValidateCode' maxlength='6' class="weui-input" placeholder="请输入验证码" />
+        <input type='number' disabled='{{isValidate}}' bindinput='inputValidateCode' maxlength='6' class="mobile-input" placeholder="请输入验证码" />
       </view>
     </view>
   </block>
