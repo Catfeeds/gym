@@ -24,7 +24,7 @@
 <body>
 	<header class="navbar-wrapper">
 		<div class="navbar navbar-fixed-top">
-			<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" href="https://gym.kekexunxun.com">吸铁石美术</a>
+			<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" href="https://gym.kekexunxun.com">Reshape重塑形体</a>
 				<span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0.0</span>
 				<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
 
@@ -58,143 +58,60 @@
 	</header>
 	<aside class="Hui-aside">
 		<div class="menu_dropdown bk_2">
-			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 1"}
 			<dl id="menu-system">
 				<dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 11"}
 						<li><a data-href="index/system/adminlist" data-title="管理员管理" href="javascript:;">管理员列表</a></li>
-						{/if}
-						{/volist}
-
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 12"}
 						<li><a data-href="index/system/minisetting" data-title="小程序设置" href="javascript:;">小程序设置</a></li>
-						{/if}
-						{/volist}
 					</ul>
 				</dd>
 			</dl>
-			{/if}
-			{/volist}
-
-			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 2"}
 			<dl id="menu-user">
 				<dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 21"}
 						<li><a data-href="index/user/userlist" data-title="会员列表" href="javascript:void(0)">会员列表</a></li>
-						{/if}
-						{/volist}
-
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 22"}
 						<li><a data-href="index/user/coachlist" data-title="教练列表" href="javascript:void(0)">教练列表</a></li>
-						{/if}
-						{/volist}
 					</ul>
 				</dd>
 			</dl>
-			{/if}
-			{/volist}
-
-			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 3"}
 			<dl id="menu-tongji">
 				<dt><i class="Hui-iconfont">&#xe61a;</i> 内容管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 31"}
 						<li><a data-href="index/content/bannerlist" data-title="banner管理" href="javascript:void(0)">Banner</a></li>
-						{/if}
-						{/volist}
-
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 32"}
 						<li><a data-href="index/content/feedback" data-title="用户反馈" href="javascript:;">用户反馈</a></li>
-						{/if}
-						{/volist}
-
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 33"}
 						<li><a data-href="index/clause/clause" data-title="用户协议" href="javascript:void(0)">用户协议</a></li>
-						{/if}
-						{/volist}
 					</ul>
 				</dd>
 			</dl>
-			{/if}
-			{/volist}
-
-			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 4"}
 			<dl id="menu-course">
 				<dt><i class="Hui-iconfont">&#xe616;</i> 项目管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 41"}
 						<li><a data-href="index/project/projectlist" data-title="项目列表" href="javascript:void(0)">项目列表</a></li>
-						{/if}
-						{/volist}
 					</ul>
 				</dd>
 			</dl>
-			{/if}
-			{/volist}
-
-			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 5"}
 			<dl id="menu-tongji">
 				<dt><i class="Hui-iconfont">&#xe61a;</i> 系统统计<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 51"}
 						<li><a data-href="index/chart/userclockchart" data-title="会员打卡统计" href="javascript:void(0)">会员打卡统计</a></li>
-						{/if}
-						{/volist}
-
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 52"}
 						<li><a data-href="index/chart/coachclockchart" data-title="教练打卡统计" href="javascript:void(0)">教练打卡统计</a></li>
-						{/if}
-						{/volist}
 					</ul>
 				</dd>
 			</dl>
-			{/if}
-			{/volist}
-
-			{volist name="$menuList" id="vol"}
-			{if condition="$vol.menu_id == 6"}
 			<dl id="menu-message">
 				<dt><i class="Hui-iconfont">&#xe613;</i> 消息管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 61"}
 						<li><a data-href="index/msg/notice" data-title="公告列表" href="javascript:void(0)">公告列表</a></li>
-						{/if}
-						{/volist}
-
-						{volist name="$menuList" id="vol"}
-						{if condition="$vol.menu_id == 62"}
 						<li><a data-href="index/msg/notification" data-title="推送列表" href="javascript:void(0)">推送列表</a></li>
-						{/if}
-						{/volist}
 					</ul>
 				</dd>
 			</dl>
-			{/if}
-			{/volist}
 		</div>
 	</aside>
 	<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>

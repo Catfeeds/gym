@@ -21,7 +21,7 @@ class Index extends Controller
     {
         // 判断是否存在session
         if (!Session::has('loginname')) {
-            header("Location: http://art.up.maikoo.cn/index/index/login");
+            header("Location: http://gym.kekexunxun.com/index/index/login");
         } else {
             $username = Session::get('loginname');
             $this->assign("username", $username);
