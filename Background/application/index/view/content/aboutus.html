@@ -18,11 +18,9 @@
     <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/style.css" />
     <script type="text/javascript" src="__ROOT__/assets/lib/ueditor/1.4.3/ueditor.config.js"></script>
     <script type="text/javascript" src="__ROOT__/assets/lib/ueditor/1.4.3/ueditor.all.min.js"> </script>
-
-    <!--/meta 作为公共模版分离出去-->
     <style>
         #son select{
-          font-size: 14px; height: 31px; line-height: 1.42857; padding: 4px;
+            font-size: 14px; height: 31px; line-height: 1.42857; padding: 4px;
         }
         #edui1_iframeholder{
             height: 200px;
@@ -34,10 +32,10 @@
     <div class="page-container">
         <form action="" method="post" class="form form-horizontal" id="form-agreement-add">
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">协议内容：</label>
+                <label class="form-label col-xs-4 col-sm-2">关于我们：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <script id="container" name="content" type="text/plain">
-                    {:htmlspecialchars_decode($clause)}
+                    {:htmlspecialchars_decode($aboutUs)}
                 </script>
                 </div>
             </div>
@@ -74,12 +72,12 @@
         // 表单提交
         function agreement_save_submit() {
             if (UE.getEditor('container').getContent() == '') {
-                layer.msg('协议内容不能为空！', { icon: 2, time: 1300 });
+                layer.msg('内容不能为空！', { icon: 2, time: 1300 });
                 return false;
             } else {
                 $.ajax({
                     type: 'POST',
-                    url: 'updateClause',
+                    url: 'updateAboutUs',
                     dataType: 'json',
                     data: $("#form-agreement-add").serialize(),
                     success: function (data) {

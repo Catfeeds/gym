@@ -18,40 +18,41 @@
         left: 325px;
     }
 </style>
-    <title>添加会员</title>
+    <title>编辑教练信息</title>
 </head>
 
 <body>
     <div class="page-container">
         <form action="" method="post" class="form form-horizontal" id="form-class-add">
+            <input type="hidden" id="uid" name="uid" value="{$uid}">
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">会员姓名：</label>
+                <label class="form-label col-xs-4 col-sm-3">教练姓名：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input style="width: 300px" autocomplete="off" type="text" class="input-text" id="name" name="name"
-                        placeholder="请输入会员姓名" maxlength="28">
+                    <input style="width: 300px" value="{$coachInfo.user_name}" autocomplete="off" type="text" class="input-text"
+                        id="name" name="name" placeholder="请输入教练姓名" maxlength="28">
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">会员性别：</label>
+                <label class="form-label col-xs-4 col-sm-3">教练性别：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <select name="gender" id="gender" style="width: 300px;font-size: 14px; height: 31px;line-height: 1.42857;padding: 4px;">
+                    <select style="width: 300px" name="gender" id="gender" value="{$coachInfo.user_gender}" class="input-text">
                         <option value="0">女</option>
                         <option value="1">男</option>
                     </select>
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">会员手机号：</label>
+                <label class="form-label col-xs-4 col-sm-3">教练手机号：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input style="width: 300px" autocomplete="off" type="number" maxlength="11" class="input-text" id="mobile" name="mobile"
-                        placeholder="请输入手机号" maxlength="11">
+                    <input style="width: 300px" autocomplete="off" value="{$coachInfo.user_mobile}" type="number" maxlength="11" class="input-text"
+                        id="mobile" name="mobile" placeholder="请输入手机号" maxlength="11">
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">会员生日：</label>
+                <label class="form-label col-xs-4 col-sm-3">教练生日：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" style="font-size: 14px; width: 300px; text-align: center; height: 31px; line-height: 1.42857; border: solid 1px #ddd;"
-                        name="birth" id="birth" onfocus="selecttime()" value="" size="31" class="" readonly placeholder="请选择会员生日">
+                    <input style="width: 300px" type="text" value="{$coachInfo.user_birth}" class="input-text" name="birth"
+                        id="birth" onfocus="selectBirth()" value="" size="31" class="" readonly placeholder="请选择教练生日">
                 </div>
             </div>
             <div class="row cl">
@@ -81,15 +82,8 @@
 <script type="text/javascript" src="__ROOT__/assets/lib/jquery.validation/1.14.0/validate-methods.js"></script>
 <script>
     // 日期选择
-    function selecttime() {
-        var startTime = $("#birth").val();
-        if (startTime != "" || !startTime) {
-            let date = new Date();
-            let today = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay();
-            WdatePicker({ dateFmt: 'yyyy-MM-dd', minDate: '1920-01-01', maxDate: today });
-        } else {
-            WdatePicker({ dateFmt: 'yyyy-MM-dd', minDate: '1920-01-01', maxDate: today });
-        }
+    function selectBirth() {
+        WdatePicker({ dateFmt: 'yyyy-MM-dd', minDate: '1920-01-01', maxDate: '' });
     }
     // 表单正则
     $(function () {
@@ -122,7 +116,7 @@
                 layer.confirm('确定提交吗?', function () {
                     $(form).ajaxSubmit({
                         type: 'POST',
-                        url: 'addMember',
+                        url: '../../updateCoach',
                         typeData: 'JSON',
                         success: function (result) {
                             if (result.code == 0) {

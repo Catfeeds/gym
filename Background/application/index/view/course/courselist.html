@@ -1,25 +1,19 @@
-    <!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="renderer" content="webkit|ie-comp|ie-stand">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <!--[if lt IE 9]>
-    <script type="text/javascript" src="__ROOT__/public/static/lib/html5shiv.js"></script>
-    <script type="text/javascript" src="__ROOT__/public/static/lib/respond.min.js"></script>
-    <![endif]-->
-    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui/css/H-ui.min.css" />
-    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/H-ui.admin.css" />
-    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
-    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/skin/default/skin.css" id="skin" />
-    <link rel="stylesheet" type="text/css" href="__ROOT__/static/lib/h-ui.admin/css/style.css" />
-    <!-- <link rel="stylesheet" type="text/css" href="static/css/demo.css" /> -->
-    <!--[if IE 6]>
-    <script type="text/javascript" src="__ROOT__/public/static/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
-    <script>DD_belatedPNG.fix('*');</script>
-    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/style.css" />
+
     <style>
         .Hui-iconfont{
             font-size: 15px;
@@ -27,79 +21,194 @@
     </style>
     <title>课程管理</title>
 </head>
+
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 课程管理 <span class="c-gray en">&gt;</span> 课程管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
-<div class="page-container">
-    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l">
-        <!--<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> -->
-        <a class="btn btn-primary radius"  onclick="course_add()" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加课程信息</a></span> 
-        <span class="r" style="margin-top:5px;">共有数据：<strong>{:count($courseData)}</strong> 条</span> 
-    </div>
-    <div class="mt-20">
-        <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
-            <thead>
-            <tr class="text-c">
-                <th width="30">ID</th>
-                <th width="50">课程名称</th>
-                <th width="80">课程简介</th>
-                <th width="80">课程价格（元）</th>
-                <th width="80">课程周期</th>
-                <th width="80">课程打卡次数</th>
-                <th width="50">课程排序</th>
-                <th width="50">是否展示</th>
-                <th width="50">操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            {if condition="sizeof($courseData) == 0"}
-            
-            {else /}
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 课程管理 <span
+            class="c-gray en">&gt;</span> 课程列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+            href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l">
+                <a class="btn btn-primary radius" onclick="addCourse()" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i>
+                    添加课程</a></span>
+            <span class="r" style="margin-top:5px;">共有数据：<strong>{:count($courseList)}</strong> 条</span>
+        </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                <thead>
+                    <tr class="text-c">
+                        <th width="30">课程ID</th>
+                        <th width="50">课程名称</th>
+                        <th width="50">课程人数</th>
+                        <th width="80">课程价格</th>
+                        <th width="80">课程周期</th>
+                        <th width="50">课程排序</th>
+                        <th width="50">是否展示</th>
+                        <th width="50">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if condition="sizeof($courseList) == 0"}
 
-            {volist name="$courseData" id="vol"}
-            <tr class="text-c">
-                <td>{$vol.course_id}</td>
-                <td>{$vol.course_name}</td>
-                <td>{$vol.course_brief}</td>
-                <td>{$vol.course_price}</td>
-                <td>{$vol.course_period} 天</td>
-                <td>{$vol.course_times} 次</td>
-                <td>{$vol.sort}</td>
-                <td class="td-status">
-                {if condition = "$vol.status eq 2 "}
-                <span class="label label-defaunt radius" title="不展示" onClick="course_start(this,'{$vol.course_id}');" style="cursor: pointer;">不展示</span>
-                {elseif condition = "$vol.status eq 1" /}
-                <span class="label label-success radius" title="展示" onClick="course_stop(this,'{$vol.course_id}');" style="cursor: pointer;">已展示</span>
-                {/if}
-                </td>
-                <td class="f-14 td-manage">
-                    <a style="text-decoration:none" class="ml-5" onClick="course_detail('{$vol.course_id}')" href="javascript:;" title="详情"><i class="Hui-iconfont">&#xe715;</i></a>
-                    <a style="text-decoration:none" class="ml-5" onClick="course_edit('{$vol.course_id}')" href="javascript:;" title="修改"><i class="Hui-iconfont">&#xe60c;</i></a>
-                    <a style="text-decoration:none" class="ml-5" onClick="course_del(this,'{$vol.course_id}')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
-                </td>
-            </tr>
-            {/volist}
+                    {else /}
 
-            {/if}
-            </tbody>
-        </table>
-    </div>
-</div>
+                    {volist name="$courseList" id="vol"}
+                    <tr class="text-c">
+                        <td>{$vol.course_id}</td>
+                        <td>{$vol.course_name}</td>
+                        <td>{$vol.course_mem}</td>
+                        <td>{$vol.course_price}</td>
+                        <td>{$vol.course_period} 分钟/课时</td>
+                        <td>{$vol.sort}</td>
+                        <td class="td-status">
+                            {if condition = "$vol.status eq 2 "}
+                            <span class="label label-defaunt radius" title="不展示" onClick="activeCourse(this,'{$vol.course_id}');"
+                                style="cursor: pointer;">不展示</span>
+                            {elseif condition = "$vol.status eq 1" /}
+                            <span class="label label-success radius" title="展示" onClick="closeCourse(this,'{$vol.course_id}');"
+                                style="cursor: pointer;">已展示</span>
+                            {/if}
+                        </td>
+                        <td class="f-14 td-manage">
+                            <a style="text-decoration:none" class="ml-5" onClick="courseDetail('{$vol.course_id}')"
+                                href="javascript:;" title="详情"><i class="Hui-iconfont">&#xe715;</i></a>
+                            <a style="text-decoration:none" class="ml-5" onClick="editCourse('{$vol.course_id}')" href="javascript:;"
+                                title="修改"><i class="Hui-iconfont">&#xe60c;</i></a>
+                            <a style="text-decoration:none" class="ml-5" onClick="course_del(this,'{$vol.course_id}')"
+                                href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                        </td>
+                    </tr>
+                    {/volist}
 
-<footer class="footer mt-20">
-    <div class="container">
-    <p>Powered By 福建麦口信息科技有限公司</p>  
+                    {/if}
+                </tbody>
+            </table>
+        </div>
     </div>
-</footer>
-<!--_footer 作为公共模版分离出去-->
-<script type="text/javascript" src="__ROOT__/static/lib/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="__ROOT__/static/lib/layer/2.4/layer.js"></script>
-<script type="text/javascript" src="__ROOT__/static/lib/h-ui/js/H-ui.min.js"></script>
-<script type="text/javascript" src="__ROOT__/static/lib/h-ui.admin/js/H-ui.admin.js"></script>
-<!--/_footer 作为公共模版分离出去-->
-<!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="__ROOT__/static/lib/My97DatePicker/4.8/WdatePicker.js"></script>
-<script type="text/javascript" src="__ROOT__/static/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="__ROOT__/static/lib/laypage/laypage.js"></script>
-<script type="text/javascript" src="__ROOT__/static/js/courselist.js"></script>
+
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
+    <script>
+        // 初始化表格
+        $('.table-sort').dataTable({
+            language: {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "从当前数据中检索： ",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上页",
+                    "sNext": "下页",
+                    "sLast": "末页"
+                },
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            },
+            "aaSorting": [[0, "asc"]],//默认第几个排序
+            "bStateSave": true,//状态保存
+            "aocourseDefs": [
+                { "orderable": false, "aTargets": [] }// 制定列不参与排序
+            ],
+        });
+        /*course-添加*/
+        function addCourse() {
+            var index = layer.open({
+                type: 2,
+                title: '添加课程',
+                content: 'courseadd',
+                end: function () {
+                    location.replace(location.href);
+                }
+            });
+            layer.full(index);
+        }
+        /*course-修改*/
+        function editCourse(id) {
+            var index = layer.open({
+                type: 2,
+                title: '课程信息修改',
+                content: 'courseedit/course_id/' + id,
+                end: function () {
+                    location.replace(location.href);
+                }
+            });
+            layer.full(index);
+        }
+        /*course-展示*/
+        function activeCourse(obj, id) {
+            layer.confirm('确认变更当前课程状态为显示吗？', function (index) {
+                var str = { id: id };
+                $.post("startCourse", str, function (res) {
+                    if (res.code == 0) {
+                        $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius" title="展示" onClick="closeCourse(this,' + id + ');" style="cursor: pointer;">已展示</span>');
+                        $(obj).remove();
+                        layer.msg(res.msg, { icon: 6, time: 1000 });
+                    } else {
+                        layer.msg(res.msg, { icon: 5, time: 1000 });
+                    }
+                })
+            });
+        }
+        /*course-不展示*/
+        function closeCourse(obj, id) {
+            layer.confirm('确认变更当前课程状态为不显示吗？', function (index) {
+                var str = { id: id };
+                $.post("stopCourse", str, function (res) {
+                    if (res.code == 0) {
+                        $(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius" title="不展示" onClick="activeCourse(this,' + id + ');" style="cursor: pointer;">不展示</span>');
+                        $(obj).remove();
+                        layer.msg(res.msg, { icon: 6, time: 1000 });
+                    } else {
+                        layer.msg(res.msg, { icon: 5, time: 1000 });
+                    }
+                })
+            });
+        }
+        /*course-删除*/
+        function course_del(obj, id) {
+            layer.confirm('确认要删除课程与对应的班级吗？', function (index) {
+                var str = { id: id };
+                $.post("delCourse", str, function (res) {
+                    if (res.code == 0) {
+                        $(obj).parents("tr").remove();
+                        $(obj).remove();
+                        layer.msg(res.msg, { icon: 6, time: 1000 });
+                    } else {
+                        layer.msg(res.msg, { icon: 5, time: 1000 });
+                    }
+                })
+            });
+        }
+        /*course-详情*/
+        function courseDetail(id) {
+            var index = layer.open({
+                type: 2,
+                title: '课程详情',
+                content: 'coursedetail/course_id/' + id,
+                end: function () {
+                    location.replace(location.href);
+                }
+            });
+            layer.full(index);
+        }     
+    </script>
 </body>
+
 </html>

@@ -226,4 +226,132 @@ class User extends Controller
         }
     }
 
+    /***************************/
+    /********  教练相关  ********/
+    /***************************/
+
+    /**
+     * 教练列表展示
+     *
+     * @return html
+     */
+    public function coachlist()
+    {
+        $user = new userDB;
+        $coachList = $user->where('user_type', 2)->field('uid, user_name, user_gender, user_nickname, user_avatar_url, user_city, user_province, user_country, user_mobile, user_birth, auth_name, created_at, auth_at, status')->where('status', '<>', 3)->select();
+        $this->assign('coachList', $coachList);
+        return $this->fetch();
+    }
+
+    /**
+     * 新增教练界面
+     *
+     * @return html
+     */
+    public function coachadd()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 新增教练
+     *
+     * @return void
+     */
+    public function addCoach()
+    {
+        $user = new userDB;
+        $mobile = request()->param('mobile');
+        // 手机号不能重复
+        $isMobileExist = $user->where('user_mobile', $mobile)->value('uid');
+        if ($isMobileExist) {
+            return objReturn(401, '当前手机号已存在');
+        }
+        $member['user_name'] = htmlspecialchars(request()->param('name'));
+        $member['user_mobile'] = $mobile;
+        $member['user_gender'] = request()->param('gender');
+        $member['user_birth'] = request()->param('birth');
+        $member['user_type'] = 2;
+        $member['created_at'] = time();
+
+        $insert = $user->save($member);
+        if ($insert) {
+            return objReturn(0, '教练添加成功');
+        } else {
+            return objReturn(400, '教练添加失败');
+        }
+    }
+
+    /**
+     * 修改教练信息界面
+     *
+     * @return html
+     */
+    public function coachedit()
+    {
+        $uid = request()->param('uid');
+        $coachInfo = Db::name('user')->where('uid', $uid)->field('user_name, user_gender, user_mobile, user_birth')->find();
+        $this->assign('coachInfo', $coachInfo);
+        $this->assign('uid', $uid);
+        return $this->fetch();
+    }
+
+    /**
+     * 修改教练信息
+     *
+     * @return void
+     */
+    public function updateCoach()
+    {
+        $uid = request()->param('uid');
+        $member['user_name'] = htmlspecialchars(request()->param('name'));
+        $member['user_mobile'] = request()->param('mobile');
+        $member['user_gender'] = request()->param('gender');
+        $member['user_birth'] = request()->param('birth');
+        $member['user_type'] = 2;
+        $member['update_at'] = time();
+        $member['update_by'] = Session::get('adminId');
+        $update = Db::name('user')->where('uid', $uid)->update($member);
+        if ($update) {
+            return objReturn(0, '教练信息更新成功');
+        } else {
+            return objReturn(400, '教练信息更新失败');
+        }
+    }
+
+    /**
+     * 会员打卡记录界面
+     *
+     * @return html
+     */
+    public function coachclock()
+    {
+        $uid = request()->param('uid');
+        $coachClockInfo = getUserClockInfo($uid, 2);
+        $coachClockList = getClockList($uid, 2);
+        $userName = Db::name('user')->where('uid', $uid)->value('user_name');
+        $this->assign('uid', $uid);
+        $this->assign('userName', $userName);
+        $this->assign('coachClockInfo', $coachClockInfo);
+        $this->assign('coachClockList', $coachClockList);
+        return $this->fetch();
+    }
+
+    /**
+     * 删除会员打卡记录
+     *
+     * @return void
+     */
+    public function delCoachClock()
+    {
+        $uid = request()->param('uid');
+        $clockId = request()->param('clockId');
+        $update = Db::name('clock')->where('uid', $uid)->update(['status' => 3, 'update_at' => time(), 'update_by' => Session::get('adminId')]);
+        if ($update) {
+            return objReturn(0, '教练打卡记录删除成功');
+        } else {
+            return objReturn(400, '教练打卡记录删除失败');
+        }
+    }
+
 }

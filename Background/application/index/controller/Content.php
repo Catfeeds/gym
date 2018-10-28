@@ -266,4 +266,36 @@ class Content extends Controller
         }
     }
 
+    /***************************/
+    /********  关于我们  ********/
+    /***************************/
+
+    /**
+     * 关于我们界面
+     *
+     * @return html
+     */
+    public function aboutus()
+    {
+        $aboutUs = Db::name('mini_setting')->where('setting_id', 1)->value('about_us');
+        $this->assign('aboutUs', $aboutUs);
+        return $this->fetch();
+    }
+
+    /**
+     * 更新关于我们
+     *
+     * @return void
+     */
+    public function updateAboutUs()
+    {
+        $content = htmlspecialchars(request()->param('content'));
+        $update = Db::name('mini_setting')->where('setting_id', 1)->update(['update_at' => time(), 'content' => $content, 'update_by' => Session::get('adminId')]);
+        if ($update) {
+            return objReturn(0, '修改成功');
+        } else {
+            return objReturn(400, '修改失败');
+        }
+    }
+
 }

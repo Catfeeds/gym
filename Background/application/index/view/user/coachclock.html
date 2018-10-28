@@ -18,14 +18,14 @@
             font-size: 15px;
         }
     </style>
-    <title>会员打卡记录</title>
+    <title>教练打卡记录</title>
 </head>
 
 <body>
     <div class="page-container">
         <div class="cl pd-5 bg-1 bk-gray mt-20">
             <span class="l">
-                会员姓名：{$userName} 连续打卡：{$memClockInfo.nonStopClockCount}天 累计打卡：{$memClockInfo.clockCount}天
+                教练姓名：{$userName} 连续打卡：{$coachClockInfo.nonStopClockCount}天 累计打卡：{$coachClockInfo.clockCount}天
             </span>
             <input type="hidden" name="uid" id="uid" value="{$uid}">
         </div>
@@ -37,7 +37,7 @@
                 </a>
             </span> -->
             <span class="r">
-                共有数据：<strong>{:count($memClockList)}</strong>条
+                共有数据：<strong>{:count($coachClockList)}</strong>条
             </span>
         </div>
         <div class="mt-20">
@@ -55,10 +55,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {if condition="count($memClockList) == 0"}
+                    {if condition="count($coachClockList) == 0"}
 
                     {else /}
-                    {foreach name="$memClockList" key="k" item="v"}
+                    {foreach name="$coachClockList" key="k" item="v"}
                     <tr class="text-c">
                         <td>{$v.clock_id}</td>
                         <td>{$v.course_name}</td>
@@ -74,7 +74,7 @@
                             {/if}
                         </td>
                         <td class="td-manage">
-                            <a style="text-decoration:none" class="ml-5" onclick="delUserClock(this,'{$v.clock_id}')"
+                            <a style="text-decoration:none" class="ml-5" onclick="delCoachClock(this,'{$v.clock_id}')"
                                 href="javascript:;" title="删除"> <i class="Hui-iconfont">&#xe6e2;</i>
                             </a>
                         </td>
@@ -99,11 +99,11 @@
 <script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
 <script>
     /*会员删除*/
-    function delUserClock(obj, id) {
+    function delCoachClock(obj, id) {
         layer.confirm('确认要删除当前打卡记录吗？', function (index) {
             $.ajax({
                 type: 'POST',
-                url: '../../delMemClock',
+                url: '../../delCoachClock',
                 data: { clockId: id, uid: $('#uid').val() },
                 typeData: 'JSON',
                 success: function (res) {

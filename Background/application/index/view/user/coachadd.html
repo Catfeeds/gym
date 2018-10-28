@@ -18,21 +18,21 @@
         left: 325px;
     }
 </style>
-    <title>添加会员</title>
+    <title>添加教练</title>
 </head>
 
 <body>
     <div class="page-container">
         <form action="" method="post" class="form form-horizontal" id="form-class-add">
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">会员姓名：</label>
+                <label class="form-label col-xs-4 col-sm-3">教练姓名：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input style="width: 300px" autocomplete="off" type="text" class="input-text" id="name" name="name"
-                        placeholder="请输入会员姓名" maxlength="28">
+                        placeholder="请输入教练姓名" maxlength="28">
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">会员性别：</label>
+                <label class="form-label col-xs-4 col-sm-3">教练性别：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <select name="gender" id="gender" style="width: 300px;font-size: 14px; height: 31px;line-height: 1.42857;padding: 4px;">
                         <option value="0">女</option>
@@ -41,17 +41,17 @@
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">会员手机号：</label>
+                <label class="form-label col-xs-4 col-sm-3">教练手机号：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input style="width: 300px" autocomplete="off" type="number" maxlength="11" class="input-text" id="mobile" name="mobile"
                         placeholder="请输入手机号" maxlength="11">
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">会员生日：</label>
+                <label class="form-label col-xs-4 col-sm-3">教练生日：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input type="text" style="font-size: 14px; width: 300px; text-align: center; height: 31px; line-height: 1.42857; border: solid 1px #ddd;"
-                        name="birth" id="birth" onfocus="selecttime()" value="" size="31" class="" readonly placeholder="请选择会员生日">
+                        name="birth" id="birth" onfocus="selecttime()" value="" size="31" class="" readonly placeholder="请选择教练生日">
                 </div>
             </div>
             <div class="row cl">
@@ -122,7 +122,7 @@
                 layer.confirm('确定提交吗?', function () {
                     $(form).ajaxSubmit({
                         type: 'POST',
-                        url: 'addMember',
+                        url: 'addCoach',
                         typeData: 'JSON',
                         success: function (result) {
                             if (result.code == 0) {
