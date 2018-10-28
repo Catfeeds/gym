@@ -84,7 +84,37 @@ class User extends Controller
         $userClockInfo = getUserClockInfo($uid, $userType);
         // 获取用户拥有的课程列表及剩余打卡课时
         $userCourse = getUserCourse($uid);
-        $res['course'] = $userCourse;
+        // 对userCourse做简单处理
+        // 如果有课程 判断每个课程是否都有效
+        $validCourse = [];
+        $updateArr = [];
+        $validSort = [];
+        foreach ($userCourseList as $k => $v) {
+            // 超时需要更新状态
+            if ($v['status'] == 1 && $v['end_at'] < time()) {
+                $v['status'] = 3;
+                $v['updated_at'] = time();
+                $updateArr[] = $v;
+                continue;
+            }
+            // 当未到打卡时间时，此表示暂存状态 不可点击 但是同样展示 显示开始时间
+            if ($v['status'] == 1 && $v['start_at'] > time()) {
+                $v['status'] = 5;
+                $v['start_at_conv'] = date('Y-m-d', $v['start_at']);
+            }
+            // 正常情况
+            $validSort[] = $v['status'];
+            $validCourse[] = $v;
+        }
+        // 如果有需要update的data 则update
+        if (count($updateArr) > 0) {
+            $user_course->isUpdate()->saveAll($updateArr);
+        }
+        // 如果有效课程存在 将所有不展示的课程放在最后
+        if (count($validCourse) > 1) {
+            array_multisort($validSort, SORT_ASC, SORT_NUMERIC, $validCourse);
+        }
+        $res['course'] = $validCourse;
         $res['clockInfo'] = $userClockInfo;
         return objReturn(0, 'success', $res);
     }
@@ -174,7 +204,7 @@ class User extends Controller
         $uid = intval(request()->param('uid'));
         if (empty($uid)) return objReturn(400, 'Invaild Param');
 
-        $classList = getUserCourse($uid);
+        $classList = getUserCourseList($uid);
 
         if (!$classList) return objReturn(400, 'No Course');
         return objReturn(0, 'success', $classList);

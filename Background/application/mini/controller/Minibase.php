@@ -111,6 +111,11 @@ class Minibase extends Controller
 
         $banner = new Banner;
         $bannerList = getBanner(false);
+        if ($bannerList) {
+            foreach ($bannerList as &$info) {
+                $info['banner_img'] = 'https://test.kekexunxun.com' . $info['banner_img'];
+            }
+        }
         if (!$bannerList) return objReturn(0, 'No banner');
         return objReturn(0, 'success', $bannerList);
     }

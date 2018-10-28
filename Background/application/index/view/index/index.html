@@ -10,11 +10,11 @@
 	<link rel="Bookmark" href="/favicon.ico">
 	<link rel="Shortcut Icon" href="/favicon.ico" />
 
-	<link rel="stylesheet" type="text/css" href="static/lib/h-ui/css/H-ui.min.css" />
-	<link rel="stylesheet" type="text/css" href="static/lib/h-ui.admin/css/H-ui.admin.css" />
-	<link rel="stylesheet" type="text/css" href="static/lib/Hui-iconfont/1.0.8/iconfont.css" />
-	<link rel="stylesheet" type="text/css" href="static/lib/h-ui.admin/skin/default/skin.css" id="skin" />
-	<link rel="stylesheet" type="text/css" href="static/lib/h-ui.admin/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="assets/lib/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="assets/lib/h-ui.admin/css/H-ui.admin.css" />
+	<link rel="stylesheet" type="text/css" href="assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="assets/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+	<link rel="stylesheet" type="text/css" href="assets/lib/h-ui.admin/css/style.css" />
 
 	<title>Reshape重塑形体</title>
 	<meta name="keywords" content="Reshape,重塑形体,健身">
@@ -24,7 +24,7 @@
 <body>
 	<header class="navbar-wrapper">
 		<div class="navbar navbar-fixed-top">
-			<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" href="https://gym.kekexunxun.com">Reshape重塑形体</a>
+			<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" href="https://test.kekexunxun.com">Reshape重塑形体</a>
 				<span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0.0</span>
 				<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
 
@@ -32,8 +32,8 @@
 					<ul class="cl">
 						<li>超级管理员</li>
 						<li class="dropDown dropDown_hover">
-							<span id="admin_id" style="display: none;">{$admin_id}</span>
-							<a href="#" class="dropDown_A">{$username}<i class="Hui-iconfont">&#xe6d5;</i></a>
+							<span id="admin_id" style="display: none;">{$adminId}</span>
+							<a href="#" class="dropDown_A">{$uname}<i class="Hui-iconfont">&#xe6d5;</i></a>
 							<ul class="dropDown-menu menu radius box-shadow">
 								<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
 								<li><a href="javascript:;" onClick="editPassword()">修改密码</a></li>
@@ -62,7 +62,6 @@
 				<dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
-						<li><a data-href="index/system/adminlist" data-title="管理员管理" href="javascript:;">管理员列表</a></li>
 						<li><a data-href="index/system/minisetting" data-title="小程序设置" href="javascript:;">小程序设置</a></li>
 					</ul>
 				</dd>
@@ -71,7 +70,7 @@
 				<dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
-						<li><a data-href="index/user/userlist" data-title="会员列表" href="javascript:void(0)">会员列表</a></li>
+						<li><a data-href="index/user/memberlist" data-title="会员列表" href="javascript:void(0)">会员列表</a></li>
 						<li><a data-href="index/user/coachlist" data-title="教练列表" href="javascript:void(0)">教练列表</a></li>
 					</ul>
 				</dd>
@@ -81,8 +80,9 @@
 				<dd>
 					<ul>
 						<li><a data-href="index/content/bannerlist" data-title="banner管理" href="javascript:void(0)">Banner</a></li>
+						<li><a data-href="index/content/aboutus" data-title="关于我们" href="javascript:void(0)">关于我们</a></li>
 						<li><a data-href="index/content/feedback" data-title="用户反馈" href="javascript:;">用户反馈</a></li>
-						<li><a data-href="index/clause/clause" data-title="用户协议" href="javascript:void(0)">用户协议</a></li>
+						<li><a data-href="index/content/clause" data-title="用户协议" href="javascript:void(0)">用户协议</a></li>
 					</ul>
 				</dd>
 			</dl>
@@ -91,6 +91,14 @@
 				<dd>
 					<ul>
 						<li><a data-href="index/project/projectlist" data-title="项目列表" href="javascript:void(0)">项目列表</a></li>
+					</ul>
+				</dd>
+			</dl>
+			<dl id="menu-course">
+				<dt><i class="Hui-iconfont">&#xe616;</i> 课程管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+				<dd>
+					<ul>
+						<li><a data-href="index/course/courselist" data-title="课程列表" href="javascript:void(0)">课程列表</a></li>
 					</ul>
 				</dd>
 			</dl>
@@ -103,7 +111,7 @@
 					</ul>
 				</dd>
 			</dl>
-			<dl id="menu-message">
+			<!-- <dl id="menu-message">
 				<dt><i class="Hui-iconfont">&#xe613;</i> 消息管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
@@ -111,7 +119,7 @@
 						<li><a data-href="index/msg/notification" data-title="推送列表" href="javascript:void(0)">推送列表</a></li>
 					</ul>
 				</dd>
-			</dl>
+			</dl> -->
 		</div>
 	</aside>
 	<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
@@ -183,16 +191,16 @@
 		</div>
 	</div>
 	<!--_footer 作为公共模版分离出去-->
-	<script type="text/javascript" src="static/lib/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="static/lib/layer/2.4/layer.js"></script>
-	<script type="text/javascript" src="static/lib/h-ui/js/H-ui.min.js"></script>
-	<script type="text/javascript" src="static/lib/h-ui.admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="assets/lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="assets/lib/layer/2.4/layer.js"></script>
+	<script type="text/javascript" src="assets/lib/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
 	<!--/_footer 作为公共模版分离出去-->
 
 	<!--请在下方写此页面业务相关的脚本-->
-	<script type="text/javascript" src="static/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
-	<script src="static/js/md5.min.js"></script>
-	<script type="text/javascript" src="__ROOT__/static/js/index.js"></script>
+	<script type="text/javascript" src="assets/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
+	<script src="assets/js/md5.min.js"></script>
+	<script type="text/javascript" src="__ROOT__/assets/js/index.js"></script>
 </body>
 
 </html>

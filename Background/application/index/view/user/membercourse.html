@@ -1,0 +1,262 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/style.css" />
+    <style>
+        .Hui-iconfont{
+            font-size: 20px;
+        }
+        .table-sort td{
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+        <span class="l" style="margin-left: 30px;">会员名称：{$userName}</span>
+        <input type="hidden" id="uid" value="{$uid}">
+    </div>
+    <div class="page-container">
+        <div class="cl pd-5 bg-1 bk-gray mt-20">
+            <span class="l">
+                <a class="btn btn-primary radius" onclick="addMemberCourse('/index/user/membercourseadd')" href="javascript:;">
+                    <i class="Hui-iconfont">&#xe600;</i>
+                    添加会员课程
+                </a>
+            </span>
+            <span class="r">
+                共有数据：<strong>{:count($userCourseList)}</strong>条
+            </span>
+        </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg table-hover table-responsive">
+                <thead>
+                    <tr class="text-c">
+                        <th width="60">课程ID</th>
+                        <th width="60">课程名称</th>
+                        <th width="60">课程周期</th>
+                        <th width="60">剩余课时</th>
+                        <th width="60">开始时间</th>
+                        <th width="60">结束时间</th>
+                        <th width="60">课程状态</th>
+                        <th width="50">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if condition="count($userCourseList) == 0"}
+                    {else /}
+                    {volist name="$userCourseList" id="vol"}
+                    <tr class="text-c">
+                        <td>{$vol.course_id}</td>
+                        <td>{$vol.course_name}</td>
+                        <td>{$vol.course_period}分钟/课时</td>
+                        <td>{$vol.course_left_times}</td>
+                        <td>{$vol.start_at}</td>
+                        <td>{$vol.end_at}</td>
+                        <td>
+                            {if condition="$vol.status == 1"}
+                            <span class="label label-success radius">正常</span>
+                            {elseif condition = "$vol.status == 2" /}
+                            <span class="label label-warning radius">打卡结束</span>
+                            {elseif condition = "$vol.status == 3" /}
+                            <span class="label label-danger radius">课程超时</span>
+                            {else}
+                            {$vol.status}
+                            {/if}
+                        </td>
+                        <td class="td-manage">
+                            <a style="text-decoration:none" class="ml-5" onclick="delUserCourse(this,'{$vol.course_id}')"
+                                href="javascript:;" title="删除"> <i class="Hui-iconfont">&#xe6e2;</i>
+                            </a>
+                        </td>
+                    </tr>
+                    {/volist}
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 添加用户课程的Modal -->
+    <div id="modal-demotwo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <span>添加会员课程</span>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+                </div>
+                <div class="modal-body">
+                    <!-- 对话框内容 -->
+                    <form action="" method="post" class="form form-horizontal" id="form-class-add">
+                        <div class="row cl active merchantlist-div" id="pause_reason_div">
+                            <label class="form-label col-xs-4 col-sm-3">
+                                <span class="c-red">*</span>
+                                课程选择：
+                            </label>
+                            <div class="formControls col-xs-6 col-sm-6">
+                                <select name="course" id="course" style="width: 200px;font-size: 14px; height: 31px;line-height: 1.42857;padding: 4px;">
+                                    {volist name="$courseList" id="vol"}
+                                    <option value="{$vol.course_id}">{$vol.course_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row cl active merchantlist-div" id="pause_reason_div">
+                            <label class="form-label col-xs-4 col-sm-3">
+                                <span class="c-red">*</span>
+                                课程剩余课时：
+                            </label>
+                            <div class="formControls col-xs-6 col-sm-6">
+                                <input name="course_times" id="course_times" type="number" placeholder="请输入剩余课时" max="300" style="font-size: 14px; width: 200px; text-align: center; height: 31px; line-height: 1.42857; border: solid 1px #ddd;" />
+                            </div>
+                        </div>
+                        <div class="row cl active merchantlist-div" id="pause_reason_div">
+                            <label class="form-label col-xs-4 col-sm-3">
+                                <span class="c-red">*</span>
+                                课程开始时间：
+                            </label>
+                            <div class="formControls col-xs-6 col-sm-6">
+                                <input type="text" style="font-size: 14px; width: 200px; text-align: center; height: 31px; line-height: 1.42857; border: solid 1px #ddd;"
+                                    name="course_start" id="course_start" onfocus="selectStart()" value="" size="31"
+                                    class="" readonly placeholder="请选择课程开始时间">
+                            </div>
+                        </div>
+                        <div class="row cl active merchantlist-div" id="pause_reason_div">
+                            <label class="form-label col-xs-4 col-sm-3">
+                                <span class="c-red">*</span>
+                                课程结束时间：
+                            </label>
+                            <div class="formControls col-xs-6 col-sm-6">
+                                <input type="text" style="font-size: 14px; width: 200px; text-align: center; height: 31px; line-height: 1.42857; border: solid 1px #ddd;"
+                                    name="course_end" id="course_end" onfocus="selectEnd()" value="" size="31" class=""
+                                    readonly placeholder="请选择课程结束时间">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="submit" class="btn btn-primary" href="javascript:void();">确定</button>
+                    <button class="btn close-btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
+    <script>
+        /*会员课程删除*/
+        function delUserCourse(obj, id) {
+            layer.confirm('确认要删除当前会员吗？', function (index) {
+                $.ajax({
+                    type: 'POST',
+                    url: '../../delUserCourse',
+                    data: { uid: $('#uid').val(), courseId: id },
+                    typeData: 'JSON',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            $(obj).parents("tr").remove();
+                            layer.msg(res.msg, { icon: 6, time: 1300 });
+                        } else {
+                            layer.msg(res.msg, { icon: 5, time: 1300 });
+                        }
+                    },
+                    error: function () {
+                        layer.alert('请求失败!', { icon: 2 });
+                    }
+                });
+            });
+        }
+
+        // 课程开始时间选择
+        function selectStart() {
+            var endTime = $("#course_end").val();
+            if (endTime != "" || !endTime) {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', minDate: '2000-01-01', maxDate: endTime });
+            } else {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', minDate: '2000-01-01', maxDate: '' });
+            }
+        }
+        // 课程结束时间选择
+        function selectEnd() {
+            var startTime = $("#course_start").val();
+            if (startTime != "" || !startTime) {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', minDate: startTime, maxDate: '' });
+            } else {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', minDate: '2000-01-01', maxDate: '' });
+            }
+        }
+
+        //添加科目
+        function addMemberCourse(url) {
+            $('#form-public').attr('action', url);
+            $("#modal-demotwo").modal("show");
+        }
+
+        // 表单正则
+        $(function () {
+            /*表单提交*/
+            $('#submit').click(function () {
+                // 简单验证
+                if ($('#course').val() == "") {
+                    layer.alert('请选择课程!', { icon: 2 });
+                    return;
+                }
+                if ($('#course_times').val() == "" || $('#course_times').val() == 0) {
+                    layer.alert('剩余课时不能为0!', { icon: 2 });
+                    return;
+                }
+                if (!$('#course_start').val() || !$('#course_end').val()) {
+                    layer.alert('请选择课程时间范围!', { icon: 2 });
+                    return;
+                }
+                layer.confirm('确定为当前会员增加该课程吗?', function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: '../../addMemberCourse',
+                        dataType: 'json',
+                        data: {
+                            uid: $('#uid').val(),
+                            courseId: $('#course').val(),
+                            courseTimes: $('#course_times').val(),
+                            courseStart: $('#course_start').val(),
+                            courseEnd: $('#course_end').val()
+                        },
+                        success: function (res) {
+                            if (res.code == 0) {
+                                layer.msg('会员课程新增成功', { icon: 1, time: 1300 });
+                                setTimeout("location.replace(location.href);", 1300);
+                            } else {
+                                layer.msg(res.msg, { icon: 2, time: 1300 });
+                            }
+                        },
+                        error: function (res) {
+                            layer.msg('请求失败，请稍后重试！', { icon: 2, time: 1300 });
+                        },
+                    });
+                });
+            })
+        });
+    </script>
+</body>
+
+</html>

@@ -13,6 +13,7 @@ use app\index\model\Clock;
 use app\index\model\Clock_count;
 use app\index\model\User_course;
 use app\index\model\Project;
+use app\index\model\Course;
 
 /**
  * 构造返回数据
@@ -45,9 +46,7 @@ function getBanner($isAll = true)
     $bannerList = $banner->where('status', 'in', $status)->field($field)->order('created_at desc')->select();
     if (!$bannerList || count($bannerList) == 0) return null;
     $bannerList = collection($bannerList)->toArray();
-    foreach ($bannerList as &$info) {
-        $info['img'] = config('SITEROOT') . $info['img'];
-    }
+
     return $bannerList;
 }
 
@@ -132,7 +131,7 @@ function getClockList($uid, $userType = 1, $pageNum = null)
 {
     $limit = isset($pageNum) ? $pageNum * 10 . ', 10' : '';
     $clock = new Clock;
-    $clockList = $clock->alias('c')->join('gym_course gc', 'c.course_id = gc.course_id', 'LEFT')->where('c.user_type', $userType)->where('c.uid', $uid)->where('c.status', '<>', 3)->field('c.clock_id, c.clock_start_at, c.clock_start_location, c.clock_end_at, c.course_id, gc.course_name, gc.course_period')->limit($limit)->order('c.created_at desc')->select();
+    $clockList = $clock->alias('c')->join('gym_course gc', 'c.course_id = gc.course_id', 'LEFT')->where('c.user_type', $userType)->where('c.uid', $uid)->where('c.status', '<>', 3)->field('c.clock_id, c.clock_start_at, c.clock_start_location, c.clock_end_at, c.course_id, gc.course_name, gc.course_period, c.status')->limit($limit)->order('c.created_at desc')->select();
     if (!$clockList || count($clockList) == 0) return null;
     foreach ($clockList as &$info) {
         if (!empty($info['clock_end_at'])) {
@@ -171,13 +170,13 @@ function getUserInfoById($uid)
 }
 
 /**
- * 获取用户的课程ID
+ * 获取用户的课程
  *
  * @param int $uid 用户id
  * @param int $pageNum 页码
  * @return void
  */
-function getCourseList($uid, $pageNum = null)
+function getUserCourse($uid, $pageNum = null)
 {
     $limit = isset($pageNum) ? $pageNum * 10 . ', 10' : '';
     $user_course = new User_course;
@@ -221,13 +220,13 @@ function getUserClockInfo($uid, $userType)
     // 初始化data值
     $res['nonStopClockCount'] = 0;
     $clock_count = new Clock_count;
-    $clockCount = $clock_count->where('uid', $uid)->where('user_type', $userType)->field('non_stop_count')->where('status', 1)->find();
+    $clockCount = $clock_count->where('uid', $uid)->where('user_type', $userType)->field('non_stop_count')->where('status', 2)->find();
     // 有打卡记录
     if ($clockCount) {
         $clockCount = collection($clockCount)->toArray();
         $res['nonStopClockCount'] = $clockCount['non_stop_count'];
     }
-    $res['clockCount'] = Db::name('clock')->where('uid', $uid)->where('user_type', $userType)->where('status', 1)->field('clock_id')->count();
+    $res['clockCount'] = Db::name('clock')->where('uid', $uid)->where('user_type', $userType)->where('status', 2)->field('clock_id')->count();
     // 是否有未结束打卡的记录
     $isHaveUnfinishClock = false;
     $unfinishClockInfo = [];
@@ -269,53 +268,24 @@ function getUserClockInfo($uid, $userType)
 }
 
 /**
- * 获取用户的课程
+ * 获取课程列表
  *
- * @param int $uid 用户id
- * @param boolean $isAll 是否需要查询所有（包括删除）
+ * @param boolean $isAll 是否获取所有课程
+ * @param int $pageNum 页码
  * @return void
  */
-function getUserCourse($uid, $isAll = false)
+function getCourse($isAll = false, $pageNum = null)
 {
-    $field = 'uc.idx, uc.uid, uc.course_id, uc.course_left_times, uc.start_at, uc.end_at, uc.created_at, uc.status, c.course_name, c.course_period';
-    $status = $isAll ? [1, 2, 3, 4, 5] : [1];
-    $user_course = new User_course;
-    $userCourseList = $user_course->alias('uc')->join('course c', 'uc.course_id = c.course_id', 'LEFT')->where('uc.uid', $uid)->where('uc.status', 'in', $status)->field($field)->order('uc.idx asc')->select();
-    if (!$userCourseList || count($userCourseList) == 0) {
+    $status = $isAll ? [1, 2] : [1];
+    $limit = $limit = isset($pageNum) ? $pageNum * 10 . ', 10' : '';
+    $field = "course_id, course_name, course_price, course_period, status, created_at";
+    $course = new Course;
+    $courseList = $course->where('status', 'in', $status)->field($field)->limit($limit)->order('created_at desc')->select();
+    if (!$courseList || count($courseList) == 0) {
         return null;
     }
-    $userCourseList = collection($userCourseList)->toArray();
-    // 如果有课程 判断每个课程是否都有效
-    $validCourse = [];
-    $updateArr = [];
-    $validSort = [];
-    foreach ($userCourseList as $k => $v) {
-        // 超时需要更新状态
-        if ($v['status'] == 1 && $v['end_at'] < time()) {
-            $v['status'] = 3;
-            $v['updated_at'] = time();
-            $updateArr[] = $v;
-            continue;
-        }
-        // 当未到打卡时间时，此表示暂存状态 不可点击 但是同样展示 显示开始时间
-        if ($v['status'] == 1 && $v['start_at'] > time()) {
-            $v['status'] = 5;
-            $v['start_at_conv'] = date('Y-m-d', $v['start_at']);
-        }
-        // 正常情况
-        $validSort[] = $v['status'];
-        $validCourse[] = $v;
-    }
-    // 如果有需要update的data 则update
-    if (count($updateArr) > 0) {
-        $user_course->isUpdate()->saveAll($updateArr);
-    }
-    // 如果有效课程存在 将所有不展示的课程放在最后
-    if (count($validCourse) > 1) {
-        array_multisort($validSort, SORT_ASC, SORT_NUMERIC, $validCourse);
-    }
-    // 返回正常的课程字段
-    return $validCourse;
+    $courseList = collection($courseList)->toArray();
+    return $courseList;
 }
 
 /**
@@ -427,20 +397,19 @@ function endClock($clockId, $timeStamp, $location)
  */
 function getFeedBack($uid = null, $userType = 1, $pageNum = null)
 {
-    $field = "idx, uid, content, img, reply, created_at, reply_at, reply_by, status";
+    $field = "idx, uid, content, img, reply, created_at, reply_at, reply_by, status, user_type";
     $limit = isset($pageNum) ? $pageNum * 10 . ', 10' : '';
     // 如果有传用户ID 则查询指定用户的反馈记录
     $feedback = new Feedback;
     if (isset($uid)) {
         $feedbackList = $feedback->where('uid', $uid)->where('status', 'in', [1, 2])->field($field)->limit($limit)->order('created_at desc')->select();
     } else {
-        $feedbackList = $feedback->where('status', 'in', [1, 2])->field($field)->limit($limit)->order('created_at desc')->select();
+        $feedbackList = $feedback->alias('f')->join('gym_user u', 'f.uid = u.uid and f.user_type = u.user_type', 'LEFT')->where('f.status', 'in', [1, 2])->field("f.idx, f.uid, f.content, f.img, f.reply, f.created_at, f.reply_at, f.reply_by, f.status, f.user_type, u.user_name, u.user_avatar_url")->order('created_at desc')->select();
     }
     if (!$feedbackList || count($feedbackList) == 0) return null;
     $feedbackList = collection($feedbackList)->toArray();
     foreach ($feedbackList as &$info) {
         if (!empty($info['reply_at'])) $info['reply_at'] = date('Y-m-d H:i:s', $info['reply_at']);
-        if (!empty($info['img'])) $info['img'] = config('SITEROOT') . $info['img'];
         $info['created_at'] = date('Y-m-d H:i:s', $info['created_at']);
         $info['status_conv'] = $info['status'] == 1 ? '待回复' : '已回复';
     }

@@ -22,7 +22,7 @@
         <text class='list-item-right'>{{item.end_at}}</text>
       </view>
       <view class='list-item-line'>
-        <text class='list-item-left'>当前状态</text>
+        <text class='list-item-left'>课程状态</text>
         <text class='list-item-right'>{{item.status_conv}}</text>
       </view>
     </view>

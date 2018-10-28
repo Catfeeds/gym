@@ -2,20 +2,17 @@
 namespace app\index\controller;
 
 use app\index\model\Admin;
-use app\index\model\Classes;
-use app\index\model\Classes_user;
 use app\index\model\Clause;
 use app\index\model\Course;
 use app\index\model\Feedback;
-use app\index\model\Subject;
-use app\index\model\System_setting;
 use app\index\model\User;
-use app\index\model\Teacher;
+
 use \think\Controller;
 use \think\Db;
 use \think\File;
 use \think\Request;
 use \think\Session;
+use app\index\model\Mini_setting;
 
 class System extends Controller
 {
@@ -69,15 +66,13 @@ class System extends Controller
      * 小程序设置编辑界面
      * @return  array  小程序基本信息数据
      */
-    public function miniproset(Request $request)
+    public function minisetting()
     {
-        $system_setting = new System_setting;
-        $systemSettingData = $system_setting->order('idx asc')->select();
-        if ($systemSettingData) {
-            $systemSettingData = collection($systemSettingData)->toArray();
-            $systemSettingData = $systemSettingData[0];
-        }
-        $this->assign('data', $systemSettingData);
+        $mini_setting = new Mini_setting;
+        $settingInfo = $mini_setting->where('setting_id', 1)->select();
+        $settingInfo = collection($settingInfo)->toArray();
+        $settingInfo = $settingInfo[0];
+        $this->assign('setting', $settingInfo);
         return $this->fetch();
     }
 
@@ -85,25 +80,24 @@ class System extends Controller
      * 插入或更新小程序基本信息
      * @return  result              更新结果
      */
-    public function editProgram(Request $request)
+    public function editMiniSetting()
     {
-        $system_setting = new System_setting;
-        $idx = intval($request->param('idx'));
-        $data['mini_name'] = htmlspecialchars($request->param('mini_name'));
-        $data['service_phone'] = $request->param('service_phone');
-        $data['share_text'] = htmlspecialchars($request->param('share_text'));
-        $data['store_info'] = htmlspecialchars($request->param('store_info'));
+        $mini_setting = new Mini_setting;
+        $data['mini_name'] = htmlspecialchars(request()->param('mini_name'));
+        $data['service_phone'] = request()->param('service_phone');
+        $data['location'] = request()->param('location');
+        $data['mini_notice'] = htmlspecialchars(request()->param('notice'));
+        $data['share_text'] = htmlspecialchars(request()->param('share_text'));
+        $data['store_info'] = htmlspecialchars(request()->param('store_info'));
         $data['update_at'] = time();
-        $data['update_by'] = Session::get('admin_id');
-        $result = $system_setting->where(['idx' => $idx])->update($data);
+        $data['update_by'] = Session::get('adminId');
+        $result = $mini_setting->where('setting_id', 1)->update($data);
         if ($result) {
             return objReturn(0, '保存成功!');
         } else {
             return objReturn(400, '保存失败!');
         }
     }
-
-    // ***************************
 
     /**
      * 用户反馈列表

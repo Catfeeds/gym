@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/style.css" />
+
+    <title>用户反馈</title>
+</head>
+
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 内容管理 <span
+            class="c-gray en">&gt;</span> 用户反馈 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+            href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div class="cl pd-5 bg-1 bk-gray mt-20">
+            <span class="l">
+            </span>
+            <span class="r">
+                共有数据：<strong>{:count($fbList)}</strong> 条
+            </span>
+        </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-hover table-bg table-sort">
+                <thead>
+                    <tr class="text-c">
+                        <th width="30">ID</th>
+                        <th width="60">用户信息</th>
+                        <th width="60">用户类别</th>
+                        <th width="100">反馈信息</th>
+                        <th width="60">反馈图片</th>
+                        <th width="60">反馈时间</th>
+                        <th width="100">回复内容</th>
+                        <th width="60">回复时间</th>
+                        <th width="30">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if condition="count($fbList) == 0"}
+                    {else /}
+                    {foreach name="fbList" key="k" item="v"}
+                    <tr class="text-c">
+                        <td>{$v.idx}</td>
+                        <td>
+                            {if condition="$v.user_avatar_url"}
+                            <img src="{$v.user_avatar_url}" style="width:50px; height:50px; border-radius: 50%;">
+                            <p>{$v.user_name}</p>
+                            {else/}
+                            暂无图片{$v.user_avatar_url}{$v.user_name}
+                            {/if}
+                        </td>
+                        <td>
+                            {if condition="$v.user_type == 1"}
+                            会员
+                            {else/}
+                            教练
+                            {/if}
+                        </td>
+                        <td>{$v.content}</td>
+                        <td>
+                            {if condition="empty($v.img)"}
+                            无图片
+                            {else/}
+                            <a href="{$v.img}" target="_blank">
+                                <img src="{$v.img}" style="width:100px;height:100px" title="点击预览" />
+                            </a>
+                            {/if}
+                        </td>
+                        <td>{$v.created_at}</td>
+                        <td>{$v.reply ? $v.reply : '暂未回复'}</td>
+                        <td>{$v.reply_at ? $v.reply_at : '暂未回复'}</td>
+                        <td class="td-status">
+                            {if condition="$v.status eq 1"}
+                            <span onclick="feedbackReply(this,'{$v.idx}','{$v.status}')" class="label label-defaunt radius"
+                                title="点击回复" style="cursor:pointer;">
+                                待回复
+                            </span>
+                            {elseif condition="$v.status eq 2"}
+                            <span class="label label-success radius" title="已回复" style="cursor:pointer;">已回复</span>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/foreach}
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- 回复反馈内容的Modal -->
+    <div id="modal-demotwo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="merchantlist-h3">用户反馈回复</h3>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+                </div>
+                <div class="modal-body">
+                    <!-- <p>对话框内容…</p> -->
+                    <form action="" method="post" class="form form-horizontal" id="form-feedback-rebly">
+                        <input type="hidden" name="idx" value="" id="idx" />
+                        <!-- <input type="hidden" name="status" value="" id="status" /> -->
+                        <div class="row cl">
+                            <label class="form-label col-xs-7 col-sm-3">用户反馈：</label>
+                            <div class="formControls col-xs-3 col-sm-8">
+                                <textarea id="message" disabled="true" name="" cols="" rows="" class="textarea"
+                                    placeholder="140个字符以内" dragonfly="true"></textarea>
+                            </div>
+                        </div>
+                        <div class="row cl">
+                            <label class="form-label col-xs-7 col-sm-3">回复：</label>
+                            <div class="formControls col-xs-3 col-sm-8">
+                                <textarea id="reply" name="reply" cols="" rows="" class="textarea" placeholder="140个字符以内"
+                                    dragonfly="true" onkeyup="textarealength(this,140)"></textarea>
+                                <p style="display:none;" class="textarea-numberbar"><em class="textarea-length-two">0</em>/140</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="change" class="btn btn-primary" onclick="sendFeedbackReply()">确定</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
+    <script>
+        /*反馈回复*/
+        function feedbackReply(obj, idx, status) {
+            var message = $(obj).parents('tr').find('td:nth-child(4)').html();
+            $('#message').val(message);
+            $('#reply').val('');
+            $('#idx').val('');
+            $('#status').val('');
+            $('#idx').val(idx);
+            $('#status').val(status);
+            $("#modal-demotwo").modal("show");
+        }
+        /*字数限制*/
+        function textarealength(obj, number) {
+            var value = $(obj).val();
+            if (value.length > number) {
+                value = value.substring(0, number);
+                $(obj).val(value);
+            }
+            $(obj).next().find('em').html(value.length);
+        }
+        /**
+         * 发送回复内容
+         */
+        function sendFeedbackReply() {
+            var lt = $('#reply').val().length;
+            if (lt > 140 || lt == 0) {
+                layer.alert('请填写回复内容,字数不能超过140个字符.');
+                return;
+            }
+            layer.confirm('确定回复?', function () {
+                $('#form-feedback-rebly').ajaxSubmit({
+                    type: 'POST',
+                    url: 'feedbackReply',
+                    typeData: 'JSON',
+                    success: function (result) {
+                        if (result.code < 400) {
+                            layer.alert(result.msg, { icon: 1, closeBtn: 0 }, function () {
+                                window.location.href = window.location.href;
+                            });
+                        } else {
+                            layer.alert(result.msg, { icon: 2 });
+                        }
+                    },
+                    error: function () {
+                        layer.alert('请求失败!', { icon: 2 });
+                    }
+                });
+            });
+        }
+        $(function () {
+            $('.table-sort').dataTable({
+                language: {
+                    "sProcessing": "处理中...",
+                    "sLengthMenu": "显示 _MENU_ 项结果",
+                    "sZeroRecords": "没有匹配结果",
+                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                    "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sSearch": "从当前数据中检索： ",
+                    "sUrl": "",
+                    "sEmptyTable": "表中数据为空",
+                    "sLoadingRecords": "载入中...",
+                    "sInfoThousands": ",",
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": "上页",
+                        "sNext": "下页",
+                        "sLast": "末页"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": 以升序排列此列",
+                        "sSortDescending": ": 以降序排列此列"
+                    }
+                },
+                "aaSorting": [[0, "desc"]],//默认第几个排序
+                "bStateSave": true,//状态保存
+                "aoColumnDefs": [
+                    { "orderable": false, "aTargets": [] }// 制定列不参与排序
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -35,7 +35,7 @@
         <div class="row cl">
           <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60d;</i></label>
           <div class="formControls col-xs-8">
-            <input style="border-radius: 8px;background-color: #ffffff;opacity: 0.76;" id="account" name="account"
+            <input style="border-radius: 8px;background-color: #ffffff;opacity: 0.76;" id="uname" name="uname"
               maxlength="20" type="text" placeholder="账号" class="input-text size-L">
           </div>
         </div>
@@ -61,4 +61,48 @@
   <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
   <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
   <script src="__ROOT__/assets/js/md5.min.js"></script>
-  <script type="text/javascript" src="__ROOT__/assets/js/login.js"></script>
+  <script>
+    function check() {
+      if (!$('#uname').val()) {
+        layer.msg('用户名不能为空!', { icon: 2, time: 2000 });
+      } else if (!$('#pwd').val()) {
+        layer.msg('密码不能为空!', { icon: 2, time: 2000 });
+      } else {
+        $.ajax({
+          url: 'checkLogin',
+          type: "POST",
+          dataType: "json",
+          data: {
+            username: $('#uname').val(),
+            password: md5($('#pwd').val())
+          },
+          success: function (res) {
+            if (res.code == 0) {
+              layer.msg('登陆成功!', { icon: 1, time: 1500 });
+              setTimeout("window.location.href='http://test.kekexunxun.com/index'", 1000);
+            } else {
+              layer.msg(res.message, { icon: 2, time: 1500 });
+            }
+          }
+        });
+      }
+    }
+    // 键盘事件
+    function keyDown() {
+      if (event.keyCode == 13) {  //回车键的键值为13
+        $('#loginbtn').click(); //调用登录按钮的登录事件
+      }
+    }
+    $(document).ready(
+      function () {
+        $("#gotoPage").keydown(function (event) {
+          if (event.keyCode == 13) {
+            $('#loginbtn').click();
+          }
+        })
+      }
+    );
+  </script>
+</body>
+
+</html>

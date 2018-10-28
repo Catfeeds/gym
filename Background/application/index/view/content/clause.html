@@ -1,0 +1,106 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="Bookmark" href="/favicon.ico">
+    <link rel="Shortcut Icon" href="/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/style.css" />
+    <script type="text/javascript" src="__ROOT__/assets/lib/ueditor/1.4.3/ueditor.config.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/ueditor/1.4.3/ueditor.all.min.js"> </script>
+
+    <!--/meta 作为公共模版分离出去-->
+    <style>
+        #son select{
+          font-size: 14px; height: 31px; line-height: 1.42857; padding: 4px;
+      }
+      #edui1_iframeholder{
+        height: 200px;
+      }
+  </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <form action="" method="post" class="form form-horizontal" id="form-agreement-add">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-2">协议内容：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <script id="container" name="content" type="text/plain">
+                    {:htmlspecialchars_decode($clause)}
+                </script>
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                    <a onClick="agreement_save_submit();" class="btn btn-primary radius" href="javascript:;"><i class="Hui-iconfont">&#xe632;</i>
+                        保存并提交</a>
+                    <button style="margin-left: 20px;" onClick="emptyContent()" class="btn btn-default radius" type="button">清空</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/ueditor/1.4.3/ueditor.config.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/ueditor/1.4.3/ueditor.all.min.js"> </script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+    <script>
+        $(function () {
+            $('.skin-minimal input').iCheck({
+                checkboxClass: 'icheckbox-blue',
+                radioClass: 'iradio-blue',
+                increaseArea: '20%'
+            });
+            UE.getEditor('container');
+        });
+        // 表单提交
+        function agreement_save_submit() {
+            if (UE.getEditor('container').getContent() == '') {
+                layer.msg('协议内容不能为空！', { icon: 2, time: 1300 });
+                return false;
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: 'updateClause',
+                    dataType: 'json',
+                    data: $("#form-agreement-add").serialize(),
+                    success: function (data) {
+                        if (data.code == '0') {
+                            layer.msg(data.msg, { icon: 1, time: 1300 });
+                            setTimeout("location.replace(location.href)", 1300);
+                        } else {
+                            layer.msg(data.msg, { icon: 2, time: 1300 });
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg('请稍后再试！', { icon: 2, time: 1300 });
+                    },
+                });
+            }
+        }
+        // 清空输入框值
+        function emptyContent() {
+            UE.getEditor('container').setContent('');
+        }
+    </script>
+</body>
+
+</html>

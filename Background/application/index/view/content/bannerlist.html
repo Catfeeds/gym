@@ -1,0 +1,290 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/style.css" />
+
+    <title>Banner</title>
+    <style>
+        .Hui-iconfont{
+        font-size: 15px;
+    }
+    </style>
+</head>
+
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 内容管理<span class="c-gray en">&gt;</span>
+        Banner <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);"
+            title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+
+    <div class="page-container">
+        <div class="cl pd-5 bg-1 bk-gray mt-20">
+            <a href="javascript:;" onclick="addBanner()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>
+                添加Banner</a></span> <span class="r">共有数据：<strong>{:count($bannerList)}</strong>
+                条</span> </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-hover table-bg table-sort">
+                <thead>
+                    <tr class="text-c">
+                        <th width="30">ID</th>
+                        <th width="100">Banner</th>
+                        <th width="100">是否跳转</th>
+                        <th width="100">跳转项目名称</th>
+                        <th width="50">排序</th>
+                        <th width="50">状态</th>
+                        <th width="50">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if condition="count($bannerList) == 0"}
+                    {else /}
+                    {volist name="$bannerList" id="vol"}
+                    <tr class="text-c">
+                        <td>{$vol.banner_id}</td>
+                        <td><img src="{$vol.banner_img}" width="200px" height="100px"></td>
+                        <td>
+                            {if condition = "$vol.nav_type eq 0 "}
+                            <span class="label label-defaunt radius" title="不跳转">不跳转</span>
+                            {elseif condition = "$vol.nav_type eq 1" /}
+                            <span class="label label-success radius" title="跳转">跳转</span>
+                            {/if}
+                        </td>
+                        <td>
+                            {if condition = "$vol.nav_type eq 0 "}
+                            <span class="label label-defaunt radius" title="不跳转">不跳转</span>
+                            {elseif condition = "$vol.nav_type eq 1" /}
+                            {$vol.project_name}
+                            {/if}
+                        </td>
+                        <td>{$vol.sort}</td>
+                        <td class="td-status">
+                            {if condition = "$vol.status eq 1 "}
+                            <span class="label label-success radius" title="展示" onClick="closeBanner(this,'{$vol.banner_id}');"
+                                style="cursor: pointer;">已展示</span>
+                            {elseif condition = "$vol.status eq 2" /}
+                            <span class="label label-defaunt radius" title="不展示" onClick="activateBanner(this,'{$vol.banner_id}');"
+                                style="cursor: pointer;">未展示</span>
+                            {/if}
+                        </td>
+                        <td class="td-manage">
+                            <a style="text-decoration:none" onclick="editBannerSort('{$vol.banner_id}', '{$vol.sort}', '{$vol.nav_type}', '{$vol.nav_id}')"
+                                href="javascript:;" title="修改"><i class="Hui-iconfont">&#xe60c;</i></a>
+                            <a style="text-decoration:none" href="javascript:;" onClick="delBanner(this,'{$vol.banner_id}')"
+                                title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                        </td>
+                        {/volist}
+                        {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="modal-demotwo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <span>修改Banner信息</span>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+                </div>
+                <div class="modal-body">
+                    <!-- <p>对话框内容…</p> -->
+                    <form action="" method="post" class="form form-horizontal" id="form-public">
+                        <input type="hidden" id="banner_id" name="banner_id">
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">
+                                <span class="c-red">*</span>
+                                排序：
+                            </label>
+                            <div class="formControls col-xs-6 col-sm-6">
+                                <input style="width: 200px;" type="number" class="input-text valid" autocomplete="off"
+                                    id="banner_sort" value="" placeholder="banner排序 0 - 100" maxlength="3" max="100"
+                                    min="0" name="subject_name" />
+                            </div>
+                        </div>
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">
+                                <span class="c-red">*</span>
+                                是否跳转：
+                            </label>
+                            <div class="formControls col-xs-6 col-sm-6">
+                                <select name="is_nav" id="is_nav" onchange="changeNavState()" style="width: 200px; font-size: 14px; height: 31px;line-height: 1.42857;padding: 4px;">
+                                    <option value="0">不跳转</option>
+                                    <option value="1">跳转</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row cl" id="sortItem" style="display: none">
+                            <label class="form-label col-xs-4 col-sm-3">
+                                <span class="c-red">*</span>
+                                跳转的项目：
+                            </label>
+                            <div class="formControls col-xs-6 col-sm-6">
+                                <select name="nav_id" id="nav_id" style="width: 200px; font-size: 14px; height: 31px;line-height: 1.42857;padding: 4px;">
+                                    {volist name="$projectList" id="vol"}
+                                    <option value="{$vol.project_id}">{$vol.project_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="change" class="btn btn-primary" onclick="editBannerSortRequest()">确定</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
+    <script>
+        $(function () {
+            $('.table-sort').dataTable({
+                language: {
+                    "sProcessing": "处理中...",
+                    "sLengthMenu": "显示 _MENU_ 项结果",
+                    "sZeroRecords": "没有匹配结果",
+                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                    "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sSearch": "从当前数据中检索： ",
+                    "sUrl": "",
+                    "sEmptyTable": "表中数据为空",
+                    "sLoadingRecords": "载入中...",
+                    "sInfoThousands": ",",
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": "上页",
+                        "sNext": "下页",
+                        "sLast": "末页"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": 以升序排列此列",
+                        "sSortDescending": ": 以降序排列此列"
+                    }
+                },
+                "aaSorting": [[0, "asc"]],//默认第几个排序
+                "bStateSave": true,//状态保存
+                "aoColumnDefs": [
+                    { "orderable": false, "aTargets": [] }// 制定列不参与排序
+                ]
+            });
+        });
+        // 改变跳转下拉框的选项
+        function changeNavState() {
+            if ($('#is_nav').val() == 0) {
+                $('#sortItem').hide();
+            } else {
+                let projectLength = $('#sortItem').children.length;
+                if (projectLength == 0) {
+                    layer.msg('暂无可选项目', { icon: 2, time: 1300 });
+                    $('#is_nav').val(0);
+                } else {
+                    $('#sortItem').show();
+                }
+            }
+        }
+        /*banner-添加*/
+        function addBanner() {
+            var index = layer.open({
+                type: 2,
+                title: '添加Banner',
+                content: 'banneradd',
+                end: function () {
+                    location.replace(location.href);
+                }
+            });
+            layer.full(index);
+        }
+        /*banner-启用*/
+        function activateBanner(obj, id) {
+            layer.confirm('确认变更当前Banner状态为已展示吗？', function (index) {
+                $.post("activatBanner", { bannerId: id }, function (res) {
+                    if (res.code == 0) {
+                        $(obj).parents("td").html('<span class="label label-success radius" title="已展示" onClick="closeBanner(this,' + id + ');" style="cursor: pointer;">已展示</span>');
+                        layer.msg(res.msg, { icon: 6, time: 1300 });
+                    } else {
+                        layer.msg(res.msg, { icon: 5, time: 1300 });
+                    }
+                })
+            });
+        }
+        /*banner-不显示*/
+        function closeBanner(obj, id) {
+            layer.confirm('确认变更当前Banner状态为不展示吗？', function (index) {
+                $.post("closeBanner", { bannerId: id }, function (res) {
+                    if (res.code == 0) {
+                        $(obj).parents("td").html('<span class="label label-defaunt radius" title="未展示" onClick="activateBanner(this,' + id + ');" style="cursor: pointer;">未展示</span>');
+                        layer.msg(res.msg, { icon: 6, time: 1300 });
+                    } else {
+                        layer.msg(res.msg, { icon: 5, time: 1300 });
+                    }
+                })
+            });
+        }
+        /*banner-删除*/
+        function delBanner(obj, id) {
+            layer.confirm('确认要删除吗？', function (index) {
+                $.post("delBanner", { bannerId: id }, function (res) {
+                    if (res.code == 0) {
+                        $(obj).parents("tr").remove();
+                        layer.msg(res.msg, { icon: 6, time: 1300 });
+                    } else {
+                        layer.msg(res.msg, { icon: 5, time: 1300 });
+                    }
+                })
+            });
+        }
+        /*banner-排序修改*/
+        function editBannerSort(id, sort, navType, navId) {
+            $("#modal-demotwo").modal("show");
+            $("#banner_id").val(id);
+            $("#banner_sort").val(sort);
+            $("#is_nav").val(navType);
+            $("#nav_id").val(navId);
+        }
+        /*banner-排序修改提交*/
+        function editBannerSortRequest() {
+            var bannerId = $("#banner_id").val();
+            var banner_sort = $("#banner_sort").val();
+            var navType = $("#is_nav").val();
+            var navId = $("#nav_id").val();
+            if (banner_sort == '') {
+                layer.msg('排序不能为空哦！', { icon: 5, time: 1300 });
+                return false;
+            }
+            if (banner_sort > 100 || banner_sort < 0) {
+                layer.msg('Banner排序应在0-100区间！', { icon: 5, time: 1300 });
+                return false;
+            }
+            $.post("editBannerSort", { bannerId: bannerId, sort: banner_sort, navType: navType, navId: navId }, function (res) {
+                if (res.code == 0) {
+                    layer.alert(res.msg, { icon: 1, closeBtn: 0 }, function () {
+                        window.location.href = window.location.href;
+                    });
+                } else {
+                    layer.msg(res.msg, { icon: 5, time: 1300 });
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>
