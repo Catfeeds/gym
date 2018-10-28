@@ -77,9 +77,9 @@ class Minibase extends Controller
     public function getCaluse()
     {
         $uid = intval(request()->param('uid'));
-        if (empty($uid)) return objReturn(400, 'Invaild Param');
+        // if (empty($uid)) return objReturn(400, 'Invaild Param');
         $clause = new Clause;
-        $clauseInfo = $clause->where('idx', 1)->value('clause');
+        $clauseInfo = $clause->where('clause_id', 1)->value('content');
         $clauseInfo = htmlspecialchars_decode($clauseInfo);
         return objReturn(0, 'success', $clauseInfo);
     }

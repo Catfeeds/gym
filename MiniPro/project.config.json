@@ -5,7 +5,7 @@
 	},
 	"setting": {
 		"urlCheck": false,
-		"es6": false,
+		"es6": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true
@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 3,
+			"current": 4,
 			"list": [
 				{
 					"id": 0,
@@ -56,7 +56,13 @@
 				{
 					"id": -1,
 					"name": "打卡列表",
-					"pathName": "pages/clocklist/clocklist"
+					"pathName": "pages/clocklist/clocklist",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "123",
+					"pathName": "pages/clause/clause"
 				}
 			]
 		}

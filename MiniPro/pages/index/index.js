@@ -5,7 +5,7 @@ Page({
 
   data: {
     banner: [{
-      img: '/images/banner.png'
+      banner_img: '/images/banner.png'
     }], // 默认banner
     isCoach: false, // 用户身份是否为教练
     projectList: [], // 项目列表
@@ -48,7 +48,7 @@ Page({
     }).then(res => {
       let banner = that.data.banner;
       that.setData({
-        banner: res || banner,
+        banner: res ? res : banner,
         isCoach: app.globalData.userType == 1 ? false : true
       })
       // 根据系统设置 修改小程序名称
