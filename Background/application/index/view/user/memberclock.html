@@ -85,73 +85,73 @@
             </table>
         </div>
     </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
+    <script>
+        /*会员删除*/
+        function delUserClock(obj, id) {
+            layer.confirm('确认要删除当前打卡记录吗？', function (index) {
+                $.ajax({
+                    type: 'POST',
+                    url: '../../delMemClock',
+                    data: { clockId: id, uid: $('#uid').val() },
+                    typeData: 'JSON',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            $(obj).parents("tr").remove();
+                            layer.msg(res.msg, { icon: 6, time: 1300 });
+                        } else {
+                            layer.msg(res.msg, { icon: 5, time: 1300 });
+                        }
+                    },
+                    error: function () {
+                        layer.alert('请求失败!', { icon: 2 });
+                    }
+                });
+            });
+        }
+
+        $(function () {
+            $('.table-sort').dataTable({
+                language: {
+                    "sProcessing": "处理中...",
+                    "sLengthMenu": "显示 _MENU_ 项结果",
+                    "sZeroRecords": "没有匹配结果",
+                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                    "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sSearch": "从当前数据中检索： ",
+                    "sUrl": "",
+                    "sEmptyTable": "表中数据为空",
+                    "sLoadingRecords": "载入中...",
+                    "sInfoThousands": ",",
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": "上页",
+                        "sNext": "下页",
+                        "sLast": "末页"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": 以升序排列此列",
+                        "sSortDescending": ": 以降序排列此列"
+                    }
+                },
+                "aaSorting": [[0, "asc"]],//默认第几个排序
+                "bStateSave": true,//状态保存
+                "aoColumnDefs": [
+                    { "orderable": false, "aTargets": [] }// 制定列不参与排序
+                ]
+            });
+        });
+    </script>
 </body>
 
 </html>
-<!--_footer 作为公共模版分离出去-->
-<script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
-<script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
-<script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
-<!--/_footer 作为公共模版分离出去-->
-<!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="__ROOT__/assets/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
-<script>
-    /*会员删除*/
-    function delUserClock(obj, id) {
-        layer.confirm('确认要删除当前打卡记录吗？', function (index) {
-            $.ajax({
-                type: 'POST',
-                url: '../../delMemClock',
-                data: { clockId: id, uid: $('#uid').val() },
-                typeData: 'JSON',
-                success: function (res) {
-                    if (res.code == 0) {
-                        $(obj).parents("tr").remove();
-                        layer.msg(res.msg, { icon: 6, time: 1300 });
-                    } else {
-                        layer.msg(res.msg, { icon: 5, time: 1300 });
-                    }
-                },
-                error: function () {
-                    layer.alert('请求失败!', { icon: 2 });
-                }
-            });
-        });
-    }
-
-    $(function () {
-        $('.table-sort').dataTable({
-            language: {
-                "sProcessing": "处理中...",
-                "sLengthMenu": "显示 _MENU_ 项结果",
-                "sZeroRecords": "没有匹配结果",
-                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                "sInfoPostFix": "",
-                "sSearch": "从当前数据中检索： ",
-                "sUrl": "",
-                "sEmptyTable": "表中数据为空",
-                "sLoadingRecords": "载入中...",
-                "sInfoThousands": ",",
-                "oPaginate": {
-                    "sFirst": "首页",
-                    "sPrevious": "上页",
-                    "sNext": "下页",
-                    "sLast": "末页"
-                },
-                "oAria": {
-                    "sSortAscending": ": 以升序排列此列",
-                    "sSortDescending": ": 以降序排列此列"
-                }
-            },
-            "aaSorting": [[0, "asc"]],//默认第几个排序
-            "bStateSave": true,//状态保存
-            "aoColumnDefs": [
-                { "orderable": false, "aTargets": [] }// 制定列不参与排序
-            ]
-        });
-    });
-</script>

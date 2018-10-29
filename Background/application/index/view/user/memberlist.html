@@ -116,120 +116,120 @@
             </table>
         </div>
     </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
+    <script>
+        /*会员添加*/
+        function addMember() {
+            var index = layer.open({
+                type: 2,
+                title: '添加会员',
+                content: 'memberadd',
+                end: function () {
+                    location.replace(location.href);
+                }
+            });
+            layer.full(index);
+        }
+        /*会员编辑*/
+        function editMember(uid) {
+            var index = layer.open({
+                type: 2,
+                title: '编辑会员信息',
+                content: 'memberedit/uid/' + uid,
+                end: function () {
+                    location.replace(location.href);
+                }
+            });
+            layer.full(index);
+        }
+        /*会员删除*/
+        function delMember(obj, id) {
+            layer.confirm('确认要删除当前会员及其参与的课程信息吗？', function (index) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'delMember',
+                    data: { uid: id },
+                    typeData: 'JSON',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            $(obj).parents("tr").remove();
+                            layer.msg(res.msg, { icon: 6, time: 1300 });
+                        } else {
+                            layer.msg(res.msg, { icon: 5, time: 1300 });
+                        }
+                    },
+                    error: function () {
+                        layer.alert('请求失败!', { icon: 2 });
+                    }
+                });
+            });
+        }
+        /*会员课程详情*/
+        function memCourse(uid) {
+            var index = layer.open({
+                type: 2,
+                title: '会员课程详情',
+                content: 'membercourse/uid/' + uid,
+                end: function () {
+                    location.replace(location.href);
+                }
+            });
+            layer.full(index);
+        }
+        /*会员打卡详情*/
+        function memClock(uid) {
+            var index = layer.open({
+                type: 2,
+                title: '会员打卡详情',
+                content: 'memberclock/uid/' + uid,
+                end: function () {
+                    location.replace(location.href);
+                }
+            });
+            layer.full(index);
+        }
+        $(function () {
+            $('.table-sort').dataTable({
+                language: {
+                    "sProcessing": "处理中...",
+                    "sLengthMenu": "显示 _MENU_ 项结果",
+                    "sZeroRecords": "没有匹配结果",
+                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                    "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sSearch": "从当前数据中检索： ",
+                    "sUrl": "",
+                    "sEmptyTable": "表中数据为空",
+                    "sLoadingRecords": "载入中...",
+                    "sInfoThousands": ",",
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": "上页",
+                        "sNext": "下页",
+                        "sLast": "末页"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": 以升序排列此列",
+                        "sSortDescending": ": 以降序排列此列"
+                    }
+                },
+                "aaSorting": [[0, "asc"]],//默认第几个排序
+                "bStateSave": true,//状态保存
+                "aoColumnDefs": [
+                    { "orderable": false, "aTargets": [] }// 制定列不参与排序
+                ]
+            });
+        });
+    </script>
 </body>
 
 </html>
-<!--_footer 作为公共模版分离出去-->
-<script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
-<script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
-<script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
-<!--/_footer 作为公共模版分离出去-->
-<!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="__ROOT__/assets/lib/datatables/1.10.16/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
-<script>
-    /*会员添加*/
-    function addMember() {
-        var index = layer.open({
-            type: 2,
-            title: '添加会员',
-            content: 'memberadd',
-            end: function () {
-                location.replace(location.href);
-            }
-        });
-        layer.full(index);
-    }
-    /*会员编辑*/
-    function editMember(uid) {
-        var index = layer.open({
-            type: 2,
-            title: '编辑会员信息',
-            content: 'memberedit/uid/' + uid,
-            end: function () {
-                location.replace(location.href);
-            }
-        });
-        layer.full(index);
-    }
-    /*会员删除*/
-    function delMember(obj, id) {
-        layer.confirm('确认要删除当前会员及其参与的课程信息吗？', function (index) {
-            $.ajax({
-                type: 'POST',
-                url: 'delMember',
-                data: { uid: id },
-                typeData: 'JSON',
-                success: function (res) {
-                    if (res.code == 0) {
-                        $(obj).parents("tr").remove();
-                        layer.msg(res.msg, { icon: 6, time: 1300 });
-                    } else {
-                        layer.msg(res.msg, { icon: 5, time: 1300 });
-                    }
-                },
-                error: function () {
-                    layer.alert('请求失败!', { icon: 2 });
-                }
-            });
-        });
-    }
-    /*会员课程详情*/
-    function memCourse(uid) {
-        var index = layer.open({
-            type: 2,
-            title: '会员课程详情',
-            content: 'membercourse/uid/' + uid,
-            end: function () {
-                location.replace(location.href);
-            }
-        });
-        layer.full(index);
-    }
-    /*会员打卡详情*/
-    function memClock(uid) {
-        var index = layer.open({
-            type: 2,
-            title: '会员打卡详情',
-            content: 'memberclock/uid/' + uid,
-            end: function () {
-                location.replace(location.href);
-            }
-        });
-        layer.full(index);
-    }
-    $(function () {
-        $('.table-sort').dataTable({
-            language: {
-                "sProcessing": "处理中...",
-                "sLengthMenu": "显示 _MENU_ 项结果",
-                "sZeroRecords": "没有匹配结果",
-                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                "sInfoPostFix": "",
-                "sSearch": "从当前数据中检索： ",
-                "sUrl": "",
-                "sEmptyTable": "表中数据为空",
-                "sLoadingRecords": "载入中...",
-                "sInfoThousands": ",",
-                "oPaginate": {
-                    "sFirst": "首页",
-                    "sPrevious": "上页",
-                    "sNext": "下页",
-                    "sLast": "末页"
-                },
-                "oAria": {
-                    "sSortAscending": ": 以升序排列此列",
-                    "sSortDescending": ": 以降序排列此列"
-                }
-            },
-            "aaSorting": [[0, "asc"]],//默认第几个排序
-            "bStateSave": true,//状态保存
-            "aoColumnDefs": [
-                { "orderable": false, "aTargets": [] }// 制定列不参与排序
-            ]
-        });
-    });
-</script>
