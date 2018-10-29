@@ -6,6 +6,7 @@ use \think\File;
 use \think\Request;
 use \think\Session;
 use \think\Db;
+use app\index\model\User;
 
 class Course extends Controller
 {
@@ -64,20 +65,10 @@ class Course extends Controller
      */
     public function courseedit()
     {
-        $request = Request::instance();
-        $courseId = intval($request->param('course_id'));
-        // 调用公共函数
-        $courseData = getCourseById($courseId, false);
-        if ($courseData || count($courseData) != 0) {
-            $courseData = $courseData;
-        } else {
-            $courseData = null;
-        }
-        $subject = new Subject;
-        $subjectData = $subject->field('subject_id,subject_name')->select();
-        $this->assign('subjectData', $subjectData);
-        // dump($courseData);die;
-        $this->assign('courseData', $courseData);
+        $courseId = intval(request()->param('cid'));
+        $courseInfo = Db::name('course')->where('course_id', $courseId)->where('status', '<>', 3)->field('course_name, course_price, course_period, sort, status')->find();
+        $this->assign('courseId', $courseId);
+        $this->assign('courseInfo', $courseInfo);
         return $this->fetch();
     }
 
@@ -87,102 +78,59 @@ class Course extends Controller
      */
     public function editCourse()
     {
-        $request = Request::instance();
-        $update['course_id'] = intval($request->param('course_id'));
-        $update['course_name'] = htmlspecialchars($request->param('course_name'));
-        $update['course_brief'] = htmlspecialchars($request->param('course_brief'));
-        $update['course_price'] = $request->param('course_price');
-        $update['course_period'] = intval($request->param('course_period'));
-        $update['course_times'] = intval($request->param('course_times'));
-        $update['status'] = intval($request->param('course_active'));
-        $update['created_at'] = time();
-        $update['update_at'] = time();
-        $update['sort'] = intval($request->param('course_sort'));
-        $update['subject_id'] = intval($request->param('subject_id'));
-        $picSrc = $request->param('picsrc');
-        $imgUrl = $request->param('img_url');
-        // 是否为空
-        if (!empty($picSrc)) {
-            $source = $picSrc;
-            // 处理图片路径
-            $temp = explode(',', $picSrc);
-            $srcAry = [];
-            foreach ($temp as &$desc) {
-                $temp2 = explode(':', $desc);
-                $srcAry[] = $temp2[0];
-            }
-            // dump($srcAry);die;
-            $src = '';
-            // 遍历数组移动目录图片
-            foreach ($srcAry as $key => $value) {
-                $word = DS . 'course';
-                // 新的路径
-                $strTemp = substr_replace($value, $word, 10, 4);
-                // 创建文件夹
-                $str3 = substr($strTemp, 0, 26);
-                if (!is_dir(PUBLIC_PATH . $str3)) {
-                    mkdir(PUBLIC_PATH . $str3);
-                }
-                // 框架应用根目录/public/course/目录
-                $destination = PUBLIC_PATH . $strTemp;
-                $sou = PUBLIC_PATH . $value;
-                // 拷贝文件到指定目录
-                $res = copy($sou, $destination);
-            }
-            // 新文件路径
-            $courseDesc = '';
-            foreach ($temp as $k => $v) {
-                $word = DS . 'course';
-                $courseDesc .= DS . substr_replace($v, $word, 10, 4) . ',';
-            }
-            $update['course_desc'] = $imgUrl . rtrim($courseDesc, ",");
+        $courseId = intval(request()->param('course_id'));
+        $course['course_name'] = htmlspecialchars(request()->param('course_name'));
+        $course['course_price'] = request()->param('course_price');
+        $course['course_period'] = intval(request()->param('course_period'));
+        $course['status'] = intval(request()->param('course_active'));
+        $course['sort'] = intval(request()->param('course_sort'));
+        $course['update_by'] = Session::get('adminId');
+        $course['update_at'] = time();
+        $insert = Db::name('course')->where('course_id', $courseId)->update($course);
+        if ($insert) {
+            return objReturn(0, '课程修改成功');
         } else {
-            $update['course_desc'] = rtrim($imgUrl, ",");
-        }
-        // 调用公共函数，参数true为更新
-        $new = saveData('course', $update, true);
-        if ($new) {
-            return objReturn(0, '修改成功');
-        } else {
-            return objReturn(400, '修改失败');
+            return objReturn(400, '课程修改失败');
         }
     }
 
     /**
-     * 更改展示状态为启用
-     * @param  Request $request 参数
-     * @return ary           返回结果
+     * 更改课程展示状态为启用
+     * 
+     * @return void
      */
-    public function startCourse(Request $request)
+    public function activeCourse()
     {
-        $where['course_id'] = $request->param('id');
+        $courseId = intval(request()->param('courseId'));
         $where['status'] = 1;
         $where['update_at'] = time();
+        $where['update_by'] = Session::get('adminId');
         // 调用公共函数，参数true为更新
-        $update = saveData('course', $where, true);
+        $update = Db::name('course')->where('course_id', $courseId)->update($where);
         if ($update) {
-            return objReturn(0, '展示成功');
+            return objReturn(0, '课程状态变更成功');
         } else {
-            return objReturn(400, '展示失败');
+            return objReturn(400, '课程状态变更失败');
         }
     }
 
     /**
-     * 更改展示状态为不启用
-     * @param  Request $request 参数
-     * @return ary           返回结果
+     * 更改课程展示状态为不启用
+     * 
+     * @return void
      */
-    public function stopCourse(Request $request)
+    public function closeCourse()
     {
-        $where['course_id'] = $request->param('id');
+        $courseId = intval(request()->param('courseId'));
         $where['status'] = 2;
         $where['update_at'] = time();
+        $where['update_by'] = Session::get('adminId');
         // 调用公共函数，参数true为更新
-        $update = saveData('course', $where, true);
+        $update = Db::name('course')->where('course_id', $courseId)->update($where);
         if ($update) {
-            return objReturn(0, '停用成功');
+            return objReturn(0, '课程状态变更成功');
         } else {
-            return objReturn(400, '停用失败');
+            return objReturn(400, '课程状态变更失败');
         }
     }
 
@@ -239,29 +187,39 @@ class Course extends Controller
     }
 
     /**
-     * 课程对应的班级信息
+     * 课程包含的人员信息
      *
-     * @return ary 返回值
+     * @return html
      */
     public function coursedetail()
     {
-        $request = Request::instance();
-        $courseId = intval($request->param('course_id'));
-        $class = new Classes;
-        $courseClassData = $class->alias('a')->join('teacher t', 'a.teacher_id = t.teacher_id', 'LEFT')->field('a.class_id,a.class_name,a.class_time,a.class_day,a.status as class_status,t.teacher_name,t.status as teacher_status,t.avatar_url')->where('a.course_id', $courseId)->where('a.status', '<>', 3)->select();
-        // 非空判断
-        if ($courseClassData && count($courseClassData) != 0) {
-            $courseClassData = collection($courseClassData)->toArray();
-            $classes_user = new Classes_user;
-            // 上课时间与班级人数
-            foreach ($courseClassData as &$class) {
-                $class['class_day'] = convertDay($class['class_day']);
-                $class['class_stu_num'] = $classes_user->where('class_id', $class['class_id'])->where('status', 1)->count('uid');
-            }
-        }
-        // dump($courseClassData);die;
-        $this->assign('courseClassData', $courseClassData);
+        $courseId = intval(request()->param('cid'));
+        $courseName = Db::name('course')->where('course_id', $courseId)->value('course_name');
+        $user = new User;
+        $field = "u.uid, u.user_name, u.user_gender, u.user_nickname, u.user_avatar_url, u.user_city, u.user_province, u.user_country, u.user_mobile, u.user_birth, u.status, uc.course_left_times, uc.start_at, uc.end_at, uc.status as uc_status";
+        $courseUserList = $user->alias('u')->join('gym_user_course uc', 'u.uid = uc.uid', 'RIGHT')->where('u.status', '<>', 3)->where('u.user_type', 1)->where('uc.course_id', $courseId)->where('uc.status', '<>', 4)->field($field)->select();
+        $courseUserList = $courseUserList ? collection($courseUserList)->toArray() : [];
+        $this->assign('courseUserList', $courseUserList);
+        $this->assign('courseId', $courseId);
+        $this->assign('courseName', $courseName);
         return $this->fetch();
+    }
+
+    /**
+     * 删除课程会员
+     *
+     * @return void
+     */
+    public function delCourseMember()
+    {
+        $courseId = intval(request()->param('courseId'));
+        $uid = intval(request()->param('uid'));
+        $update = Db::name('user_course')->where('course_id', $courseId)->where('uid', $uid)->update(['status' => 4, 'update_at' => time(), 'update_by' => Session::get('adminId')]);
+        if ($update) {
+            return objReturn(0, '课程成员删除成功');
+        } else {
+            return objReturn(400, '课程成员删除失败');
+        }
     }
 
 }

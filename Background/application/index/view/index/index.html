@@ -35,7 +35,6 @@
 							<span id="admin_id" style="display: none;">{$adminId}</span>
 							<a href="#" class="dropDown_A">{$uname}<i class="Hui-iconfont">&#xe6d5;</i></a>
 							<ul class="dropDown-menu menu radius box-shadow">
-								<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
 								<li><a href="javascript:;" onClick="editPassword()">修改密码</a></li>
 								<li><a href="index/index/logout">退出</a></li>
 							</ul>
@@ -161,7 +160,7 @@
 					<!-- <p>对话框内容…</p> -->
 					<form action="" method="post" class="form form-horizontal" id="form-addadmin-add">
 						<div class="row cl" style="margin-left: 60px;">
-							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
+							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>原始密码：</label>
 							<div class="formControls col-xs-8 col-sm-9">
 								<input style="width: 200px;" type="password" class="input-text valid" autocomplete="off" value="" placeholder="密码"
 								 id="pwd" name="pwd">
@@ -200,7 +199,48 @@
 	<!--请在下方写此页面业务相关的脚本-->
 	<script type="text/javascript" src="assets/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 	<script src="assets/js/md5.min.js"></script>
-	<script type="text/javascript" src="__ROOT__/assets/js/index.js"></script>
+	<script>
+		function editPassword() {
+			// 修改管理员密码
+			$("#modal-demotwo").modal("show");
+		}
+		// 点击确定
+		$("#confirm").click(function () {
+			var admin_id = $("#admin_id").text();
+			var password = md5($('#pwd').val());
+			var password1 = md5($('#pwd1').val());
+			var password2 = md5($('#pwd2').val());
+			if ($('#pwd').val() == '' || $('#pwd1').val() == '' || $('#pwd2').val() == '') {
+				layer.msg('密码不能为空！', { icon: 2, time: 1300 });
+				return false;
+			} else if ($('#pwd1').val() != $('#pwd2').val()) {
+				layer.msg('两次输入的密码不一致！', { icon: 2, time: 1300 });
+				return false;
+			} else if ($('#pwd').val() == $('#pwd1').val()) {
+				layer.msg('修改后的密码不能与原密码相同', { icon: 2, time: 1300 });
+				return false;
+			}
+			// 发送ajax
+			$.ajax({
+				type: 'POST',
+				url: 'index/index/updatePass',
+				dataType: 'json',
+				data: { admin_id: admin_id, password: password, password1: password1 },
+				success: function (res) {
+					if (res.code == 0) {
+						layer.msg(res.msg, { icon: 1, time: 1300 });
+						$("#modal-demotwo").modal("hide");
+						setTimeout(res => { location.reload() }, 1300);
+					} else {
+						layer.msg(res.msg, { icon: 2, time: 1300 });
+					}
+				},
+				error: function (res) {
+					layer.msg('网络错误，请稍后重试！', { icon: 2, time: 1300 });
+				},
+			});
+		})
+	</script>
 </body>
 
 </html>

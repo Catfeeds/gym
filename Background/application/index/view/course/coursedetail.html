@@ -1,138 +1,184 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <meta charset="utf-8">
-            <meta content="webkit|ie-comp|ie-stand" name="renderer">
-                <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
-                    <meta content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport"/>
-                    <meta content="no-siteapp" http-equiv="Cache-Control"/>
-                    <!--[if lt IE 9]>
-    <script type="text/javascript" src="__ROOT__/public/static/lib/html5shiv.js"></script>
-    <script type="text/javascript" src="__ROOT__/public/static/lib/respond.min.js"></script>
-    <![endif]-->
-                    <link href="__ROOT__/static/lib/h-ui/css/H-ui.min.css" rel="stylesheet" type="text/css"/>
-                    <link href="__ROOT__/static/lib/h-ui.admin/css/H-ui.admin.css" rel="stylesheet" type="text/css"/>
-                    <link href="__ROOT__/static/lib/Hui-iconfont/1.0.8/iconfont.css" rel="stylesheet" type="text/css"/>
-                    <link href="__ROOT__/static/lib/h-ui.admin/skin/default/skin.css" id="skin" rel="stylesheet" type="text/css"/>
-                    <link href="__ROOT__/static/lib/h-ui.admin/css/style.css" rel="stylesheet" type="text/css"/>
-                    <!-- <link rel="stylesheet" type="text/css" href="static/css/demo.css" /> -->
-                    <!--[if IE 6]>
-    <script type="text/javascript" src="__ROOT__/public/static/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
-    <script>DD_belatedPNG.fix('*');</script>
-    <![endif]-->
-                    <style>
-                        .Hui-iconfont{
-            font-size: 20px;
+
+<head>
+    <meta charset="utf-8">
+    <meta content="webkit|ie-comp|ie-stand" name="renderer">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta content="no-siteapp" http-equiv="Cache-Control" />
+
+    <link href="__ROOT__/assets/lib/h-ui/css/H-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="__ROOT__/assets/lib/h-ui.admin/css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+    <link href="__ROOT__/assets/lib/Hui-iconfont/1.0.8/iconfont.css" rel="stylesheet" type="text/css" />
+    <link href="__ROOT__/assets/lib/h-ui.admin/skin/default/skin.css" id="skin" rel="stylesheet" type="text/css" />
+    <link href="__ROOT__/assets/lib/h-ui.admin/css/style.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        .Hui-iconfont{
+            font-size: 15px;
         }
-                    </style>
-                    <title>
-                        课程班级信息
-                    </title>
-                </meta>
-            </meta>
-        </meta>
-    </head>
-    <body>
-        <!-- <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 课程管理 <span class="c-gray en">&gt;</span> 课程详情 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav> -->
-        <div class="page-container">
-            <div class="cl pd-5 bg-1 bk-gray mt-20">
-                <span class="l">
-                    <!-- <a class="btn btn-primary radius"  onclick="course_add()" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加课程信息</a> -->
-                </span>
-                <span class="r" style="margin-top:5px;">
-                    共有数据：
-                    <strong>
-                        {:count($courseClassData)}
-                    </strong>
-                    条
-                </span>
-            </div>
-            <div class="mt-20">
-                <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
-                    <thead>
-                        <tr class="text-c">
-                            <th width="30">
-                                ID
-                            </th>
-                            <th width="50">
-                                班级名称
-                            </th>
-                            <th width="50">
-                                班级人数
-                            </th>
-                            <th width="100">
-                                上课时间
-                            </th>
-                            <th width="100">
-                                教师信息
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            {if condition="sizeof($courseClassData) == 0"}
-            
-            {else /}
+    </style>
+    <title>
+        课程班级信息
+    </title>
+    </meta>
+    </meta>
+    </meta>
+</head>
 
-            {volist name="$courseClassData" id="vol"}
-                <tr class="text-c">
-                    <td>
-                        {$vol.class_id}
-                    </td>
-                    <td>
-                        {$vol.class_name}
-                    </td>
-                    <td>
-                        {$vol.class_stu_num} 人
-                    </td>
-                    <td>
-                        {$vol.class_day} {$vol.class_time}
-                    </td>
-                    <td>
-                        {if condition = "$vol.avatar_url eq '' "}
-                        <span>无</span>
-                        {else/}
-                        <img src="{$vol.avatar_url}" width="50px" height="50px" style="border-radius: 50%;">
-                        <p>{$vol.teacher_name}</p>
-                        {/if}
-                        {if condition = "$vol.teacher_status eq 3"}
-                            <span class="c-danger">（已离职）</span>
-                        {elseif condition = "$vol.teacher_status eq 2"}
-                            <span class="c-green">（在职）</span>
-                        {/if}                                      
-                    </td>
-                </tr>
-            {/volist}
-
-            {/if}
-                    </tbody>
-                </table>
-            </div>
+<body>
+    <div class="page-container">
+        <div class="cl pd-5 bg-1 bk-gray mt-20">
+            <span class="l">
+                课程名称：{$courseName}
+            </span>
+            <span class="r" style="margin-top:5px;">
+                共有数据：<strong>{:count($courseUserList)}</strong>条
+            </span>
         </div>
+        <input type="hidden" id="courseId" value="{$courseId}">
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                <thead>
+                    <tr class="text-c">
+                        <th width="20">会员ID</th>
+                        <th width="50">会员名称</th>
+                        <th width="50">会员性别</th>
+                        <th width="50">手机号码</th>
+                        <th width="80">微信认证信息</th>
+                        <th width="50">课程剩余课时</th>
+                        <th width="50">课程开始时间</th>
+                        <th width="50">课程结束时间</th>
+                        <th width="50">课程状态</th>
+                        <th width="30">会员状态</th>
+                        <th width="20">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if condition="count($courseUserList) == 0"}
+                    {else /}
+                    {volist name="$courseUserList" id="v"}
+                    <tr class="text-c">
+                        <td>{$v.uid}</td>
+                        <td>{$v.user_name}</td>
+                        <td>
+                            {if condition="$v.user_gender eq 0"}
+                            女
+                            {else/}
+                            男
+                            {/if}
+                        </td>
+                        <td>{$v.user_mobile}</td>
+                        <td style="display: flex; flex-direction: column; line-height: 30px;">
+                            {if condition="$v.user_avatar_url"}
+                            <span>会员头像：<img width="50" height="50" style="border-radius: 50%;" src="{$v.user_avatar_url}"
+                                    alt="微信头像"></span>
+                            <span>会员昵称：{$v.user_nickname}</span>
+                            <span>会员位置：{$v.user_country} {$v.user_province} {$v.user_city}</span>
+                            {else/}
+                            未认证
+                            {/if}
+                        </td>
+                        <td>{$v.course_left_times}</td>
+                        <td>{:date('Y-m-d H:i:s', $v.start_at)}</td>
+                        <td>{:date('Y-m-d H:i:s', $v.end_at)}</td>
+                        <td class="td-status">
+                            {if condition="$v.uc_status eq 1"}
+                            <span class="label label-primary radius">正常</span>
+                            {elseif condition="$v.uc_status eq 2"}
+                            <span class="label label-success radius">打卡结束</span>
+                            {elseif condition="$v.uc_status eq 3"}
+                            <span class="label label-warning radius">打卡超时</span>
+                            {/if}
+                        </td>
+                        <td class="td-status">
+                            {if condition="$v.status eq 1"}
+                            <span class="label label-defaunt radius">未认证</span>
+                            {elseif condition="$v.status eq 2"}
+                            <span class="label label-success radius">已认证</span>
+                            {/if}
+                        </td>
+                        <td class="td-manage">
+                            <a style="text-decoration:none" class="ml-5" onclick="delCourseMember(this,'{$v.uid}')"
+                                href="javascript:;" title="删除"> <i class="Hui-iconfont">&#xe6e2;</i>
+                            </a>
+                        </td>
+                    </tr>
+                    {/volist}
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script src="__ROOT__/assets/lib/jquery/jquery.min.js" type="text/javascript"> </script>
+    <script src="__ROOT__/assets/lib/layer/2.4/layer.js" type="text/javascript"></script>
+    <script src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js" type="text/javascript"></script>
+    <script src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js" type="text/javascript"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script src="__ROOT__/assets/lib/datatables/1.10.16/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="__ROOT__/assets/lib/laypage/laypage.js" type="text/javascript"></script>
+    <script>
+        // 初始化表格
+        $('.table-sort').dataTable({
+            language: {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "从当前数据中检索： ",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上页",
+                    "sNext": "下页",
+                    "sLast": "末页"
+                },
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            },
+            "aaSorting": [[0, "asc"]],//默认第几个排序
+            "bStateSave": true,//状态保存
+            "aoColumnDefs": [
+                { "orderable": false, "aTargets": [] }// 制定列不参与排序
+            ],
+        });
+        /*删除课程成员*/
+        function delCourseMember(obj, id) {
+            layer.confirm('确认要删除当前成员吗？', function (index) {
+                $.ajax({
+                    type: 'POST',
+                    url: '../../delCourseMember',
+                    data: {
+                        uid: id,
+                        courseId: $('#courseId').val()
+                    },
+                    typeData: 'JSON',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            $(obj).parents("tr").remove();
+                            layer.msg(res.msg, { icon: 6, time: 1300 });
+                        } else {
+                            layer.msg(res.msg, { icon: 5, time: 1300 });
+                        }
+                    },
+                    error: function () {
+                        layer.alert('请求失败!', { icon: 2 });
+                    }
+                });
+            });
+        }
+    </script>
+</body>
 
-        <footer class="footer mt-20">
-            <div class="container">
-                <p>
-                    Powered By 福建麦口信息科技有限公司
-                </p>
-            </div>
-        </footer>
-        <!--_footer 作为公共模版分离出去-->
-        <script src="__ROOT__/static/lib/jquery/jquery.min.js" type="text/javascript">
-        </script>
-        <script src="__ROOT__/static/lib/layer/2.4/layer.js" type="text/javascript">
-        </script>
-        <script src="__ROOT__/static/lib/h-ui/js/H-ui.min.js" type="text/javascript">
-        </script>
-        <script src="__ROOT__/static/lib/h-ui.admin/js/H-ui.admin.js" type="text/javascript">
-        </script>
-        <!--/_footer 作为公共模版分离出去-->
-        <!--请在下方写此页面业务相关的脚本-->
-        <script src="__ROOT__/static/lib/My97DatePicker/4.8/WdatePicker.js" type="text/javascript">
-        </script>
-        <script src="__ROOT__/static/lib/datatables/1.10.16/jquery.dataTables.min.js" type="text/javascript">
-        </script>
-        <script src="__ROOT__/static/lib/laypage/laypage.js" type="text/javascript">
-        </script>
-        <script type="text/javascript" src="__ROOT__/static/js/coursedetail.js"></script> 
-    </body>
 </html>

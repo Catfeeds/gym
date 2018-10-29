@@ -158,13 +158,13 @@
                     url: 'editMiniSetting',
                     typeData: 'JSON',
                     data: { mini_name: mini_name, service_phone: service_phone, share_text: share_text, store_info: store_info, notice: notice, location: location },
-                    success: function (result) {
-                        if (result.code == 0) {
-                            layer.alert(result.msg, { icon: 1, closeBtn: 0 }, function () {
+                    success: function (res) {
+                        if (res.code == 0) {
+                            layer.alert(res.msg, { icon: 1, closeBtn: 0 }, function () {
                                 window.location.href = window.location.href;
                             });
                         } else {
-                            layer.alert(result.msg, { icon: 2, closeBtn: 0 })
+                            layer.alert(res.msg, { icon: 2, closeBtn: 0 })
                         }
                     },
                     error: function () {

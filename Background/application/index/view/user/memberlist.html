@@ -155,7 +155,7 @@
     }
     /*会员删除*/
     function delMember(obj, id) {
-        layer.confirm('确认要删除当前会员吗？', function (index) {
+        layer.confirm('确认要删除当前会员及其参与的课程信息吗？', function (index) {
             $.ajax({
                 type: 'POST',
                 url: 'delMember',

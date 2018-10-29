@@ -84,12 +84,28 @@ class User extends Controller
         if (empty($uid)) {
             return objReturn(403, '参数错误');
         }
-        $update = Db::name('user')->where('uid', $uid)->update(['status' => 3, 'update_at' => time(), 'update_by' => Session::get('adminId')]);
-        if ($update) {
-            return objReturn(0, '会员删除成功');
-        } else {
+
+        Db::startTrans();
+        try {
+            // 1  更新用户信息
+            $update = Db::name('user')->where('uid', $uid)->update(['status' => 3, 'update_at' => time(), 'update_by' => Session::get('adminId')]);
+            if (!$update) {
+                throw new \Exception('会员删除失败');
+            }
+            $updateUserCourse = Db::name('user_course')->where('uid', $uid)->where('user_type', 1)->update(['status' => 4, 'update_at' => time(), 'update_by' => Session::get('adminId')]);
+            if (!$updateUserCourse) {
+                // 判断当前会员是否有课程
+                $isMemHasCourse = Db::name('user_course')->where('uid', $uid)->where('user_type', 1)->count();
+                if ($isMemHasCourse > 0) {
+                    throw new \Exception('会员课程删除失败');
+                }
+            }
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollback();
             return objReturn(400, '会员删除失败');
         }
+        return objReturn(0, '会员删除成功');
     }
 
     /**
@@ -279,6 +295,25 @@ class User extends Controller
             return objReturn(0, '教练添加成功');
         } else {
             return objReturn(400, '教练添加失败');
+        }
+    }
+
+    /**
+     * 删除教练信息
+     *
+     * @return void
+     */
+    public function delCoach()
+    {
+        $uid = request()->param('uid');
+        if (empty($uid)) {
+            return objReturn(403, '参数错误');
+        }
+        $update = Db::name('user')->where('uid', $uid)->update(['status' => 3, 'update_at' => time(), 'update_by' => Session::get('adminId')]);
+        if ($update) {
+            return objReturn(0, '教练删除成功');
+        } else {
+            return objReturn(400, '教练删除失败');
         }
     }
 

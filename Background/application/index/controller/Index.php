@@ -20,7 +20,8 @@ class Index extends Controller
     {
         // 判断是否存在session
         if (!Session::has('adminId')) {
-            header("Location: http://test.kekexunxun.com/index/index/login");
+            $url = 'https://test.kekexunxun.com/index/index/login';
+            $this->redirect($url);
         } else {
             // 存入session中
             $this->assign('uname', Session::get('uname'));
@@ -44,7 +45,7 @@ class Index extends Controller
     public function logout()
     {
         Session::clear();
-        $url = 'https://test.up.maikoo.cn/index/index/login';
+        $url = 'https://test.kekexunxun.com/index/index/login';
         $this->redirect($url);
     }
 
@@ -87,30 +88,21 @@ class Index extends Controller
      *修改管理员密码功能
      *
      */
-    public function passwordUpdate(Request $request)
+    public function updatePass()
     {
-        $adminId = intval($request->param('admin_id'));
-        $oriPwd = $request->param('password');
-        $newPwd = $request->param('password1');
-        // 原密码与新密码不能相同
-        if ($$oriPwd == $newPwd) {
-            return objReturn(400, '修改失败,原密码与新密码不能相同！');
-            exit;
-        }
+        $adminId = intval(request()->param('admin_id'));
+        $oriPwd = request()->param('password');
+        $newPwd = request()->param('password1');
         $admin = new Admin;
-        $pwd = $admin->where('id', $adminId)->value('password');
+        $pwd = $admin->where('admin_id', $adminId)->value('pwd');
         if ($oriPwd != $pwd) {
-            return objReturn(400, '初始密码错误！');
+            return objReturn(400, '原始密码错误！');
+        }
+        $update = $admin->where('admin_id', $adminId)->update(['pwd' => $newPwd, 'update_at' => time()]);
+        if ($update) {
+            return objReturn(0, '密码修改成功！');
         } else {
-            $where['id'] = $adminId;
-            $where['password'] = $newPwd;
-            // 调用公共函数，参数true为更新
-            $update = saveData('admin', $where, true);
-            if ($update) {
-                return objReturn(0, '修改成功！');
-            } else {
-                return objReturn(400, '修改失败！');
-            }
+            return objReturn(400, '密码修改失败！');
         }
     }
 }
