@@ -11,8 +11,6 @@ use think\Db;
 class Project extends Controller
 {
 
-    public $uid = "";
-
     public function __construct()
     {
         if (!request()->post()) {
@@ -21,7 +19,6 @@ class Project extends Controller
         if (!request()->param('uid')) {
             return objReturn(400, 'Invalid Param');
         }
-        $this->uid = request()->param('uid');
     }
 
     public function getProjectDesc()

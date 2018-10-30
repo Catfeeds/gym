@@ -1,10 +1,10 @@
 const app = getApp();
 var util = require('../../utils/util.js');
-var WxParse = require('../../utils/wxParse/wxParse.js');
 
 Page({
 
   data: {
+    nodes: []
   },
 
   /**
@@ -26,17 +26,16 @@ Page({
     util.post('minibase/getCaluse', {
       uid: app.globalData.uid
     }).then(res => {
-      // 初始化
-      /**
-       * WxParse.wxParse(bindName , type, data, target,imagePadding)
-       * 1.bindName绑定的数据名(必填)
-       * 2.type可以为html或者md(必填)
-       * 3.data为传入的具体数据(必填)
-       * 4.target为Page对象,一般为this(必填)
-       * 5.imagePadding为当图片自适应是左右的单一padding(默认为0,可选)
-       */
-      WxParse.wxParse('clause', 'html', res, that, 5);
-    }).catch(res => {}).finally(res => {})
+      that.setData({
+        nodes: res || []
+      })
+    }).catch(res => {
+      util.modalPromisified({
+        title: '系统提示',
+        content: '系统错误，请及时联系管理员',
+        showCancel: false
+      })
+    }).finally(res => {})
   }
 
 })
