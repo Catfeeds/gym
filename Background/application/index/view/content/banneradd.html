@@ -173,7 +173,7 @@
                 success: function (res) {
                     if (res.code == 0) {
                         // 将图片展示出来
-                        $('.btn-upload').remove();
+                        $('.upload_pic').remove();
                         $('.btn-upload').parent('div').append('<div class="upload_pic" style="margin-top: 10px;"><img src="../..' + res.data + '" alt="图片" width="200" height="100"></div>')
                         layer.msg(res.msg, { icon: 1, time: 1300 });
                     } else {

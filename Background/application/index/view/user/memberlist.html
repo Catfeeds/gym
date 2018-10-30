@@ -72,8 +72,7 @@
                         <td>{$v.user_birth}</td>
                         <td style="display: flex; flex-direction: column; line-height: 30px;">
                             {if condition="$v.user_avatar_url"}
-                            <span>会员头像：<img width="50" height="50" style="border-radius: 50%;" src="{$v.user_avatar_url}"
-                                    alt="微信头像"></span>
+                            <span>会员头像：<img width="50" height="50" style="border-radius: 50%;" src="{$v.user_avatar_url}" alt="微信头像"></span>
                             <span>会员昵称：{$v.user_nickname}</span>
                             <span>会员位置：{$v.user_country} {$v.user_province} {$v.user_city}</span>
                             {else/}

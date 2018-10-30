@@ -40,6 +40,11 @@ class Project extends Controller
         if (!$projectList) {
             return objReturn(405, 'No Project Or Failed');
         }
+        foreach ($projectList as &$info) {
+            if (isset($info['project_img'])) {
+                $info['project_img'] = config('SITEROOT') . $info['project_img'];
+            }
+        }
         return objReturn(0, 'success', $projectList);
     }
 

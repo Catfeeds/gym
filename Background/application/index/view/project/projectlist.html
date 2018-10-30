@@ -19,61 +19,72 @@
             font-size: 15px;
         }
     </style>
-    <title>课程管理</title>
+    <title>项目列表</title>
 </head>
 
 <body>
-    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 课程管理 <span
-            class="c-gray en">&gt;</span> 课程列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 项目管理 <span
+            class="c-gray en">&gt;</span> 项目列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
             href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
     <div class="page-container">
         <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l">
-                <a class="btn btn-primary radius" onclick="addCourse()" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i>
-                    添加课程</a></span>
-            <span class="r" style="margin-top:5px;">共有数据：<strong>{:count($courseList)}</strong> 条</span>
+                <a class="btn btn-primary radius" onclick="addProject()" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i>
+                    添加项目</a></span>
+            <span class="r" style="margin-top:5px;">共有数据：<strong>{:count($projectList)}</strong> 条</span>
         </div>
         <div class="mt-20">
             <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
                 <thead>
                     <tr class="text-c">
-                        <th width="30">课程ID</th>
-                        <th width="50">课程名称</th>
-                        <th width="50">课程人数</th>
-                        <th width="80">课程价格</th>
-                        <th width="80">课程周期</th>
-                        <th width="50">课程排序</th>
+                        <th width="30">项目ID</th>
+                        <th width="50">项目名称</th>
+                        <th width="50">项目封面</th>
+                        <th width="50">项目详情</th>
+                        <th width="80">项目视频</th>
+                        <th width="80">创建时间</th>
+                        <th width="50">项目排序</th>
                         <th width="50">是否展示</th>
                         <th width="50">操作</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {if condition="count($courseList) == 0"}
+                    {if condition="count($projectList) == 0"}
 
                     {else /}
 
-                    {volist name="$courseList" id="vol"}
+                    {volist name="$projectList" id="vol"}
                     <tr class="text-c">
-                        <td>{$vol.course_id}</td>
-                        <td>{$vol.course_name}</td>
-                        <td>{$vol.course_mem}</td>
-                        <td>{$vol.course_price}</td>
-                        <td>{$vol.course_period} 分钟/课时</td>
+                        <td>{$vol.project_id}</td>
+                        <td>{$vol.project_name}</td>
+                        <td>
+                            <img src="{$vol.project_img}" width="200" height="150">
+                        </td>
+                        <td>
+                            <span class="label label-success radius" title="查看项目详情" onClick="projectDetail(this,'{$vol.project_id}');"
+                                style="cursor: pointer;">点击查看</span>
+                        </td>
+                        <td>
+                            {if condition = "$vol.project_video"}
+                            <video src="{$vol.project_video}"></video>
+                            {else /}
+                            无视频
+                            {/if}
+                        </td>
+                        <td>{$vol.created_at}</td>
                         <td>{$vol.sort}</td>
                         <td class="td-status">
                             {if condition = "$vol.status eq 2 "}
-                            <span class="label label-defaunt radius" title="不展示" onClick="activeCourse(this,'{$vol.course_id}');"
+                            <span class="label label-defaunt radius" title="不展示" onClick="activeProject(this,'{$vol.project_id}');"
                                 style="cursor: pointer;">不展示</span>
                             {elseif condition = "$vol.status eq 1" /}
-                            <span class="label label-success radius" title="展示" onClick="closeCourse(this,'{$vol.course_id}');"
+                            <span class="label label-success radius" title="展示" onClick="closeProject(this,'{$vol.project_id}');"
                                 style="cursor: pointer;">已展示</span>
                             {/if}
                         </td>
                         <td class="f-14 td-manage">
-                            <a style="text-decoration:none" class="ml-5" onClick="courseDetail('{$vol.course_id}')"
-                                href="javascript:;" title="课程人员"><i class="Hui-iconfont">&#xe611;</i></a>
-                            <a style="text-decoration:none" class="ml-5" onClick="editCourse('{$vol.course_id}')" href="javascript:;"
-                                title="修改"><i class="Hui-iconfont">&#xe60c;</i></a>
-                            <a style="text-decoration:none" class="ml-5" onClick="delCourse(this,'{$vol.course_id}')"
+                            <a style="text-decoration:none" class="ml-5" onClick="editProject('{$vol.project_id}')"
+                                href="javascript:;" title="修改"><i class="Hui-iconfont">&#xe60c;</i></a>
+                            <a style="text-decoration:none" class="ml-5" onClick="delProject(this,'{$vol.project_id}')"
                                 href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>
                         </td>
                     </tr>
@@ -123,40 +134,40 @@
             },
             "aaSorting": [[0, "asc"]],//默认第几个排序
             "bStateSave": true,//状态保存
-            "aocourseDefs": [
+            "aoprojectDefs": [
                 { "orderable": false, "aTargets": [] }// 制定列不参与排序
             ],
         });
-        /*course-添加*/
-        function addCourse() {
+        /*project-添加*/
+        function addProject() {
             var index = layer.open({
                 type: 2,
-                title: '添加课程',
-                content: 'courseadd',
+                title: '添加项目',
+                content: 'projectadd',
                 end: function () {
                     location.replace(location.href);
                 }
             });
             layer.full(index);
         }
-        /*course-修改*/
-        function editCourse(id) {
+        /*project-修改*/
+        function editProject(id) {
             var index = layer.open({
                 type: 2,
-                title: '课程信息修改',
-                content: 'courseedit/cid/' + id,
+                title: '项目信息修改',
+                content: 'projectedit/pid/' + id,
                 end: function () {
                     location.replace(location.href);
                 }
             });
             layer.full(index);
         }
-        /*course-展示*/
-        function activeCourse(obj, id) {
-            layer.confirm('确认变更当前课程状态为显示吗？', function (index) {
-                $.post("activeCourse", { courseId: id }, function (res) {
+        /*project-展示*/
+        function activeProject(obj, id) {
+            layer.confirm('确认变更当前项目状态为显示吗？', function (index) {
+                $.post("activeProject", { projectId: id }, function (res) {
                     if (res.code == 0) {
-                        $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius" title="展示" onClick="closeCourse(this,' + id + ');" style="cursor: pointer;">已展示</span>');
+                        $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius" title="展示" onClick="closeProject(this,' + id + ');" style="cursor: pointer;">已展示</span>');
                         $(obj).remove();
                         layer.msg(res.msg, { icon: 6, time: 1000 });
                     } else {
@@ -165,12 +176,12 @@
                 })
             });
         }
-        /*course-不展示*/
-        function closeCourse(obj, id) {
-            layer.confirm('确认变更当前课程状态为不显示吗？', function (index) {
-                $.post("closeCourse", { courseId: id }, function (res) {
+        /*project-不展示*/
+        function closeProject(obj, id) {
+            layer.confirm('确认变更当前项目状态为不显示吗？', function (index) {
+                $.post("closeProject", { projectId: id }, function (res) {
                     if (res.code == 0) {
-                        $(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius" title="不展示" onClick="activeCourse(this,' + id + ');" style="cursor: pointer;">不展示</span>');
+                        $(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius" title="不展示" onClick="activeProject(this,' + id + ');" style="cursor: pointer;">不展示</span>');
                         $(obj).remove();
                         layer.msg(res.msg, { icon: 6, time: 1000 });
                     } else {
@@ -179,11 +190,11 @@
                 })
             });
         }
-        /*course-删除*/
-        function delCourse(obj, id) {
-            layer.confirm('确认要删除课程与对应的班级吗？', function (index) {
+        /*project-删除*/
+        function delProject(obj, id) {
+            layer.confirm('确认要删除项目与对应的班级吗？', function (index) {
                 var str = { id: id };
-                $.post("delCourse", str, function (res) {
+                $.post("delProject", str, function (res) {
                     if (res.code == 0) {
                         $(obj).parents("tr").remove();
                         $(obj).remove();
@@ -194,12 +205,12 @@
                 })
             });
         }
-        /*course-详情*/
-        function courseDetail(id) {
+        /*project-详情*/
+        function projectDetail(id) {
             var index = layer.open({
                 type: 2,
-                title: '课程详情',
-                content: 'coursedetail/cid/' + id,
+                title: '项目详情',
+                content: 'projectdetail/cid/' + id,
                 end: function () {
                     location.replace(location.href);
                 }

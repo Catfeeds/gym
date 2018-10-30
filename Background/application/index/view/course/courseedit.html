@@ -126,13 +126,13 @@
                 url: 'editCourse',
                 dataType: 'json',
                 data: $("#form-course-edit").serialize(),
-                success: function (data) {
-                    if (data.code == "0") {
-                        layer.msg(data.msg, { icon: 1, time: 1300 });
+                success: function (res) {
+                    if (res.code == 0) {
+                        layer.msg(res.msg, { icon: 1, time: 1300 });
                         index = parent.layer.getFrameIndex(window.name);
                         setTimeout('parent.layer.close(index);', 1300);
                     } else {
-                        layer.msg(data.msg, { icon: 2, time: 1300 });
+                        layer.msg(res.msg, { icon: 2, time: 1300 });
                     }
                 },
                 error: function () {

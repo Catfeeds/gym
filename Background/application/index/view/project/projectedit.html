@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/style.css" />
+    <style>
+        label.error {
+        left: 325px;
+    }
+</style>
+    <title>编辑项目信息</title>
+</head>
+
+<body>
+    <div class="page-container">
+        <form action="" method="post" class="form form-horizontal" id="form-project-edit">
+            <input type="hidden" id="pid" name="pid" value="{$projectId}">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">项目名称：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input style="width: 300px" value="{$projectInfo.project_name}" autocomplete="off" type="text"
+                        class="input-text" id="name" name="name" placeholder="请输入项目名称" maxlength="28">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">项目排序：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input style="width: 300px" autocomplete="off" value="{$projectInfo.sort}" type="number" class="input-text"
+                        id="sort" name="sort" placeholder="请输入手机号">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">项目封面：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <span class="btn-upload img-upload">
+                        <a href="javascript:void();" class="btn btn-primary radius btn-upload"><i class="Hui-iconfont">&#xe642;</i>
+                            上传封面</a>
+                        <input class="input-file" type="file" name="pic" id="pic" accept="image/gif,image/jpeg,image/x-png" />
+                    </span>
+                    <div class="upload_pic" style="margin-top: 10px;"><img src="{$projectInfo.project_img}" alt="项目封面图片"
+                            width="200" height="100"></div>
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">项目视频：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <span class="btn-upload video-upload">
+                        <a href="javascript:void();" class="btn btn-primary radius btn-upload"><i class="Hui-iconfont">&#xe642;</i>
+                            上传视频</a>
+                        <input class="input-file" type="file" name="video" id="video" accept="video/mp4, video/x-msvideo" />
+                    </span>
+                    {if condition = "$projectInfo.project_video"}
+                    <div class="upload_video" style="margin-top: 10px;"><video src="{$projectInfo.project_video}" width="320"
+                            height="240" controls="controls">暂不支持video标签</video></div>
+                    {else /}
+                    <div class="upload_video" style="margin-top: 10px;">暂无视频</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <button onClick="updateProject()" class="btn btn-primary radius" href="javascript:;">
+                        <i class="Hui-iconfont">&#xe632;</i>
+                        保存并提交
+                    </button>
+                    <button style="margin-left: 20px;" onclick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script>
+        // 表单正则
+        function updateProject() {
+            // 检测参数是否填写完整
+            var name = $.trim($('#name').val());
+            var sort = $('#sort').val();
+            if (name == "") {
+                layer.msg('项目名称不能为空', { icon: 2, time: 1300 });
+                return false;
+            } else if (sort == "") {
+                layer.msg('项目排序不能为空', { icon: 2, time: 1300 });
+                return false;
+            } else if (sort > 100 || sort < 0) {
+                layer.msg('项目排序应在0-100之间', { icon: 2, time: 1300 });
+                return false;
+            } else {
+                // 发送ajax
+                $.ajax({
+                    type: 'POST',
+                    url: '../../updateProject',
+                    dataType: 'json',
+                    data: {
+                        pid: $('#pid').val(),
+                        proname: name,
+                        sort: sort
+                    },
+                    success: function (res) {
+                        console.log(res);
+                        if (res.code == 0) {
+                            layer.msg(res.msg, { icon: 1, time: 1300 });
+                        } else {
+                            layer.msg(res.msg, { icon: 2, time: 1300 });
+                        }
+                    },
+                    error: function () {
+                        layer.msg('网络错误，请稍后重试！', { icon: 2, time: 1300 });
+                    },
+                });
+            }
+        }
+        // 上传项目图片
+        $('#pic').change(function (event) {
+            var index = layer.load(1, {
+                shade: [0.1, '#fff'] //0.1透明度的白色背景
+            });
+            var formData = new FormData();
+            formData.append("file", $(this).get(0).files[0]);
+            $.ajax({
+                url: '../../uploadProjectCover',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,    //不可缺
+                processData: false,    //不可缺
+                success: function (res) {
+                    $(this).get(0).files[0] = "";
+                    // 关闭loading
+                    layer.close(index);
+                    if (res.code == 0) {
+                        // 将图片展示出来
+                        $('.upload_pic').remove();
+                        $('.img-upload').parent('div').append('<div class="upload_pic" style="margin-top: 10px;"><img src="../../../..' + res.data + '" alt="项目封面" width="200" height="100"></div>')
+                        layer.msg(res.msg, { icon: 1, time: 1300 });
+                    } else {
+                        layer.msg(res.msg, { icon: 2, time: 1300 });
+                    }
+                },
+                error: function (res) {
+                    // 关闭loading
+                    layer.msg('上传出错！', { icon: 2, time: 1300 });
+                }
+            });
+        });
+        // 上传项目视频
+        $('#video').change(function (event) {
+            // loading
+            var index = layer.load(1, {
+                shade: [0.6, '#f2f2f2']
+            });
+            var formData = new FormData();
+            formData.append("file", $(this).get(0).files[0]);
+            $.ajax({
+                url: '../../uploadProjectVideo',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,    //不可缺
+                processData: false,    //不可缺
+                success: function (res) {
+                    $(this).get(0).files[0] = "";
+                    // 关闭loading
+                    layer.close(index);
+                    if (res.code == 0) {
+                        // 将图片展示出来
+                        $('.upload_video').remove();
+                        $('.video-upload').parent('div').append('<div class="upload_video" style="margin-top: 10px;"><video src="../../../..' + res.data + '" alt="项目视频" width="320" height="240" controls="controls">暂不支持video标签</video></div>')
+                        layer.msg(res.msg, { icon: 1, time: 1300 });
+                    } else {
+                        layer.msg(res.msg, { icon: 2, time: 1300 });
+                    }
+                },
+                error: function (res) {
+                    // 关闭loading
+                    layer.msg('出错！请刷新！', { icon: 2, time: 1300 });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

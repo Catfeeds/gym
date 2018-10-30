@@ -51,7 +51,9 @@
                     {volist name="$bannerList" id="vol"}
                     <tr class="text-c">
                         <td>{$vol.banner_id}</td>
-                        <td><img src="{$vol.banner_img}" width="200px" height="100px"></td>
+                        <td>
+                            <img src="{$vol.banner_img}" width="200px" height="100px">
+                        </td>
                         <td>
                             {if condition = "$vol.nav_type eq 0 "}
                             <span class="label label-defaunt radius" title="不跳转">不跳转</span>

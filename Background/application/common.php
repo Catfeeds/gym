@@ -69,11 +69,7 @@ function getProject($field = null, $isAll = false, $pageNum = null)
         return null;
     }
     $projectList = collection($projectList)->toArray();
-    foreach ($projectList as &$info) {
-        if (isset($info['project_img'])) {
-            $info['project_img'] = config('SITEROOT') . $info['project_img'];
-        }
-    }
+
     return $projectList;
 }
 
@@ -84,13 +80,13 @@ function getProject($field = null, $isAll = false, $pageNum = null)
  * @param boolean $isVaild 当前项目是否正常展示
  * @return void
  */
-function getProjectById($projectId, $isVaild = true)
+function getProjectById($projectId, $field = null, $isVaild = true)
 {
-    $field = "project_id, project_name, project_img, project_video, project_desc, created_at, status, sort";
+    $field = $field ? $field : "project_id, project_name, project_img, project_video, project_desc, created_at, status, sort";
     $status = $isVaild ? [1] : [1, 2];
     $project = new Project;
     $projectInfo = $project->where('status', 'in', $status)->field($field)->select();
-    if (!$projectList || count($projectList) == 0) {
+    if (!$projectInfo || count($projectInfo) == 0) {
         return null;
     }
     $projectInfo = collection($projectInfo)->toArray();
