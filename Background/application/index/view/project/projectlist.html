@@ -65,12 +65,12 @@
                         </td>
                         <td>
                             {if condition = "$vol.project_video"}
-                            <video src="{$vol.project_video}"></video>
+                            <video width="200" height="150" src="{$vol.project_video}" controls></video>
                             {else /}
                             无视频
                             {/if}
                         </td>
-                        <td>{$vol.created_at}</td>
+                        <td>{:date('Y-m-d H:i:s', $vol.created_at)}</td>
                         <td>{$vol.sort}</td>
                         <td class="td-status">
                             {if condition = "$vol.status eq 2 "}

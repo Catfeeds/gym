@@ -36,7 +36,7 @@
                 <label class="form-label col-xs-4 col-sm-3">项目排序：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input style="width: 300px" autocomplete="off" value="{$projectInfo.sort}" type="number" class="input-text"
-                        id="sort" name="sort" placeholder="请输入手机号">
+                        id="sort" name="sort" placeholder="请输入项目排序">
                 </div>
             </div>
             <div class="row cl">
@@ -69,10 +69,8 @@
             </div>
             <div class="row cl">
                 <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                    <button onClick="updateProject()" class="btn btn-primary radius" href="javascript:;">
-                        <i class="Hui-iconfont">&#xe632;</i>
-                        保存并提交
-                    </button>
+                    <a onClick="updateProject()" class="btn btn-primary radius" href="javascript:void(0)">
+                        <i class="Hui-iconfont">&#xe632;</i> 保存并提交</a>
                     <button style="margin-left: 20px;" onclick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 </div>
             </div>
@@ -108,13 +106,15 @@
                     dataType: 'json',
                     data: {
                         pid: $('#pid').val(),
-                        proname: name,
+                        pname: name,
                         sort: sort
                     },
                     success: function (res) {
                         console.log(res);
                         if (res.code == 0) {
                             layer.msg(res.msg, { icon: 1, time: 1300 });
+                            index = parent.layer.getFrameIndex(window.name);
+                            setTimeout('parent.layer.close(index);', 1300);
                         } else {
                             layer.msg(res.msg, { icon: 2, time: 1300 });
                         }
@@ -128,7 +128,7 @@
         // 上传项目图片
         $('#pic').change(function (event) {
             var index = layer.load(1, {
-                shade: [0.1, '#fff'] //0.1透明度的白色背景
+                shade: [0.6, '#f2f2f2'] //0.1透明度的白色背景
             });
             var formData = new FormData();
             formData.append("file", $(this).get(0).files[0]);
@@ -140,7 +140,6 @@
                 contentType: false,    //不可缺
                 processData: false,    //不可缺
                 success: function (res) {
-                    $(this).get(0).files[0] = "";
                     // 关闭loading
                     layer.close(index);
                     if (res.code == 0) {
@@ -174,7 +173,6 @@
                 contentType: false,    //不可缺
                 processData: false,    //不可缺
                 success: function (res) {
-                    $(this).get(0).files[0] = "";
                     // 关闭loading
                     layer.close(index);
                     if (res.code == 0) {

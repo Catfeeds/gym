@@ -43,7 +43,7 @@
             </div>
             <div class="row cl">
                 <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-                    <a onClick="agreement_save_submit();" class="btn btn-primary radius" href="javascript:;"><i class="Hui-iconfont">&#xe632;</i>
+                    <a onClick="clauseRequest()" class="btn btn-primary radius" href="javascript:;"><i class="Hui-iconfont">&#xe632;</i>
                         保存并提交</a>
                     <button style="margin-left: 20px;" onClick="emptyContent()" class="btn btn-default radius" type="button">清空</button>
                 </div>
@@ -72,7 +72,7 @@
             UE.getEditor('container');
         });
         // 表单提交
-        function agreement_save_submit() {
+        function clauseRequest() {
             if (UE.getEditor('container').getContent() == '') {
                 layer.msg('协议内容不能为空！', { icon: 2, time: 1300 });
                 return false;

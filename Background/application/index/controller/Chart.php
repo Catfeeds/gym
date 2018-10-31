@@ -4,421 +4,97 @@ namespace app\index\controller;
 use \think\Controller;
 use \think\Request;
 use app\index\model\Order;
-use app\index\model\User_clock;
-use app\index\model\Subject;
+use app\index\model\User;
+use think\Db;
 
 class Chart extends Controller
 {
-
     /**
-     * 下载excel模板
-     * @param  Request $request 参数
-     * @return ary           下载的结果
+     * 会员打卡记录查询界面
+     *
+     * @return html
      */
-    public function downTemplate(Request $request)
+    public function memberchart()
     {
-        $type = intval($request->param('type'));
-        // 调用Excel控制器的template方法
-        $excel = new Excel;
-        // type为1时为导出用户信息 2为教师信息
-        $res = $excel->template($type);
-        if ($res) {
-            return objReturn(0, '生成模板成功！请点击右侧下载...', $res);
-        // header('Content-Type: application/vnd.ms-excel');
-            // header('Cache-Control: max-age=0');
-            // Header("Accept-Ranges:bytes");
-            // return $res;
-        } else {
-            return objReturn(400, '下载模板失败！');
-        }
-    }
-
-    /**
-     * 课程购买统计
-     * @return html 页面
-     */
-    public function coursechart()
-    {
+        // 查找所有课程并返回
+        $courseList = getCourse(true);
+        $this->assign('courseList', $courseList);
         return $this->fetch();
     }
 
     /**
-     * 获取课程购买统计数据
-     * @param  Request $request 参数
-     * @return ary              返回数据
+     * 获取指定课程中的会员
+     *
+     * @return void
      */
-    public function getData(Request $request)
+    public function getCourseUser()
     {
-        $select = intval($request->param('select'));
-        if ($select == 7) {
-            // 今天0点时间戳
-            $todayEndTime = strtotime(date("Y-m-d 23:59:59"));
-            $beginTime = $todayEndTime - 7 * 86400 + 1;
-            $xData = array();
-            for ($i = 0; $i < 7; $i++) {
-                $xData[] = date('Y-m-d', $beginTime + $i * 86400); //每隔一天赋值给数组
-            }
-            // dump($xData);die;
-            // 查询数据
-            $order = new Order;
-            $data = $order->field('order_id, pay_at')->where('pay_at', 'between', [$beginTime, $todayEndTime])->where('status', 1)->select();
-            if (!empty($data)) {
-                // 数组里判断时间
-                foreach ($xData as $k => $v) {
-                    $isAll[$k] = 0;
-                    $begin = strtotime($v);
-                    $end = strtotime($v) + 86400;
-                    foreach ($data as $ke => $va) {
-                        if ($va['pay_at'] >= $begin && $va['pay_at'] < $end) {
-                            $isAll[$k] += 1;
-                        }
-                    }
-                }
-            } else {
-                // 无数据时
-                $isAll = [];
-                foreach ($xData as $k => $v) {
-                    $isAll[$k] = 0;
-                }
-            }
-        }
-        if ($select == 15) {
-            // 今天0点时间戳
-            $todayEndTime = strtotime(date("Y-m-d 23:59:59"));
-            $beginTime = $todayEndTime - 15 * 86400 + 1;
-            $xData = array();
-            for ($i = 0; $i < 15; $i++) {
-                $xData[] = date('Y-m-d', $beginTime + $i * 86400); //每隔一天赋值给数组
-            }
-            // dump($xData);die;
-            // 查询数据
-            $order = new Order;
-            $data = $order->field('order_id,pay_at')->where('pay_at', 'between', [$beginTime, $todayEndTime])->where('status', 1)->select();
-            if (!empty($data)) {
-                // 数组里判断时间
-                foreach ($xData as $k => $v) {
-                    $isAll[$k] = 0;
-                    $begin = strtotime($v);
-                    $end = strtotime($v) + 86400;
-                    foreach ($data as $ke => $va) {
-                        if ($va['pay_at'] >= $begin && $va['pay_at'] < $end) {
-                            $isAll[$k] += 1;
-                        }
-                    }
-                }
-            } else {
-                // 无数据时
-                $isAll = [];
-                foreach ($xData as $k => $v) {
-                    $isAll[$k] = 0;
-                }
-            }
-        }
-        // y轴数据
-        $data = array(
-            'data' => $isAll,
-            'name' => '购买总量',
-        );
-        $seriesData = array();
-        array_push($seriesData, $data);
-        $title = '课程购买统计';
-        $courseData = array(
-            'seriesData' => $seriesData,
-            'title' => $title,
-            'xData' => $xData,
-        );
-        return json($courseData);
+        $courseId = intval(request()->param('cid'));
+        $user = new User;
+        $field = "u.uid, u.user_name";
+        $courseUserList = $user->alias('u')->join('gym_user_course uc', 'u.uid = uc.uid', 'RIGHT')->where('u.status', '<>', 3)->where('u.user_type', 1)->where('uc.course_id', $courseId)->where('uc.status', '<>', 4)->field($field)->select();
+        $courseUserList = $courseUserList ? collection($courseUserList)->toArray() : [];
+        return objReturn(0, 'success', $courseUserList);
     }
 
     /**
-     * 课程搜索统计功能
-     * @param  Request $request 参数
-     * @return ary              返回数组
+     * 获取用户打卡日期的折线图数据
+     *
+     * @return void
      */
-    public function getSearchData(Request $request)
+    public function getMemClockData()
     {
-        $startTime = strtotime($request->param('startTime'));
-        $endTime = strtotime($request->param('endTime'));
-        $xData = array();
-        // x轴数据
-        for ($i = $startTime; $i <= $endTime; $i += 86400) {
-            $xData[] = date('Y-m-d', $i); //每隔1天赋值给数组
+        $uid = intval(request()->param('uid'));
+        $cid = intval(request()->param('cid'));
+        $timeStart = strtotime(request()->param('timeStart'));
+        $timeEnd = strtotime(request()->param('timeEnd'));
+        $timeEnd = $timeStart == $timeEnd ? $timeEnd + 86399 : $timeEnd + 86400;
+        // 1 获取用户指定日期、指定课程的打卡记录
+        $clockData = Db::name('clock')->where('uid', $uid)->where('user_type', 1)->where('course_id', $cid)->where('created_at', 'between', [$timeStart, $timeEnd])->where('status', '<>', 3)->field('clock_start_at, clock_end_at, status')->select();
+        if (!$clockData) {
+            return objReturn(400, '该会员当前时间段内暂无打卡记录');
         }
-        // dump($xData);die;
-        $endTime = $endTime + 86400; //加一天
-        // 查询数据
-        $order = new Order;
-        $data = $order->field('order_id, pay_at')->where('pay_at', 'between', [$startTime, $endTime])->where('status', 1)->select();
-        if (!empty($data)) {
-            // 数组里判断时间
-            foreach ($xData as $k => $v) {
-                $isAll[$k] = 0;
-                $begin = strtotime($v);
-                $end = strtotime($v) + 86400;
-                foreach ($data as $ke => $va) {
-                    if ($va['pay_at'] >= $begin && $va['pay_at'] < $end) {
-                        $isAll[$k] += 1;
-                    }
-                }
-            }
-        } else {
-            // 无数据时
-            $isAll = [];
-            foreach ($xData as $k => $v) {
-                $isAll[$k] = 0;
-            }
-        }
-        // y轴数据
-        $data = array(
-            'data' => $isAll,
-            'name' => '购买总量',
-        );
-        $seriesData = array();
-        array_push($seriesData, $data);
-        $title = '课程购买统计';
-        $courseData = array(
-            'seriesData' => $seriesData,
-            'title' => $title,
-            'xData' => $xData,
-        );
-        return json($courseData);
-    }
-
-    /**
-     * 收入统计
-     * @return html 页面
-     */
-    public function incomechart()
-    {
-        return $this->fetch();
-    }
-
-    /**
-     * 获取收入统计数据
-     * @param  Request $request 参数
-     * @return ary              返回数据
-     */
-    public function getIncomeData(Request $request)
-    {
-        $select = intval($request->param('select'));
-        if ($select == 7) {
-            // 今天0点时间戳
-            $todayEndTime = strtotime('today') + 86400;
-            $beginTime = $todayEndTime - 7 * 86400;
-            $xData = [];
-            for ($i = 0; $i < 7; $i++) {
-                $xData[] = date('Y-m-d', $beginTime + $i * 86400); //每隔一天赋值给数组
-            }
-            // dump($xData);
-            // dump($todayEndTime);die;
-            // 查询数据
-            $order = new Order;
-            $data = $order->field('order_id, pay_at, fee')->where('pay_at', 'between', [$beginTime, $todayEndTime])->where('status', 1)->select();
-            if ($data && count($data) > 0) {
-                $data = collection($data)->toArray();
-                // 数组里判断时间
-                foreach ($xData as $k => $v) {
-                    $isAll[$k] = 0;
-                    $begin = strtotime($v);
-                    $end = strtotime($v) + 86400;
-                    foreach ($data as $ke => $va) {
-                        if ($va['pay_at'] >= $begin && $va['pay_at'] < $end) {
-                            $isAll[$k] += $va['fee'];
-                        }
-                    }
-                }
-            } else {
-                // 无数据时
-                $isAll = [];
-                foreach ($xData as $k => $v) {
-                    $isAll[$k] = 0;
-                }
-            }
-        }
-        if ($select == 15) {
-            // 今天0点时间戳
-            $todayEndTime = strtotime('today') + 86400;
-            $beginTime = $todayEndTime - 15 * 86400;
-            $xData = array();
-            for ($i = 0; $i < 15; $i++) {
-                $xData[] = date('Y-m-d', $beginTime + $i * 86400); //每隔一天赋值给数组
-            }
-            // dump($xData);die;
-            // 查询数据
-            $order = new Order;
-            $data = $order->field('order_id,pay_at,fee')->where('pay_at', 'between', [$beginTime, $todayEndTime])->where('status', 1)->select();
-            if (!empty($data)) {
-                // 数组里判断时间
-                foreach ($xData as $k => $v) {
-                    $isAll[$k] = 0;
-                    $begin = strtotime($v);
-                    $end = strtotime($v) + 86400;
-                    foreach ($data as $ke => $va) {
-                        if ($va['pay_at'] >= $begin && $va['pay_at'] < $end) {
-                            $isAll[$k] += $va['fee'];
-                        }
-                    }
-                }
-            } else {
-                // 无数据时
-                $isAll = [];
-                foreach ($xData as $k => $v) {
-                    $isAll[$k] = 0;
-                }
-            }
-        }
-        // y轴数据
-        $data = array(
-            'data' => $isAll,
-            'name' => '收入统计',
-        );
-        $seriesData = array();
-        array_push($seriesData, $data);
-        $title = '收入统计';
-        $incomeData = array(
-            'seriesData' => $seriesData,
-            'title' => $title,
-            'xData' => $xData,
-        );
-        return json($incomeData);
-    }
-
-    /**
-     * 课程搜索统计功能
-     * @param  Request $request 参数
-     * @return ary              返回数组
-     */
-    public function getSearchData2(Request $request)
-    {
-        $startTime = strtotime($request->param('startTime'));
-        $endTime = strtotime($request->param('endTime'));
-        $xData = array();
-        // x轴数据
-        for ($i = $startTime; $i <= $endTime; $i += 86400) {
-            $xData[] = date('Y-m-d', $i); //每隔1天赋值给数组
-        }
-        // dump($xData);die;
-        $endTime = $endTime + 86400; //加一天
-        // 查询数据
-        $order = new Order;
-        $data = $order->field('order_id, pay_at, fee')->where('pay_at', 'between', [$startTime, $endTime])->where('status', 1)->select();
-        if (!empty($data)) {
-            // 数组里判断时间
-            foreach ($xData as $k => $v) {
-                $isAll[$k] = 0;
-                $begin = strtotime($v);
-                $end = strtotime($v) + 86400;
-                foreach ($data as $ke => $va) {
-                    if ($va['pay_at'] >= $begin && $va['pay_at'] < $end) {
-                        $isAll[$k] += $va['fee'];
-                    }
-                }
-            }
-        } else {
-            // 无数据时
-            $isAll = [];
-            foreach ($xData as $k => $v) {
-                $isAll[$k] = 0;
-            }
-        }
-        // y轴数据
-        $data = array(
-            'data' => $isAll,
-            'name' => '收入统计',
-        );
-        $seriesData = array();
-        array_push($seriesData, $data);
-        $title = '收入统计';
-        $courseData = array(
-            'seriesData' => $seriesData,
-            'title' => $title,
-            'xData' => $xData,
-        );
-        return json($courseData);
-    }
-
-    // 课程结束时间 - 课程周期 = 课程起始时间
-    // 一周只有一天有课
-    // 构造单学生的课程的打卡时间为x轴
-    // 一个学生的打卡情况为y轴
-
-    // 学生打卡情况
-    public function clockchart()
-    {
-        // 调用公用函数，获取所有课程
-        $field = 'course_id, course_name';
-        $courseData = getCourse($field, false, null);
-        $this->assign('courseData', $courseData);
-        $subject = new Subject;
-        $subjectData = $subject->field('subject_id,subject_name')->select();
-        $this->assign('subjectData', $subjectData);
-        return $this->fetch();
-    }
-
-    /**
-     * 学生单人打卡情况统计
-     * @param  Request $request 参数
-     * @return ary              返回数组
-     */
-    public function userClockChart(Request $request)
-    {
-        $uid = intval($request->param('uid'));
-        $classId = intval($request->param('classId'));
-        // 查询数据 打卡数据
-        $user_clock = new User_clock;
-        $data = $user_clock->field('uid, clock_at, clock_type')->where('uid', $uid)->where('class_id', $classId)->select();
+        // 2 构造xData 日期列表
         $xData = [];
-        // 非空判断
-        if ($data && count($data) != 0) {
-            foreach ($data as $k => $v) {
-                $xData[] = date('Y-m-d', $v['clock_at']);
-                $isNot[$k] = 0;
-                $isAll[$k] = 0;
-                $isLate[$k] = 0;
-                if ($v['clock_type'] == 1) {
-                    $isAll[$k] = 1;
-                } else if ($v['clock_type'] == 3) {
-                    $isNot[$k] = 1;
-                } else if ($v['clock_type'] == 2) {
-                    $isLate[$k] = 1;
+        // 3 构造seriesData 打卡次数 打卡时长
+        $seriesClockCount = [];
+        $seriseClockPeriod = [];
+        $count = 0; // 计数标记
+        for ($i = $timeStart; $i < $timeEnd; $i += 86400) {
+            $xData[] = date('Y-m-d', $i);
+            // 数据初始化
+            $seriesClockCount[$count] = 0;
+            $seriseClockPeriod[$count] = 0;
+            foreach ($clockData as $ke => $va) {
+                if (($va['clock_start_at'] >= $i) && ($va['clock_start_at'] < $i + 86400)) {
+                    $seriesClockCount[$count] += 1;
+                    if ($va['status'] == 1) {
+                        $seriseClockPeriod[$count] += 45;
+                    } else {
+                        $seriseClockPeriod[$count] += $va['clock_end_at'] - $va['clock_start_at'];
+                    }
                 }
             }
-        } else {
-            // 当所有数据为空，显示空数据
-            // 构造数据 y轴商品名称 x轴三个数据
-            $isNot = [];
-            $isAll = [];
-            $isLate = [];
-            foreach ($data as $k => $v) {
-                $isNot[$k] = 0;
-                $isAll[$k] = 0;
-                $isLate[$k] = 0;
-            }
+            $count++;
         }
-        // dump($data);die;
-        // y轴数据
-        $data = array(
-            'data' => $isAll,
-            'name' => '正常打卡',
-        );
-        $data2 = array(
-            'data' => $isNot,
-            'name' => '旷课打卡',
-        );
-        $data3 = array(
-            'data' => $isLate,
-            'name' => '迟到打卡',
-        );
-        $seriesData = array();
-        array_push($seriesData, $data);
-        array_push($seriesData, $data2);
-        array_push($seriesData, $data3);
-        $title = '打卡情况';
-        $clockData = array(
-            'seriesData' => $seriesData,
-            'title' => $title,
-            'xData' => $xData,
-        );
-        return json($clockData);
+        // 固定series的line marker 折线图的圆圈样式
+        $marker['lineWidth'] = 2;
+        $marker['lineColor'] = '#cab9d7';
+        $marker['fillColor'] = 'white';
+        // 组合seriesData
+        $seriseColumn['type'] = "column";
+        $seriseColumn['name'] = "打卡时长/分钟";
+        $seriseColumn['data'] = $seriseClockPeriod;
+        $seriseLine['type'] = "line";
+        $seriseLine['name'] = "打卡次数/次";
+        $seriseLine['data'] = $seriesClockCount;
+        $seriseLine['marker'] = $marker;
+        $seriseData[] = $seriseColumn;
+        $seriseData[] = $seriseLine;
+
+        // 构造返回值res
+        $res['serise'] = $seriseData;
+        $res['xdata'] = $xData;
+        return objReturn(0, 'success', $res);
     }
 }

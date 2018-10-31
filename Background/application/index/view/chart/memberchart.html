@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="__ROOT__/assets/lib/h-ui.admin/css/style.css" />
+    <style>
+        .chart-title input, select{
+        width: 150px;
+        font-size: 14px; 
+        height: 30px;
+    }
+    .chart-title input{
+        border: solid 1px #ddd;
+        text-align: center;
+        width: 200px;
+    }
+    .chart-title a{
+        margin-left: 30px;
+    }
+    </style>
+    <title>会员打卡统计</title>
+</head>
+
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统统计 <span
+            class="c-gray en">&gt;</span>
+        会员打卡统计 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);"
+            title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div class="cl pd-5 bg-1 bk-gray mt-20 chart-title">
+            <span>选择课程：</span>
+            <select name="course_id" id="course_id">
+                <option value="-1">请选择课程</option>
+                {volist name="$courseList" id="vol"}
+                <option value="{$vol.course_id}">{$vol.course_name}</option>
+                {/volist}
+            </select>
+            <span style="margin-left:20px;">选择会员：</span>
+            <select name="member" id="member">
+            </select>
+            <span style="margin-left:20px;">选择统计时间：</span>
+            <input id="timeStart" name="timeStart" onfocus="selectStart()" readonly="" size="31" type="text" value="">
+            -
+            <input id="timeEnd" name="timeEnd" onfocus="selectEnd()" readonly="" size="31" type="text" value="">
+            <a class="btn btn-success" id="search">
+                <i class="Hui-iconfont"></i>搜索
+            </a>
+        </div>
+        <div id="container" style="min-width:700px;min-height:400px;margin-top: 30px;"></div>
+    </div>
+
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/h-ui.admin/js/H-ui.admin.js"></script>
+    <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript">
+        function selectStart() {
+            let today = getToday();
+            let timeEnd = $("#timeEnd").val();
+            if (!timeEnd) {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', maxDate: today, minDate: '2018-09-30' });
+            } else {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', maxDate: timeEnd, minDate: '2018-09-30' });
+            }
+        }
+
+        function selectEnd() {
+            let today = getToday();
+            console.log(today)
+            let timeStart = $("#timeStart").val();
+            if (!timeStart) {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', maxDate: today, minDate: timeStart });
+            } else {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd', maxDate: today, minDate: '2018-09-30' });
+            }
+        }
+
+        function getToday() {
+            let date = new Date();
+            let year = date.getFullYear();   //获取完整的年份(4位,1970-????)
+            let month = date.getMonth() + 1;   //获取当前月份(1-12)
+            let day = date.getDate();
+            return year + '-' + month + '-' + day;
+        }
+
+        $('#search').click(function () {
+            if ($('#course_id').val() == -1) {
+                layer.msg('请选择课程!', { icon: 2, time: 1300 });
+            } else if (!$('#member').val()) {
+                layer.msg('请选择会员!', { icon: 2, time: 1300 });
+            } else if (!$('#timeStart').val()) {
+                layer.msg('请选择查询开始时间!', { icon: 2, time: 1300 });
+            } else if (!$('#member').val()) {
+                layer.msg('请选择查询结束时间!', { icon: 2, time: 1300 });
+            } else {
+                $.ajax({
+                    data: {
+                        cid: $('#course_id').val(),
+                        uid: $('#member').val(),
+                        timeStart: $('#timeStart').val(),
+                        timeEnd: $('#timeEnd').val()
+                    },
+                    datatype: "json",
+                    method: 'post',
+                    url: "getMemClockData",
+                    success: function (res) {
+                        console.log(res)
+                        if (res.code == 0) {
+                            showChart(res.data.xdata, res.data.serise)
+                        } else {
+                            layer.msg(res.msg, { icon: 2, time: 1300 });
+                        }
+                    },
+                    error: function () {
+                        layer.msg('请求错误，请稍后重试!', { icon: 2, time: 1300 });
+                    }
+                });
+            }
+        })
+
+        $('#course_id').change(function () {
+            let cid = $(this).val();
+            if (cid == -1) {
+                return;
+            }
+            getCourseUser(cid);
+        })
+        // 获取课程中的会员
+        function getCourseUser(cid) {
+            $.ajax({
+                data: { cid: cid },
+                datatype: "json",
+                method: 'post',
+                url: "getCourseUser",
+                success: function (res) {
+                    if (!res.data) {
+                        layer.msg('当前课程暂无会员!', { icon: 2, time: 1300 });
+                    } else {
+                        let options = "";
+                        for (let i = 0; i < res.data.length; i++) {
+                            options += '<option value="' + res.data[i].uid + '">' + res.data[i].user_name + '</option>';
+                        }
+                        $('#member').html(options);
+                    }
+                },
+                error: function () {
+                    layer.msg('请求错误，请稍后重试!', { icon: 2, time: 1300 });
+                }
+            });
+        }
+        // 折线图
+        function showChart(xData, seriesData) {
+            var chartOptions = {
+                title: {
+                    text: '会员打卡统计'
+                },
+                yAxis: {
+                    title: {
+                        text: '打卡次数'
+                    }
+                },
+                xAxis: {
+                    categories: xData
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle'
+                },
+                tooltip: {
+                    shared: false,
+                    useHTML: true,
+                    headerFormat: '{point.key}<table>',
+                    pointFormat: '<tr><td style="color: {series.color}">{series.name}: </td>' +
+                        '<td style="text-align: right"><b>{point.y}</b></td></tr>',
+                    footerFormat: '</table>',
+                    valueDecimals: 2
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true,
+                            allowOverlap: true  // 允许数据标签重叠
+                        }
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: seriesData,
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                }
+            }
+            console.log(chartOptions)
+            // 图表初始化函数
+            var chart = Highcharts.chart('container', chartOptions);
+        }
+        // 设置默认参数
+        Highcharts.setOptions({
+            lang: {
+                printChart: ['打印图表'],
+                downloadJPEG: ['导出JPEG图片'],
+                downloadPDF: ['导出PDF文件'],
+                downloadPNG: ['导出PNG图片'],
+                downloadSVG: ['导出SVG文件']
+            }
+        });
+    </script>
+</body>
+
+</html>

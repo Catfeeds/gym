@@ -52,13 +52,13 @@ class Project extends Controller
 
         $pid = request()->param('pid');
 
-        $project['project_name'] = htmlspecialchars(request()->param('name'));
-        $project['project_name'] = intval(request()->param('sort'));
+        $project['project_name'] = htmlspecialchars(request()->param('pname'));
+        $project['sort'] = intval(request()->param('sort'));
         if ($pcover) {
             $project['project_img'] = $pcover;
         }
         if ($pvideo) {
-            $project['project_video'] = $pcover;
+            $project['project_video'] = $pvideo;
         }
         $project['update_at'] = time();
         $project['update_by'] = Session::get('adminId');
@@ -68,7 +68,45 @@ class Project extends Controller
             Session::delete('proVideo');
             return objReturn(0, '项目更新成功');
         } else {
-            return objReturn(400, '项目更新失败');
+            return objReturn(400, '项目更新失败', $update);
+        }
+    }
+
+    /**
+     * 新增一个项目界面
+     *
+     * @return html
+     */
+    public function projectadd()
+    {
+        return $this->fetch();
+    }
+
+    /**
+     * 项目新增
+     *
+     * @return void
+     */
+    public function addProject()
+    {
+        // 判断是否有封面图片
+        $pcover = Session::get('proCover');
+        $pvideo = Session::get('proVideo');
+        if (!$pcover) {
+            return objReturn(400, '请上传项目封面');
+        }
+        $project['project_name'] = htmlspecialchars(request()->param('pname'));
+        $project['sort'] = intval(request()->param('sort'));
+        $project['status'] = intval(request()->param('active'));
+        $project['project_desc'] = request()->param('pdesc');
+        $project['created_at'] = time();
+        $insert = Db::name('project')->insert($project);
+        if ($insert) {
+            Session::delete('proCover');
+            Session::delete('proVideo');
+            return objReturn(0, '新增项目成功');
+        } else {
+            return objReturn(400, '新增项目失败', $update);
         }
     }
 
@@ -98,6 +136,26 @@ class Project extends Controller
             return objReturn(0, '上传成功！', $coverSrc);
         }
         return objReturn(400, '上传失败！', $file->getError());
+    }
+
+    public function uploadProjectImg()
+    {
+        $file = request()->file('file');
+        $dirName = '.' . DS . 'static' . DS . 'imgTemp' . DS;
+        // 移动到框架应用根目录/static/imgTemp/目录下
+        $info = $file->move($dirName);
+        if ($info) {
+            $fileInfo = $file->getInfo();
+           //获取图片的原名称
+            $oriName = explode('.', $fileInfo['name']);
+            $picSort = $oriName[0];
+            $fileName = $info->getSaveName();
+            $picSrc = DS . 'static' . DS . 'imgTemp' . DS . $fileName;
+
+            $res['pic'] = $picSrc . ':' . $picSort;
+            return objReturn(0, 'success', $res);
+        }
+        return json($file->getError());
     }
 
     /**
