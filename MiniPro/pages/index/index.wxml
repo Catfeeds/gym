@@ -12,15 +12,11 @@
   </view>
   <!-- 项目列表 -->
   <view class='project-list'>
-    <view class='project-item img-container' bindtap='navToCommonshow'>
-      <image src='/images/test.jpg'></image>
-    </view>
-    <view class='project-item img-container' bindtap='navToCommonshow'>
-      <image src='/images/test.jpg'></image>
-    </view>
-    <view class='project-item img-container' bindtap='navToCommonshow'>
-      <image src='/images/test.jpg'></image>
-    </view>
+    <block wx:for="{{projectList}}" wx:key="project_id">
+      <view class='project-item img-container' bindtap='navToCommonshow' data-pid='{{item.project_id}}'>
+        <image src='{{item.project_img}}'></image>
+      </view>
+    </block>
   </view>
   <!-- 教练推荐 -->
   <!-- <view class='coach-list'>

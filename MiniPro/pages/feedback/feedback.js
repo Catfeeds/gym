@@ -77,6 +77,15 @@ Page({
    */
   onReachBottom: function() {
     this.getUserFeedback();
+  },
+
+  /**
+   * 图片预览
+   */
+  previewImage: function(evt){
+    wx.previewImage({
+      urls: [evt.currentTarget.dataset.img],
+    })
   }
 
 })

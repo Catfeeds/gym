@@ -221,6 +221,15 @@ Page({
    * 切换到课程选择界面
    */
   navToCourseChoose: function() {
+    // 如果没有课程 就要提示用户先参加课程
+    if (this.data.courseList.length == 0) {
+      util.modalPromisified({
+        title: '系统提示',
+        content: '您还未参加任何课程，无法打卡',
+        showCancel: false
+      })
+      return;
+    }
     this.setData({
       showClockList: true
     })

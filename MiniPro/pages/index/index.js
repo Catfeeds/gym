@@ -57,6 +57,8 @@ Page({
           title: app.globalData.setting.mini_name,
         })
       }
+      // 获取项目列表
+      that.getProjectList();
     }).catch(res => {
       if (res.data.code == 403) {
         util.modalPromisified({
@@ -115,9 +117,9 @@ Page({
   /**
    * 跳转到通用展示界面
    */
-  navToCommonshow: function() {
+  navToCommonshow: function(evt) {
     wx.navigateTo({
-      url: '/pages/commonshow/commonshow?scene=1',
+      url: '/pages/commonshow/commonshow?scene=1&pid=' + evt.currentTarget.dataset.pid,
     })
   },
 

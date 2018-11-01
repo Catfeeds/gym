@@ -136,53 +136,17 @@ class Course extends Controller
 
     /**
      * 删除课程功能
-     * @param  Request $request 参数
-     * @return ary           返回结果
+     * 
+     * @return void
      */
-    public function delCourse(Request $request)
+    public function delCourse()
     {
-        $courseId = $request->param('id');
-        $del['status'] = 3;
-        $del['update_at'] = time();
-        $class['status'] = 3;
-
-        $cu['update_at'] = time();
-        $cu['update_by'] = Session::get('admin_id');
-        $cu['status'] = 3;
-        $course = new CourseDb;
-        $classes = new Classes;
-        $classIdArr = $classes->field('class_id')->where('course_id', $courseId)->where('status', '<>', 3)->select();
-        if (!$classIdArr) {
-            $delCourse = $course->where('course_id', $courseId)->update($del);
-            if ($delCourse) {
-                return objReturn(0, '删除成功!');
-            } else {
-                return objReturn(400, '删除失败!');
-            }
-        } 
-        //先构造一维数组
-        // $idArr = [];
-        foreach ($classIdArr as &$id) {
-            $idArr[] = $id['class_id'];
-        }
-        // 开启事务
-        Db::startTrans();
-        // 事务
-        try {
-            $res1 = Db::name('course')->where('course_id', $courseId)->update($del); // 课程信息
-            $res2 = Db::name('classes')->where('course_id', $courseId)->update($class); // 课程对应的班级信息
-            $res3 = Db::name('classes_user')->where('class_id', 'in', $idArr)->update($cu); //学生班级课程信息
-            // 提交事务
-            if (!$res1 || !$res2 || !$res3) {
-                throw new \Exception("Data Not Insert");
-            }
-            // 执行提交操作
-            Db::commit();
-            return objReturn(0, '删除成功！');
-        } catch (\Exception $e) {
-            // 回滚事务
-            Db::rollback();
-            return objReturn(400, '删除失败123！');
+        $courseId = request()->param('cid');
+        $update = Db::name('course')->where('course_id', $courseId)->update(['status' => 3, 'update_at' => time()]);
+        if ($update) {
+            return objReturn(0, '课程删除成功!');
+        } else {
+            return objReturn(400, '课程删除失败!');
         }
     }
 

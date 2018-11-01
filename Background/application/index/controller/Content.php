@@ -51,8 +51,8 @@ class Content extends Controller
                     }
                 }
                 if (count($updateBanner) > 0) {
-                    $bannerDB = new BannerDB;
-                    $bannerDB->isUpdate()->saveAll($updateBanner);
+                    $banner = new Banner;
+                    $banner->isUpdate()->saveAll($updateBanner);
                 }
             }
         } else {

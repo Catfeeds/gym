@@ -182,7 +182,7 @@
         /*course-删除*/
         function delCourse(obj, id) {
             layer.confirm('确认要删除课程与对应的班级吗？', function (index) {
-                var str = { id: id };
+                var str = { cid: id };
                 $.post("delCourse", str, function (res) {
                     if (res.code == 0) {
                         $(obj).parents("tr").remove();

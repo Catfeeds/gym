@@ -9,7 +9,7 @@
         </view>
         <!-- content -->
         <view class='feedback-content'>
-          <view class='feedback-content-img' wx:if="{{item.img}}">
+          <view class='feedback-content-img' wx:if="{{item.img}}" bindtap='previewImage' data-img='{{item.img}}'>
             <image src='{{item.img}}'></image>
           </view>
           <view class='feedback-content-text'>{{item.content}}</view>

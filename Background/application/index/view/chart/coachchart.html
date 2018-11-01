@@ -28,20 +28,20 @@
         margin-left: 30px;
     }
     </style>
-    <title>会员打卡统计</title>
+    <title>教练打卡统计</title>
 </head>
 
 <body>
     <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统统计 <span
             class="c-gray en">&gt;</span>
-        会员打卡统计 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);"
+        教练打卡统计 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);"
             title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
     <div class="page-container">
         <div class="cl pd-5 bg-1 bk-gray mt-20 chart-title">
-            <span style="margin-left:20px;">选择会员：</span>
-            <select name="member" id="member">
-                <option value="-1">请选择会员</option>
-                {volist name="$memberList" id="vol"}
+            <span style="margin-left:20px;">选择教练：</span>
+            <select name="coach" id="coach">
+                <option value="-1">请选择教练</option>
+                {volist name="$coachList" id="vol"}
                 <option value="{$vol.uid}">{$vol.user_name}</option>
                 {/volist}
             </select>
@@ -98,8 +98,8 @@
         }
 
         $('#search').click(function () {
-            if ($('#member').val() == -1) {
-                layer.msg('请选择会员!', { icon: 2, time: 1300 });
+            if ($('#coach').val() == -1) {
+                layer.msg('请选择教练!', { icon: 2, time: 1300 });
             } else if (!$('#timeStart').val()) {
                 layer.msg('请选择查询开始时间!', { icon: 2, time: 1300 });
             } else if (!$('#member').val()) {
@@ -107,11 +107,10 @@
             } else {
                 $.ajax({
                     data: {
-                        cid: $('#course_id').val(),
-                        uid: $('#member').val(),
+                        uid: $('#coach').val(),
                         timeStart: $('#timeStart').val(),
                         timeEnd: $('#timeEnd').val(),
-                        userType: 1
+                        userType: 2
                     },
                     datatype: "json",
                     method: 'post',
@@ -138,7 +137,7 @@
             }
             getCourseUser(cid);
         })
-        // 获取课程中的会员
+        // 获取课程中的教练
         function getCourseUser(cid) {
             $.ajax({
                 data: { cid: cid },
@@ -147,7 +146,7 @@
                 url: "getCourseUser",
                 success: function (res) {
                     if (!res.data) {
-                        layer.msg('当前课程暂无会员!', { icon: 2, time: 1300 });
+                        layer.msg('当前课程暂无教练!', { icon: 2, time: 1300 });
                     } else {
                         let options = "";
                         for (let i = 0; i < res.data.length; i++) {
@@ -165,13 +164,12 @@
         function showChart(xData, seriesData) {
             var chartOptions = {
                 title: {
-                    text: '会员打卡统计'
+                    text: '教练打卡统计'
                 },
                 yAxis: {
                     title: {
                         text: '打卡次数'
-                    },
-                    minTickInterval: 1
+                    }
                 },
                 xAxis: {
                     categories: xData
@@ -186,7 +184,7 @@
                     useHTML: true,
                     headerFormat: '打卡统计</br>{point.key}<table>',
                     pointFormat: '<tr><td style="color: {series.color}">{series.name}: </td>' +
-                        '<td style="text-align: center"><b>{point.y}</b>次</td></tr>',
+                        '<td style="text-align: center"><b>{point.y}</b></td></tr>',
                     footerFormat: '</table>',
                     valueDecimals: 0
                 },

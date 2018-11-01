@@ -16,9 +16,8 @@ class Chart extends Controller
      */
     public function memberchart()
     {
-        // 查找所有课程并返回
-        $courseList = getCourse(true);
-        $this->assign('courseList', $courseList);
+        $memberList = Db::name('user')->where('user_type', 1)->where('status', '<>', 3)->field('user_name, uid')->select();
+        $this->assign('memberList', $memberList ? $memberList : []);
         return $this->fetch();
     }
 
@@ -42,59 +41,86 @@ class Chart extends Controller
      *
      * @return void
      */
-    public function getMemClockData()
+    public function getClockData()
     {
         $uid = intval(request()->param('uid'));
-        $cid = intval(request()->param('cid'));
+        $userType = intval(request()->param('userType'));
         $timeStart = strtotime(request()->param('timeStart'));
         $timeEnd = strtotime(request()->param('timeEnd'));
         $timeEnd = $timeStart == $timeEnd ? $timeEnd + 86399 : $timeEnd + 86400;
         // 1 获取用户指定日期、指定课程的打卡记录
-        $clockData = Db::name('clock')->where('uid', $uid)->where('user_type', 1)->where('course_id', $cid)->where('created_at', 'between', [$timeStart, $timeEnd])->where('status', '<>', 3)->field('clock_start_at, clock_end_at, status')->select();
+        $clockData = Db::name('clock')->where('uid', $uid)->where('user_type', $userType)->where('created_at', 'between', [$timeStart, $timeEnd])->where('status', '<>', 3)->field('clock_start_at, status, course_id')->select();
         if (!$clockData) {
             return objReturn(400, '该会员当前时间段内暂无打卡记录');
         }
         // 2 构造xData 日期列表
         $xData = [];
         // 3 构造seriesData 打卡次数 打卡时长
-        $seriesClockCount = [];
-        $seriseClockPeriod = [];
+        $courseData = [];
+        $courseIds = [];
+        // 先做一次循环 计算其中的课程数量
+        foreach ($clockData as $k => $v) {
+            $temp = [];
+            $temp['course_id'] = $v['course_id'];
+            $temp['data'] = [];
+            $courseData[] = $temp;
+            $courseIds[] = $v['course_id'];
+        }
+
         $count = 0; // 计数标记
         for ($i = $timeStart; $i < $timeEnd; $i += 86400) {
             $xData[] = date('Y-m-d', $i);
             // 数据初始化
-            $seriesClockCount[$count] = 0;
-            $seriseClockPeriod[$count] = 0;
+            foreach ($courseData as $k => $v) {
+                $courseData[$k]['data'][$count] = 0;
+            }
+            // 数据统计
             foreach ($clockData as $ke => $va) {
                 if (($va['clock_start_at'] >= $i) && ($va['clock_start_at'] < $i + 86400)) {
-                    $seriesClockCount[$count] += 1;
-                    if ($va['status'] == 1) {
-                        $seriseClockPeriod[$count] += 45;
-                    } else {
-                        $seriseClockPeriod[$count] += $va['clock_end_at'] - $va['clock_start_at'];
+                    foreach ($courseData as $k => $v) {
+                        if ($v['course_id'] == $va['course_id']) {
+                            $courseData[$k]['data'][$count] += 1;
+                            break 1;
+                        }
                     }
                 }
             }
             $count++;
         }
-        // 固定series的line marker 折线图的圆圈样式
-        $marker['lineWidth'] = 2;
-        $marker['lineColor'] = '#cab9d7';
-        $marker['fillColor'] = 'white';
+        // 查找课程名称
+        $courseNames = Db::name('course')->where('course_id', 'in', $courseIds)->field('course_name, course_id')->select();
         // 组合seriesData
-        $seriseColumn['type'] = "column";
-        $seriseColumn['name'] = "打卡时长/分钟";
-        $seriseColumn['data'] = $seriseClockPeriod;
-        $seriseLine['type'] = "line";
-        $seriseLine['name'] = "打卡次数/次";
-        $seriseLine['data'] = $seriesClockCount;
-        $seriseLine['marker'] = $marker;
-        $seriseData[] = $seriseColumn;
-        $seriseData[] = $seriseLine;
-
+        $seriseData = [];
+        foreach ($courseData as $k => $v) {
+            $seriseLine = [];
+            // 1 匹配课程名称
+            foreach ($courseNames as $ke => $va) {
+                if ($v['course_id'] == $va['course_id']) {
+                    $seriseLine['name'] = $va['course_name'];
+                    break 1;
+                }
+            }
+            // 2 设置其类别
+            $seriseLine['type'] = "line";
+            // 3 填充数据
+            $seriseLine['data'] = $v['data'];
+            $seriseData[] = $seriseLine;
+        }
         // 构造返回值res
         $res['serise'] = $seriseData;
         $res['xdata'] = $xData;
         return objReturn(0, 'success', $res);
+    }
+
+    /**
+     * 教练打卡图表界面
+     *
+     * @return html
+     */
+    public function coachchart()
+    {
+        $coachList = Db::name('user')->where('user_type', 2)->where('status', '<>', 3)->field('user_name, uid')->select();
+        $this->assign('coachList', $coachList ? $coachList : []);
+        return $this->fetch();
     }
 }

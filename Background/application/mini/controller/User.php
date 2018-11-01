@@ -41,7 +41,7 @@ class User extends Controller
         // 判断是否有文件(图片)上传
         $file = request()->file('file');
         if ($file) {
-            $targetDir = ROOT_PATH . 'public' . DS . 'feedback';
+            $targetDir = ROOT_PATH . 'public' . DS . 'static' . DS . 'feedback';
             $save = $file->move($targetDir);
             if (!$save) return objReturn(400, 'System Error', $save);
         }
@@ -69,6 +69,11 @@ class User extends Controller
         $uid = intval(request()->param('uid'));
         $userType = request()->param('userType');
         $feedbackList = getFeedBack($uid, $userType, $pageNum);
+        if ($feedbackList) {
+            foreach ($feedbackList as &$info) {
+                $info['img'] = config('SITEROOT') . '/static' . $info['img'];
+            }
+        }
         return objReturn(0, 'success', $feedbackList);
     }
 
@@ -87,32 +92,34 @@ class User extends Controller
         // 对userCourse做简单处理
         // 如果有课程 判断每个课程是否都有效
         $validCourse = [];
-        $updateArr = [];
-        $validSort = [];
-        foreach ($userCourseList as $k => $v) {
+        if ($userCourse) {
+            $updateArr = [];
+            $validSort = [];
+            foreach ($userCourse as $k => $v) {
             // 超时需要更新状态
-            if ($v['status'] == 1 && $v['end_at'] < time()) {
-                $v['status'] = 3;
-                $v['updated_at'] = time();
-                $updateArr[] = $v;
-                continue;
-            }
+                if ($v['status'] == 1 && $v['end_at'] < time()) {
+                    $v['status'] = 3;
+                    $v['updated_at'] = time();
+                    $updateArr[] = $v;
+                    continue;
+                }
             // 当未到打卡时间时，此表示暂存状态 不可点击 但是同样展示 显示开始时间
-            if ($v['status'] == 1 && $v['start_at'] > time()) {
-                $v['status'] = 5;
-                $v['start_at_conv'] = date('Y-m-d', $v['start_at']);
-            }
+                if ($v['status'] == 1 && $v['start_at'] > time()) {
+                    $v['status'] = 5;
+                    $v['start_at_conv'] = date('Y-m-d', $v['start_at']);
+                }
             // 正常情况
-            $validSort[] = $v['status'];
-            $validCourse[] = $v;
-        }
+                $validSort[] = $v['status'];
+                $validCourse[] = $v;
+            }
         // 如果有需要update的data 则update
-        if (count($updateArr) > 0) {
-            $user_course->isUpdate()->saveAll($updateArr);
-        }
+            if (count($updateArr) > 0) {
+                $user_course->isUpdate()->saveAll($updateArr);
+            }
         // 如果有效课程存在 将所有不展示的课程放在最后
-        if (count($validCourse) > 1) {
-            array_multisort($validSort, SORT_ASC, SORT_NUMERIC, $validCourse);
+            if (count($validCourse) > 1) {
+                array_multisort($validSort, SORT_ASC, SORT_NUMERIC, $validCourse);
+            }
         }
         $res['course'] = $validCourse;
         $res['clockInfo'] = $userClockInfo;
