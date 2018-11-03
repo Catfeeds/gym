@@ -25,31 +25,19 @@
   <!-- 教练信息 -->
   <block wx:else>
     <!-- 教练姓名 -->
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">姓名</view>
-      </view>
-      <view class="weui-cell__bd">
-        <view class="weui-label">{{userInfo.coach_name}}</view>
-      </view>
+    <view class='info-cell-item'>
+      <view class='info-cell-left'>姓名</view>
+      <view class='info-cell-middle'>{{userInfo.user_name}}</view>
     </view>
     <!-- 教练性别 -->
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">性别</view>
-      </view>
-      <view class="weui-cell__bd">
-        <view class="weui-label">{{userInfo.coach_gender == 1 ? '男' : '女'}}</view>
-      </view>
+    <view class='info-cell-item'>
+      <view class='info-cell-left'>性别</view>
+      <view class='info-cell-middle'>{{userInfo.user_gender}}</view>
     </view>
     <!-- 教练生日 -->
-    <view class="weui-cell weui-cell_input">
-      <view class="weui-cell__hd">
-        <view class="weui-label">生日</view>
-      </view>
-      <view class="weui-cell__bd">
-        <view class="weui-label">{{userInfo.coach_birth}}</view>
-      </view>
+    <view class='info-cell-item'>
+      <view class='info-cell-left'>生日</view>
+      <view class='info-cell-middle'>{{userInfo.user_birth}}</view>
     </view>
   </block>
 

@@ -119,7 +119,7 @@ Page({
    */
   navToCommonshow: function(evt) {
     wx.navigateTo({
-      url: '/pages/commonshow/commonshow?scene=1&pid=' + evt.currentTarget.dataset.pid,
+      url: '/pages/commonshow/commonshow?scene=2&id=' + evt.currentTarget.dataset.pid,
     })
   },
 

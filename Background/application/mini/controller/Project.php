@@ -23,7 +23,31 @@ class Project extends Controller
 
     public function getProjectDesc()
     {
+        $pid = request()->param('pid');
+        $uid = request()->param('uid');
 
+        $projectDesc = Db::name('project')->where('project_id', $pid)->field('project_desc, project_video')->find();
+        if (!$projectDesc) {
+            return objReturn(400, 'failed');
+        }
+
+        if ($projectDesc['project_desc']) {
+            $projectDescPic = explode(',', $projectDesc['project_desc']);
+            $proSort = [];
+            $proArr = [];
+            foreach ($projectDescPic as $k => $v) {
+                $temp = [];
+                $temp = explode(':', $v);
+                $proSort[] = $temp[1];
+                $proArr[] = config('SITEROOT') . $temp[0];
+            }
+            array_multisort($proSort, SORT_ASC, SORT_NUMERIC, $proArr);
+        }
+
+        $res['desc'] = $projectDesc['project_desc'] ? $proArr : [];
+        $res['video'] = $projectDesc['project_video'] ? config('SITEROOT') . $projectDesc['project_video'] : "";
+
+        return objReturn(0, 'success', $res);
     }
 
     /**

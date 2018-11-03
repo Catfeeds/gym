@@ -65,7 +65,8 @@
       util.post('sms/sendSingleSms', {
         openid: wx.getStorageSync('openid'),
         telnum: that.data.userTel,
-        usertype: that.data.userType
+        usertype: that.data.userType,
+        isCheck: true
       }, 200).then(res => {
         wx.showToast({
           title: '验证码发送成功',
@@ -93,10 +94,6 @@
             title: '系统提示',
             content: '当前手机号不为该系统用户，请联系管理员或检查手机号后重试',
             confirmText: '联系管理'
-          }).then(res => {
-            wx.navigateTo({
-              url: '/pages/storeinfo/storeinfo',
-            })
           })
         } else {
           util.modalPromisified({
@@ -209,14 +206,14 @@
         wx.removeStorageSync('code');
         wx.removeStorageSync('codeTime');
         app.globalData.userInfo = evt.detail.userInfo;
-        app.globalData.isAuth = true;
+        app.globalData.isAuth = true;   
         wx.getLocation({
           success: function(res) {
             console.log(res)
           },
           complete: function(res) {
             wx.switchTab({
-              url: 'pages/index/index',
+              url: '/pages/index/index',
             })
           }
         })

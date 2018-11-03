@@ -18,11 +18,6 @@ App({
         updateManager.applyUpdate()
       })
     })
-
-    // 用户登陆记录本地存储
-    // var logs = wx.getStorageSync('logs') || []
-    // logs.unshift(Date.now())
-    // wx.setStorageSync('logs', logs)
   },
 
   /**
@@ -38,8 +33,8 @@ App({
       util.loginPromisified().then(res => {
         if (res.code) {
           return util.post('minibase/getUserAccount', {
-            // openid: wx.getStorageSync('openid'),
-            openid: "o2XWA4jqHsVsJoNgh0V6deLbeW9Y",
+            openid: wx.getStorageSync('openid'),
+            // openid: "o2XWA4jqHsVsJoNgh0V6deLbeW9Y",
             code: res.code
           }, 100)
         }

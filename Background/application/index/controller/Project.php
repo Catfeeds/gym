@@ -111,6 +111,100 @@ class Project extends Controller
     }
 
     /**
+     * 项目详情界面
+     *
+     * @return html
+     */
+    public function projectdesc()
+    {
+        // 获取项目详情
+        $pid = request()->param('pid');
+        $projectDesc = Db::name('project')->where('project_id', $pid)->value('project_desc');
+        if ($projectDesc) {
+            $projectDesc = explode(',', $projectDesc);
+            $proSort = [];
+            $proArr = [];
+            foreach ($projectDesc as $k => $v) {
+                $temp = [];
+                $temp = explode(':', $v);
+                $proSort[] = $temp[1];
+                $pro = [];
+                $pro['name'] = $temp[1];
+                $pro['img'] = config('SITEROOT') . $temp[0];
+                $proArr[] = $pro;
+            }
+            array_multisort($proSort, SORT_ASC, SORT_NUMERIC, $proArr);
+        } else {
+            $projectDesc = [];
+        }
+        $this->assign('descArr', $proArr);
+        $this->assign('pid', $pid);
+        return $this->fetch();
+    }
+
+    /**
+     * 项目详情新增界面
+     *
+     * @return html
+     */
+    public function projectdescadd()
+    {
+        $pid = request()->param('pid');
+        $this->assign('pid', $pid);
+        return $this->fetch();
+    }
+
+    /**
+     * 项目详情界面新增详情图片
+     *
+     * @return void
+     */
+    public function addProjectDesc()
+    {
+        $pid = request()->param('pid');
+        $pdesc = request()->param('pdesc');
+        $projectDesc = Db::name('project')->where('project_id', $pid)->value('project_desc');
+        $updateDesc = $pdesc . ',' . $projectDesc;
+        $update = Db::name('project')->where('project_id', $pid)->update(['project_desc' => $updateDesc, 'update_at' => time()]);
+        if ($update) {
+            return objReturn(0, '项目详情添加成功');
+        }
+        return objReturn(400, '项目详情添加失败');
+    }
+
+    /**
+     * 删除项目详情头图片
+     *
+     * @return void
+     */
+    public function delProDesc()
+    {
+        $pid = request()->param('pid');
+        $descIds = request()->param('descIds');
+        $descIdArr = explode(',', $descIds);
+        $descOri = Db::name('project')->where('project_id', $pid)->value('project_desc');
+        $descOriArr = explode(',', $descOri);
+        $descUpdate = [];
+        foreach ($descOriArr as $k => $v) {
+            $temp = [];
+            $temp = explode(':', $v);
+            foreach ($descIdArr as $ke => $va) {
+                $descUpdate[$k] = $v;
+                if ($va == $temp[1]) {
+                    unset($descUpdate[$k]);
+                    break 1;
+                }
+            }
+        }
+        $descUpdate = implode(',', $descUpdate);
+        $update = Db::name('project')->where('project_id', $pid)->update(['project_desc' => $descUpdate, 'update_at' => time()]);
+        if ($update) {
+            return objReturn(0, '项目详情删除成功');
+        }
+        return objReturn(400, '项目详情删除失败');
+    }
+
+    /**
      * 上传项目封面
      *
      * @return void

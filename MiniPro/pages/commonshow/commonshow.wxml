@@ -1,12 +1,17 @@
 <view class="container">
 
   <!-- 视频展示区 -->
-  <video id="myVideo" src="{{src}}" controls autoplay="true" page-gesture="true" class='video-class' wx:if="{{isHaveVideo}}"></video>
+  <video id="myVideo" src="{{descInfo.video}}" controls autoplay="true" page-gesture="true" class='video-class' wx:if="{{descInfo.video}}"></video>
   <!-- 视频展示区结束 -->
 
   <!-- 图片展示区 -->
-  <block wx:for="{{imgsec}}" wx:key="">
-    <image src='{{item}}' class='image-class' mode='widthFix'></image>
+  <block wx:if="{{descInfo.desc.length > 0}}">
+    <block wx:for="{{descInfo.desc}}" wx:key="">
+      <image src='{{item}}' class='image-class' mode='widthFix'></image>
+    </block>
+  </block>
+  <block wx:else>
+    暂无数据
   </block>
   <!-- 图片展示区结束 -->
 </view>

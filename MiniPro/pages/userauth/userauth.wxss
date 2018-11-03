@@ -78,6 +78,7 @@ page {
 
 .weui-btn {
   font-size: 28rpx;
+  background: #cab9d7;
 }
 
 .clause {

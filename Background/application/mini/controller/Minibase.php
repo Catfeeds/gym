@@ -145,6 +145,7 @@ class Minibase extends Controller
         if (!$aboutUs) {
             return objReturn(401, 'No About');
         }
+        $res = [];
         // 对aboutus 进行简单处理
         if (!empty($aboutUs['about_us'])) {
             $imgArrTemp = explode(',', $aboutUs['about_us']);
@@ -152,19 +153,23 @@ class Minibase extends Controller
             $imgArr = [];
             foreach ($imgArrTemp as $k => $v) {
                 $temp = explode(':', $v);
-                $imgArr[] = $v[0];
-                $imgSort[] = $v[1];
+                $imgArr[] = config('SITEROOT') . $temp[0];
+                $imgSort[] = $temp[1];
             }
             if (count($imgSort) > 1) {
                 array_multisort($imgSort, SORT_ASC, SORT_NUMERIC, $imgArr);
             }
-            $aboutUs['about_us'] = $imgArr;
+            $res['desc'] = $imgArr;
+        } else {
+            $res['desc'] = [];
         }
         // 视频前加url处理
         if (!empty($aboutUs['about_us_video'])) {
-            $aboutUs['about_us_video'] = config('SITEROOT') . $aboutUs['about_us_video'];
+            $res['video'] = config('SITEROOT') . $aboutUs['about_us_video'];
+        } else {
+            $res['video'] = "";
         }
-        return objReturn(0, 'success', $aboutUs);
+        return objReturn(0, 'success', $res);
     }
 
 

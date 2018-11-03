@@ -60,7 +60,7 @@
                             <img src="{$vol.project_img}" width="200" height="150">
                         </td>
                         <td>
-                            <span class="label label-success radius" title="查看项目详情" onClick="projectDetail(this,'{$vol.project_id}');"
+                            <span class="label label-success radius" title="查看项目详情" onClick="projectDesc('{$vol.project_id}');"
                                 style="cursor: pointer;">点击查看</span>
                         </td>
                         <td>
@@ -169,9 +169,9 @@
                     if (res.code == 0) {
                         $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius" title="展示" onClick="closeProject(this,' + id + ');" style="cursor: pointer;">已展示</span>');
                         $(obj).remove();
-                        layer.msg(res.msg, { icon: 6, time: 1000 });
+                        layer.msg(res.msg, { icon: 6, time: 1300 });
                     } else {
-                        layer.msg(res.msg, { icon: 5, time: 1000 });
+                        layer.msg(res.msg, { icon: 5, time: 1300 });
                     }
                 })
             });
@@ -183,9 +183,9 @@
                     if (res.code == 0) {
                         $(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius" title="不展示" onClick="activeProject(this,' + id + ');" style="cursor: pointer;">不展示</span>');
                         $(obj).remove();
-                        layer.msg(res.msg, { icon: 6, time: 1000 });
+                        layer.msg(res.msg, { icon: 6, time: 1300 });
                     } else {
-                        layer.msg(res.msg, { icon: 5, time: 1000 });
+                        layer.msg(res.msg, { icon: 5, time: 1300 });
                     }
                 })
             });
@@ -198,19 +198,19 @@
                     if (res.code == 0) {
                         $(obj).parents("tr").remove();
                         $(obj).remove();
-                        layer.msg(res.msg, { icon: 6, time: 1000 });
+                        layer.msg(res.msg, { icon: 6, time: 1300 });
                     } else {
-                        layer.msg(res.msg, { icon: 5, time: 1000 });
+                        layer.msg(res.msg, { icon: 5, time: 1300 });
                     }
                 })
             });
         }
         /*project-详情*/
-        function projectDetail(id) {
+        function projectDesc(pid) {
             var index = layer.open({
                 type: 2,
                 title: '项目详情',
-                content: 'projectdetail/cid/' + id,
+                content: 'projectdesc/pid/' + pid,
                 end: function () {
                     location.replace(location.href);
                 }

@@ -19,38 +19,16 @@
         left: 325px;
     }
 </style>
-    <title>关于我们</title>
+    <title>添加项目详情图片</title>
 </head>
 
 <body>
     <div class="page-container">
-        <form action="" method="post" class="form form-horizontal" id="form-aboutus-edit">
-            <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">图片详情管理：</label>
-                <div class="formControls col-xs-8 col-sm-9">
-                    <a class="btn btn-primary radius" onclick="editAboutUsPic()" href="javascript:;">
-                        点击管理</a></span>
-                </div>
-            </div>
-            <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">上传视频：</label>
-                <div class="formControls col-xs-8 col-sm-9">
-                    <span class="btn-upload video-upload">
-                        <a href="javascript:void();" class="btn btn-primary radius btn-upload"><i class="Hui-iconfont">&#xe642;</i>
-                            上传视频</a>
-                        <input class="input-file" type="file" name="video" id="video" accept="video/mp4, video/x-msvideo" />
-                    </span>
-                    {if condition = "$aboutUsVideo"}
-                    <div class="upload_video" style="margin-top: 10px;"><video src="{$aboutUsVideo}" width="320" height="240"
-                            controls="controls">暂不支持video标签</video></div>
-                    {else /}
-                    <div class="upload_video" style="margin-top: 10px;">暂无视频</div>
-                    {/if}
-                </div>
-            </div>
+        <form action="" method="post" class="form form-horizontal" id="form-project-desc-add">
             <input id="picsrc" type="hidden">
+            <input id="pid" type="hidden" value="{$pid}">
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-2">上传图片</label>
+                <label class="form-label col-xs-4 col-sm-2">项目详情图片上传：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <p>图片命名即为图片顺序如1.jpg或2.png，只接收jpg/png格式图片</p>
                     <div class="uploader-list-container">
@@ -73,7 +51,7 @@
             </div>
             <div class="row cl">
                 <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-                    <a onClick="updateAboutus()" class="btn btn-primary radius" href="javascript:void(0)">
+                    <a onClick="addProjectDesc()" class="btn btn-primary radius" href="javascript:void(0)">
                         <i class="Hui-iconfont">&#xe632;</i> 保存并提交</a>
                     <button style="margin-left: 20px;" onclick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 </div>
@@ -90,32 +68,22 @@
     <script type="text/javascript" src="__ROOT__/assets/lib/laypage/laypage.js"></script>
     <!--请在下方写此页面业务相关的脚本-->
     <script>
-        function editAboutUsPic() {
-            var index = layer.open({
-                type: 2,
-                title: '编辑关于我们界面详情',
-                content: 'aboutuspic',
-                end: function () {
-                    location.replace(location.href);
-                }
-            });
-            layer.full(index);
-        }
-
-        function updateAboutus() {
+        // 表单正则
+        function addProjectDesc() {
             // 检测参数是否填写完整
-            var aboutus = $("#picsrc").val();
-            if (aboutus == "") {
-                layer.msg('图片不能为空', { icon: 2, time: 1300 });
+            let pdesc = $('#picsrc').val();
+            if (pdesc == "") {
+                layer.msg('项目详情图片不能为空', { icon: 2, time: 1300 });
                 return false;
             } else {
                 // 发送ajax
                 $.ajax({
                     type: 'POST',
-                    url: 'updateAboutUs',
+                    url: '../../addProjectDesc',
                     dataType: 'json',
                     data: {
-                        aboutus: aboutus
+                        pdesc: pdesc,
+                        pid: $('#pid').val()
                     },
                     success: function (res) {
                         console.log(res);
@@ -133,39 +101,6 @@
                 });
             }
         }
-        // 上传项目视频
-        $('#video').change(function (event) {
-            // loading
-            var index = layer.load(1, {
-                shade: [0.6, '#f2f2f2']
-            });
-            var formData = new FormData();
-            formData.append("file", $(this).get(0).files[0]);
-            $.ajax({
-                url: 'uploadAboutUsVideo',
-                type: 'POST',
-                data: formData,
-                cache: false,
-                contentType: false,    //不可缺
-                processData: false,    //不可缺
-                success: function (res) {
-                    // 关闭loading
-                    layer.close(index);
-                    if (res.code == 0) {
-                        // 将图片展示出来
-                        $('.upload_video').remove();
-                        $('.video-upload').parent('div').append('<div class="upload_video" style="margin-top: 10px;"><video src="../../../..' + res.data + '" alt="项目视频" width="320" height="240" controls="controls">暂不支持video标签</video></div>')
-                        layer.msg(res.msg, { icon: 1, time: 1300 });
-                    } else {
-                        layer.msg(res.msg, { icon: 2, time: 1300 });
-                    }
-                },
-                error: function (res) {
-                    // 关闭loading
-                    layer.msg('出错！请刷新！', { icon: 2, time: 1300 });
-                }
-            });
-        });
     </script>
     <script>
         // 上传图片最多15张
@@ -305,7 +240,7 @@
                     swf: 'lib/webuploader/0.1.5/Uploader.swf',
                     chunked: false,
                     chunkSize: 512 * 1024,
-                    server: 'uploadProjectImg',
+                    server: '../../uploadProjectImg',
 
                     accept: {
                         title: 'Images',

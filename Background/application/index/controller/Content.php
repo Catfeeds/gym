@@ -277,8 +277,8 @@ class Content extends Controller
      */
     public function aboutus()
     {
-        $aboutUs = Db::name('mini_setting')->where('setting_id', 1)->value('about_us');
-        $this->assign('aboutUs', $aboutUs);
+        $aboutUsVideo = Db::name('mini_setting')->where('setting_id', 1)->value('about_us_video');
+        $this->assign('aboutUsVideo', $aboutUsVideo);
         return $this->fetch();
     }
 
@@ -289,13 +289,110 @@ class Content extends Controller
      */
     public function updateAboutUs()
     {
-        $content = htmlspecialchars(request()->param('content'));
-        $update = Db::name('mini_setting')->where('setting_id', 1)->update(['update_at' => time(), 'content' => $content, 'update_by' => Session::get('adminId')]);
+        $aboutus['about_us'] = request()->param('aboutus');
+        if (Session::has('aboutusVideo')) {
+            $aboutus['about_us_video'] = Session::get('aboutusVideo');
+        }
+        // 这里的保存 对于图片来讲 是拼接
+        $oriAboutUs = Db::name('mini_setting')->where('setting_id', 1)->value('about_us');
+        $aboutus['about_us'] = $oriAboutUs . $aboutus['about_us'];
+
+        $update = Db::name('mini_setting')->where('setting_id', 1)->update($aboutus);
         if ($update) {
+            Session::delete('aboutusVideo');
             return objReturn(0, '修改成功');
         } else {
             return objReturn(400, '修改失败');
         }
+    }
+
+    /**
+     * 关于我们界面图片编辑
+     *
+     * @return html
+     */
+    public function aboutuspic()
+    {
+        $pid = request()->param('pid');
+        $aboutUs = Db::name('mini_setting')->where('setting_id', 1)->value('about_us');
+        if ($aboutUs) {
+            $aboutUs = explode(',', $aboutUs);
+            $proSort = [];
+            $proArr = [];
+            foreach ($aboutUs as $k => $v) {
+                $temp = [];
+                $temp = explode(':', $v);
+                $proSort[] = $temp[1];
+                $pro = [];
+                $pro['name'] = $temp[1];
+                $pro['img'] = config('SITEROOT') . $temp[0];
+                $proArr[] = $pro;
+            }
+            array_multisort($proSort, SORT_ASC, SORT_NUMERIC, $proArr);
+        } else {
+            $aboutUs = [];
+        }
+        $this->assign('descArr', $proArr);
+        return $this->fetch();
+    }
+
+    /**
+     * 删除部分关于我们的图片
+     *
+     * @return void
+     */
+    public function delAboutUsPic()
+    {
+        $descIds = request()->param('descIds');
+        $descIdArr = explode(',', $descIds);
+        $descOri = Db::name('mini_setting')->where('setting_id', 1)->value('about_us');
+        $descOriArr = explode(',', $descOri);
+        $descUpdate = [];
+        foreach ($descOriArr as $k => $v) {
+            $temp = [];
+            $temp = explode(':', $v);
+            foreach ($descIdArr as $ke => $va) {
+                $descUpdate[$k] = $v;
+                if ($va == $temp[1]) {
+                    unset($descUpdate[$k]);
+                    break 1;
+                }
+            }
+        }
+        $descUpdate = implode(',', $descUpdate);
+        $update = Db::name('mini_setting')->where('setting_id', 1)->update(['about_us' => $descUpdate]);
+        if ($update) {
+            return objReturn(0, '删除成功');
+        }
+        return objReturn(400, '删除失败');
+    }
+
+    /**
+     * 关于我们界面 视频上传
+     *
+     * @return void
+     */
+    public function uploadAboutUsVideo()
+    {
+        $file = request()->file('file');
+        $dirName = '.' . DS . 'static' . DS . 'videoTemp' . DS;
+        // 是否存在session
+        if (Session::has('aboutusVideo')) {
+            // 删除实际文件
+            @unlink(ROOT_PATH . 'public' . Session::get('aboutusVideo'));
+            // 删除session信息
+            Session::delete('aboutusVideo');
+        }
+        // 移动到框架应用根目录/static/imgTemp/目录下
+        $info = $file->validate(['size' => 1024 * 1024 * 80, 'ext' => 'mp4, avi'])->move($dirName);
+        if ($info) {
+            $fileName = $info->getSaveName();
+            $videoSrc = DS . 'static' . DS . 'videoTemp' . DS . $fileName;
+            // 存路径名到session
+            Session::set('aboutusVideo', $videoSrc);
+            return objReturn(0, '上传成功！', $videoSrc);
+        }
+        return objReturn(400, $file->getError());
     }
 
 }

@@ -7,14 +7,8 @@ var util = require('../../utils/util.js');
 
 Page({
 
-  /**
-   * 页面的初始数据
-   */
   data: {
-    descInfo: [], // 介绍详情
-    isHaveVideo: true, // 是否有视频
-    src: "http://wxsnsdy.tc.qq.com/105/20210/snsdyvideodownload?filekey=30280201010421301f0201690402534804102ca905ce620b1241b726bc41dcff44e00204012882540400&bizid=1023&hy=SH&fileparam=302c020101042530230204136ffd93020457e3c4ff02024ef202031e8d7f02030f42400204045a320a0201000400", // 初始化的视频界面
-    imgsec: ['https://art.up.maikoo.cn/feedback/20180907/d434efbfabd49ab4511f3d7fe3bd5ba1.png', 'https://art.up.maikoo.cn/feedback/20180907/f31f0290a40d9abe758c489f20bca127.png']
+    descInfo: [] // 详情
   },
 
   onLoad: function(options) {
@@ -52,44 +46,22 @@ Page({
     })
     let url = that.data.scene == 1 ? 'minibase/getAboutUs' : 'project/getProjectDesc';
     util.post(url, {
-      uid: app.globalData.uid
+      uid: app.globalData.uid,
+      pid: that.data.sceneId
     }, 100).then(res => {
       that.setData({
-        descInfo: res
+        descInfo: res || []
       })
     }).catch(res => {
-      if (res.statusCode != 200) {
-        util.modalPromisified({
-          title: '系统提示',
-          content: '当前项目不存在',
-          showCancel: false
-        }).then(res => {
-          wx.navigateBack({
-            delta: 1
-          })
+      util.modalPromisified({
+        title: '系统提示',
+        content: '系统错误，请及时联系管理员',
+        showCancel: false
+      }).then(res => {
+        wx.navigateBack({
+          delta: 1
         })
-      }
-      if (res.statusCode != 200) {
-        util.modalPromisified({
-          title: '系统提示',
-          content: '当前项目不存在',
-          showCancel: false
-        }).then(res => {
-          wx.navigateBack({
-            delta: 1
-          })
-        })
-      } else {
-        util.modalPromisified({
-          title: '系统提示',
-          content: '网络错误',
-          showCancel: false
-        }).then(res => {
-          wx.navigateBack({
-            delta: 1
-          })
-        })
-      }
+      })
     })
   },
 

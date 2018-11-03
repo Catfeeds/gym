@@ -23,20 +23,28 @@ class Sms extends Controller
 
     public function sendSingleSms()
     {
-        if (!request()->isPost()) return objReturn(400, 'Invaild Method');
+        if (!request()->isPost()) {
+            return objReturn(400, 'Invaild Method');
+        }
         $openid = request()->param('openid');
-        if (empty($openid)) return objReturn(400, 'Invaild Param');
+        if (empty($openid)) {
+            return objReturn(400, 'Invaild Param');
+        }
         $mobile = request()->param('telnum');
         // 手机号正则匹配
-        if (!preg_match("/^1[3-9]\d{9}$/", $mobile)) return objReturn(402, 'Invaild Telnum', $mobile);
+        if (!preg_match("/^1[3-9]\d{9}$/", $mobile)) {
+            return objReturn(402, 'Invaild Telnum', $mobile);
+        }
 
         // 去数据库查询是否有该手机号
         $isNeedCheck = request()->param('isCheck');
 
         if ($isNeedCheck) {
             $userType = intval(request()->param('usertype'));
-            $isUserTelExist = Db::name('user')->where('phone', $mobile)->count();
-            if ($isUserTelExist != 1) return objReturn(401, 'This Mobile NOT EXIST');
+            $isUserTelExist = Db::name('user')->where('user_mobile', $mobile)->count();
+            if ($isUserTelExist != 1) {
+                return objReturn(401, 'This Mobile NOT EXIST');
+            }
         }
 
         // 测试环境直接返回

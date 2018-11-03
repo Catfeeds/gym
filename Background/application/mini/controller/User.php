@@ -26,7 +26,7 @@ class User extends Controller
     {
         $pageNum = intval(request()->param('pageNum'));
         $uid = intval(request()->param('uid'));
-        $courseList = getCourseList($uid, $pageNum);
+        $courseList = getUserCourse($uid, $pageNum);
         $courseList = empty($courseList) ? [] : $courseList;
         return objReturn(0, 'success', $courseList);
     }
@@ -167,21 +167,9 @@ class User extends Controller
     {
         $uid = intval(request()->param('uid'));
         if (empty($uid)) return objReturn(400, 'Invaild Param');
-
         $userType = request()->param('userType');
-        if ($userType == 1) {
-            $userInfo = getUserInfoById($uid, false, false);
-        } else if ($userType == 2) {
-            $userInfo = Db::name('coach')->where('coach_id', $uid)->field('coach_id, coach_name, coach_phone, coach_gender, coach_birth')->find();
-        } else {
-            return objReturn(401, 'failed');
-        }
-
-        if (!$userInfo) return objReturn(400, 'failed');
+        $userInfo = getUserInfoById($uid, false, false);
         return objReturn(0, 'success', $userInfo);
-        $userType = intval(request()->param('userType'));
-        $res = getUserClockInfo($uid, $userType);
-        return objReturn(0, 'success', $res);
     }
 
     /**
