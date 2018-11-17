@@ -56,10 +56,10 @@ Page({
       mask: true
     })
     util.post('user/getClockInfo', {
-      // uid: app.globalData.uid,
-      uid: 1,
-      // userType: app.globalData.userType
-      userType: 1
+      uid: app.globalData.uid,
+      // uid: 1,
+      userType: app.globalData.userType
+      // userType: 1
     }, 500).then(res => {
       that.setData({
         clockCount: res.clockInfo.clockCount,

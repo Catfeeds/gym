@@ -9,7 +9,7 @@ Page({
     }], // 默认banner
     isCoach: false, // 用户身份是否为教练
     projectList: [], // 项目列表
-    pageNum: 1, // 需要查询的项目页码
+    pageNum: 0, // 需要查询的项目页码
   },
 
   onLoad: function() {
@@ -28,7 +28,6 @@ Page({
     })
     app.loadInfo().then(res => {
       // 先校验身份
-      console.log(app.globalData)
       if (!app.globalData.isAuth) {
         util.modalPromisified({
           title: '系统提示',
@@ -141,7 +140,7 @@ Page({
       pageNum: 0,
       projectList: []
     })
-    this.getProjectList();
+    this.getIndex();
   },
 
   /**

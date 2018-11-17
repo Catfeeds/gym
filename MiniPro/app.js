@@ -33,8 +33,7 @@ App({
       util.loginPromisified().then(res => {
         if (res.code) {
           return util.post('minibase/getUserAccount', {
-            openid: wx.getStorageSync('openid'),
-            // openid: "o2XWA4jqHsVsJoNgh0V6deLbeW9Y",
+            openid: wx.getStorageSync('openid') || '',
             code: res.code
           }, 100)
         }

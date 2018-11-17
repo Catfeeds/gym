@@ -180,9 +180,10 @@ function getUserCourse($uid, $pageNum = null)
     if (!$userCourseList || count($userCourseList) == 0) {
         return null;
     }
+    $userCourseList = collection($userCourseList)->toArray();
     foreach ($userCourseList as &$info) {
-        $info['start_at'] = date('Y-m-d H:i:s', $info['start_at']);
-        $info['end_at'] = date('Y-m-d H:i:s', $info['end_at']);
+        $info['start_at_conv'] = date('Y-m-d H:i:s', $info['start_at']);
+        $info['end_at_conv'] = date('Y-m-d H:i:s', $info['end_at']);
         switch ($info['status']) {
             case 1:
                 $info['status_conv'] = '正常';

@@ -7,6 +7,7 @@ use think\Request;
 use think\Cache;
 use think\Db;
 use think\File;
+use app\index\model\User_course;
 
 class User extends Controller
 {
@@ -114,6 +115,9 @@ class User extends Controller
             }
         // 如果有需要update的data 则update
             if (count($updateArr) > 0) {
+                dump($validCourse);
+                dump($updateArr);die;
+                $user_course = new User_course;
                 $user_course->isUpdate()->saveAll($updateArr);
             }
         // 如果有效课程存在 将所有不展示的课程放在最后
@@ -134,27 +138,27 @@ class User extends Controller
      */
     public function setUserInfo()
     {
-        $openid = request()->param('openid');
-        if (empty($openid)) return objReturn(400, 'Invaild Param');
-        $userInfo = request()->param('userInfo/a');
+        // $openid = request()->param('openid');
+        // if (empty($openid)) return objReturn(400, 'Invaild Param');
+        // $userInfo = request()->param('userInfo/a');
  
-        // 数据构造
-        $user['user_nickname'] = $userInfo['nickName'];
-        $user['user_avatar_url'] = $userInfo['avatarUrl'];
-        $user['user_city'] = $userInfo['city'];
-        $user['user_province'] = $userInfo['province'];
-        $user['user_language'] = $userInfo['language'];
-        $user['user_country'] = $userInfo['country'];
-        $user['update_at'] = time();
-        $user['auth_at'] = time();
-        $user['status'] = 2;
-        $user['auth_name'] = htmlspecialchars(request()->param('authname'));
-        $user['openid'] = $openid;
+        // // 数据构造
+        // $user['user_nickname'] = $userInfo['nickName'];
+        // $user['user_avatar_url'] = $userInfo['avatarUrl'];
+        // $user['user_city'] = $userInfo['city'];
+        // $user['user_province'] = $userInfo['province'];
+        // $user['user_language'] = $userInfo['language'];
+        // $user['user_country'] = $userInfo['country'];
+        // $user['update_at'] = time();
+        // $user['auth_at'] = time();
+        // $user['status'] = 2;
+        // $user['auth_name'] = htmlspecialchars(request()->param('authname'));
+        // $user['openid'] = $openid;
 
-        $update = Db::name('user')->where('user_mobile', request()->param('mobile'))->update($user);
+        // $update = Db::name('user')->where('user_mobile', request()->param('mobile'))->update($user);
 
-        if (!$update) return objReturn(403, 'failed', $update);
-        return objReturn(0, 'success', $update);
+        // if (!$update) return objReturn(403, 'failed', $update);
+        return objReturn(0, 'success');
     }
 
     /**
