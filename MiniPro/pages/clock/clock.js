@@ -7,11 +7,9 @@ Page({
     timeStr: '', // 时间
     clockCount: 0, // 用户累计打卡时间
     nonStopClockCount: 0, // 用户连续打卡时间
-    showClockList: false, // 是否展示用户课程
-    selectedCourseIdx: -1, // 选中的课程
     isLocationAuth: false, // 用户地址授权判断
-    clockText: '开始打卡',
-    isHaveUnFinish: false, // 是否有未打卡完成的课程
+    clockText: '上班打卡',
+    hasUnFinish: false, // 是否有未打卡完成的课程
   },
 
   onLoad: function(options) {
@@ -57,17 +55,15 @@ Page({
     })
     util.post('user/getClockInfo', {
       uid: app.globalData.uid,
-      // uid: 1,
       userType: app.globalData.userType
-      // userType: 1
     }, 500).then(res => {
       that.setData({
         clockCount: res.clockInfo.clockCount,
         nonStopClockCount: res.clockInfo.nonStopClockCount,
-        courseList: res.course || [],
-        isHaveUnFinish: res.clockInfo.isHaveUnfinishClock ? true : false,
-        unfinishClock: res.clockInfo.unfinishClock || [],
-        clockText: res.clockInfo.isHaveUnfinishClock ? '结束打卡' : '开始打卡'
+        hasUnFinish: res.clockInfo.unFinishClock ? true : false,
+        unFinishClock: res.clockInfo.unFinishClock || [],
+        clockText: res.clockInfo.unFinishClock ? '下班打卡' : '上班打卡',
+        workTime: res.clockInfo.coach_work_time || ""
       })
     }).catch(res => {
       console.log(res)
@@ -80,7 +76,7 @@ Page({
   },
 
   /**
-   * 时间倒计时
+   * 当前时间展示
    */
   timeCountdown: function() {
     let intval = setInterval(res => {
@@ -99,9 +95,7 @@ Page({
   },
 
   /**
-   * 用户打卡
-   * 当用户未选择课程的时候跳转到选择课程的界面
-   * 如果用户选择完课程就直接提示用户打卡
+   * 教练打卡
    * 
    * 用户的地址授权问题在认证时就应该先行获取 不需要等到现在才获取
    */
@@ -128,21 +122,37 @@ Page({
             })
           }
         },
-        fail: function(res) {
-          console.log(res)
+        fail: function(error) {
+          util.modalPromisified({
+            title: '系统错误',
+            content: error.toString(),
+            showCancel: false
+          })
         }
       })
       return;
+    }
+    // 判断是否到达打卡时间
+    var curTime = parseInt(Date.now() / 1000);
+    let workTime = that.data.workTime;
+    if (workTime && workTime.length > 0) {
+      if (curTime < workTime.coach_work_start_at) {
+        util.modalPromisified({
+          title: '系统提示',
+          content: '未到打卡时间，打卡时间为' + workTime.coach_work_start_at_conv + ' - ' + workTime.coach_work_end_at_conv,
+          showCancel: false
+        })
+        return;
+      }
     }
     let lat = "",
       lng = '';
     util.locationPromisified().then(res => {
       lat = res.latitude;
       lng = res.longitude;
-      // 已选择课程
       util.modalPromisified({
         title: '系统提示',
-        content: '您确认要进行打卡操作吗？'
+        content: '确认要开始上班打卡吗？'
       }).then(res => {
         if (res.cancel) return;
         wx.showLoading({
@@ -150,30 +160,44 @@ Page({
           mask: true
         })
         util.post('clock/startClock', {
-          // uid: app.globalData.uid,
-          uid: 1,
-          // userType: app.globalData.userType,
-          userType: 1,
-          courseId: that.data.courseList[that.data.selectedCourseIdx].course_id,
-          timeStamp: parseInt(Date.now() / 1000),
+          uid: app.globalData.uid,
+          userType: app.globalData.userType,
+          timeStamp: curTime,
           location: lat + ',' + lng
         }, 500).then(res => {
           wx.showToast({
             title: '打卡成功',
             duration: 1200
           })
+          setTimeout(function() {
+            that.getUserClockInfo();
+          }, 1200)
         }).catch(res => {
-          wx.showToast({
-            title: '打卡失败',
-            icon: 'loading',
-            duration: 1200
-          })
+          if (res.data.code == 405) {
+            util.modalPromisified({
+              title: '系统提示',
+              content: '今日已经打过卡啦，不能重复打卡',
+              showCancel: false
+            })
+          } else if (res.data.code == 401) {
+            util.modalPromisified({
+              title: '系统提示',
+              content: '打卡失败，打卡超时',
+              showCancel: false
+            })
+          } else {
+            wx.showToast({
+              title: '打卡失败',
+              icon: 'loading',
+              duration: 1200
+            })
+          }
         })
       })
-    }).catch(res => {
+    }).catch(error => {
       util.modalPromisified({
-        title: '系统提示',
-        content: '系统错误，请重启小程序或检查微信后重试',
+        title: '系统错误',
+        content: error.toString(),
         showCancel: false
       })
     })
@@ -186,109 +210,47 @@ Page({
     var that = this;
     util.modalPromisified({
       title: '系统提示',
-      content: '您确定要结束当前打卡吗？',
+      content: '确定要进行下班打卡吗？',
     }).then(res => {
       if (res.cancel) return;
+      // 下班时间判断
+      var curTime = parseInt(Date.now() / 1000);
+      let workTime = that.data.workTime;
+      if (workTime) {
+        console.log(curTime)
+        console.log(workTime.coach_work_end_at)
+        console.log(curTime < workTime.coach_work_end_at)
+        if (curTime < workTime.coach_work_end_at) {
+          util.modalPromisified({
+            title: '系统提示',
+            content: '未到打卡时间，打卡时间为' + workTime.coach_work_start_at_conv + ' - ' + workTime.coach_work_end_at_conv,
+            showCancel: false
+          })
+          return;
+        }
+      }
       util.locationPromisified().then(res => {
         lat = res.latitude;
         lng = res.longitude;
         util.post('clock/finishClock', {
-          // uid: app.globalData.uid,
-          uid: 1,
-          // userType: app.globalData.userType
-          userType: 1,
-          clockId: that.data.unfinishClock.clock_id,
-          courseId: that.data.unfinishClock.course_id,
-          timeStamp: parseInt(Date.now() / 1000),
+          clockId: that.data.unFinishClock.clock_id,
+          timeStamp: curTime,
           location: lat + ',' + lng
         }, 500).then(res => {
           wx.showToast({
             title: '打卡成功',
             duration: 1200
           })
-        }).catch(res => {
-          wx.showToast({
-            title: '打卡失败',
-            icon: 'loading',
-            duration: 1200
+          setTimeout(function() {
+            that.getUserClockInfo();
+          }, 1200)
+        }).catch(error => {
+          util.modalPromisified({
+            title: '系统错误',
+            content: '打卡失败，未到下班时间',
+            showCancel: false
           })
         })
-      })
-    })
-  },
-
-  /**
-   * 切换到课程选择界面
-   */
-  navToCourseChoose: function() {
-    // 如果没有课程 就要提示用户先参加课程
-    if (this.data.courseList.length == 0) {
-      util.modalPromisified({
-        title: '系统提示',
-        content: '您还未参加任何课程，无法打卡',
-        showCancel: false
-      })
-      return;
-    }
-    this.setData({
-      showClockList: true
-    })
-    // 将tabbar隐藏
-    wx.hideTabBar({
-      animation: true
-    })
-  },
-
-  /**
-   * 选择课程
-   */
-  chooseCourse: function(evt) {
-    var that = this;
-    let courseList = that.data.courseList,
-      idx = evt.currentTarget.dataset.idx;
-    // 1 判断当前点击是否为选中状态
-    if (courseList[idx].isChecked) {
-      courseList[idx].isChecked = false;
-    } else {
-      // 将所有的item的check状态重置
-      for (let i = 0; i < courseList.length; i++) {
-        courseList[i].isChecked = false;
-      }
-      // 设置选中的item
-      courseList[idx].isChecked = true;
-    }
-    that.setData({
-      courseList: courseList,
-      selectedCourseIdx: idx
-    })
-  },
-
-  /**
-   * 确认选择当前课程
-   */
-  confirmCourse: function() {
-    var that = this;
-    // 如果没有选择课程 要提示用户选择
-    if (that.data.selectedCourseIdx == -1) {
-      util.modalPromisified({
-        title: '系统提示',
-        content: '请先选择课程',
-        showCancel: false
-      })
-      return;
-    }
-    util.modalPromisified({
-      title: '系统提示',
-      content: '您是否确认选择当前课程'
-    }).then(res => {
-      if (res.cancel) return;
-      // 确认选择
-      that.setData({
-        showClockList: false
-      })
-      // 将tabbar展示出来
-      wx.showTabBar({
-        aniamtion: true
       })
     })
   },
@@ -305,7 +267,7 @@ Page({
    */
   onShareAppMessage: function() {
     return {
-      title: app.globalData.setting.share_text || 'Reshape带你重塑形体~',
+      title: app.globalData.setting.share_text || 'Reshape重塑形体~',
       path: '/pages/index/index'
     }
   }

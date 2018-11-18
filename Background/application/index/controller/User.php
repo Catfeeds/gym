@@ -363,7 +363,7 @@ class User extends Controller
     {
         $uid = request()->param('uid');
         $coachClockInfo = getUserClockInfo($uid, 2);
-        $coachClockList = getClockList($uid, 2);
+        $coachClockList = getClockList($uid);
         $userName = Db::name('user')->where('uid', $uid)->value('user_name');
         $this->assign('uid', $uid);
         $this->assign('userName', $userName);

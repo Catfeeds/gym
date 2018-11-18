@@ -127,7 +127,7 @@ Page({
    */
   onShareAppMessage: function() {
     return {
-      title: app.globalData.setting.share_text || 'Reshape带你重塑形体~',
+      title: app.globalData.setting.share_text || 'Reshape重塑形体~',
       path: '/pages/index/index'
     }
   },

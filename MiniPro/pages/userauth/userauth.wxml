@@ -14,10 +14,10 @@
   <view class='user-info'>
     <view class='user-info-left'>身份</view>
     <view class='user-info-middle middle-checkbox'>
-      <view class='usertype' bindtap='chooseUserType' data-id='1'>
+      <!-- <view class='usertype' bindtap='chooseUserType' data-id='1'>
         <image src="{{userType == 1 ? '/images/icon-radio-select.png' : '/images/icon-radio.png'}}"></image>
         <text>会员</text>
-      </view>
+      </view> -->
       <view class='usertype' bindtap='chooseUserType' data-id='2'>
         <image src="{{userType == 2 ? '/images/icon-radio-select.png' : '/images/icon-radio.png'}}"></image>
         <text>教练</text>

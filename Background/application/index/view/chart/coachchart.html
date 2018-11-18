@@ -27,6 +27,25 @@
     .chart-title a{
         margin-left: 30px;
     }
+    .ck-container{
+        display: flex;
+        flex-direction: row;
+        margin: 0 20px;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    .ck-item{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 10%;
+    }
+    .checkbox{
+        width: 16px!important;
+        margin-top: 0!important;
+    }
     </style>
     <title>教练打卡统计</title>
 </head>
@@ -39,18 +58,24 @@
     <div class="page-container">
         <div class="cl pd-5 bg-1 bk-gray mt-20 chart-title">
             <span style="margin-left:20px;">选择教练：</span>
-            <select name="coach" id="coach">
-                <option value="-1">请选择教练</option>
+            <div class="ck-container">
                 {volist name="$coachList" id="vol"}
-                <option value="{$vol.uid}">{$vol.user_name}</option>
+                <div class="ck-item">
+                    <input type="checkbox" class="checkbox" name="coachCheck" value="{$vol.uid}">{$vol.user_name}
+                </div>
                 {/volist}
-            </select>
+            </div>
+        </div>
+        <div class="cl pd-5 bg-1 bk-gray mt-20 chart-title">
             <span style="margin-left:20px;">选择统计时间：</span>
             <input id="timeStart" name="timeStart" onfocus="selectStart()" readonly="" size="31" type="text" value="">
             -
             <input id="timeEnd" name="timeEnd" onfocus="selectEnd()" readonly="" size="31" type="text" value="">
             <a class="btn btn-success" id="search">
                 <i class="Hui-iconfont"></i>搜索
+            </a>
+            <a class="btn btn-success" id="export">
+                <i class="Hui-iconfont"></i>导出
             </a>
         </div>
         <div id="container" style="min-width:700px;min-height:400px;margin-top: 30px;"></div>
@@ -80,7 +105,6 @@
 
         function selectEnd() {
             let today = getToday();
-            console.log(today)
             let timeStart = $("#timeStart").val();
             if (!timeStart) {
                 WdatePicker({ dateFmt: 'yyyy-MM-dd', maxDate: today, minDate: timeStart });
@@ -98,23 +122,30 @@
         }
 
         $('#search').click(function () {
-            if ($('#coach').val() == -1) {
-                layer.msg('请选择教练!', { icon: 2, time: 1300 });
+            let coachIds = "";
+            $('input:checkbox[name=coachCheck]:checked').each(function (k) {
+                if (k == 0) {
+                    coachIds = $(this).val();
+                } else {
+                    coachIds += ',' + $(this).val();
+                }
+            })
+            if (coachIds == "") {
+                layer.msg('请至少选择一名教练!', { icon: 2, time: 1300 });
             } else if (!$('#timeStart').val()) {
                 layer.msg('请选择查询开始时间!', { icon: 2, time: 1300 });
-            } else if (!$('#member').val()) {
+            } else if (!$('#timeEnd').val()) {
                 layer.msg('请选择查询结束时间!', { icon: 2, time: 1300 });
             } else {
                 $.ajax({
                     data: {
-                        uid: $('#coach').val(),
+                        cids: coachIds,
                         timeStart: $('#timeStart').val(),
-                        timeEnd: $('#timeEnd').val(),
-                        userType: 2
+                        timeEnd: $('#timeEnd').val()
                     },
                     datatype: "json",
                     method: 'post',
-                    url: "getClockData",
+                    url: "getCoachClockChart",
                     success: function (res) {
                         console.log(res)
                         if (res.code == 0) {
@@ -130,36 +161,53 @@
             }
         })
 
-        $('#course_id').change(function () {
-            let cid = $(this).val();
-            if (cid == -1) {
-                return;
-            }
-            getCourseUser(cid);
-        })
-        // 获取课程中的教练
-        function getCourseUser(cid) {
-            $.ajax({
-                data: { cid: cid },
-                datatype: "json",
-                method: 'post',
-                url: "getCourseUser",
-                success: function (res) {
-                    if (!res.data) {
-                        layer.msg('当前课程暂无教练!', { icon: 2, time: 1300 });
-                    } else {
-                        let options = "";
-                        for (let i = 0; i < res.data.length; i++) {
-                            options += '<option value="' + res.data[i].uid + '">' + res.data[i].user_name + '</option>';
-                        }
-                        $('#member').html(options);
-                    }
-                },
-                error: function () {
-                    layer.msg('请求错误，请稍后重试!', { icon: 2, time: 1300 });
+        $('#export').click(function () {
+            let coachIds = "";
+            $('input:checkbox[name=coachCheck]:checked').each(function (k) {
+                if (k == 0) {
+                    coachIds = $(this).val();
+                } else {
+                    coachIds += ',' + $(this).val();
                 }
-            });
-        }
+            })
+            if (coachIds == "") {
+                layer.msg('请至少选择一名教练!', { icon: 2, time: 1300 });
+            } else if (!$('#timeStart').val()) {
+                layer.msg('请选择查询开始时间!', { icon: 2, time: 1300 });
+            } else if (!$('#timeEnd').val()) {
+                layer.msg('请选择查询结束时间!', { icon: 2, time: 1300 });
+            } else {
+                $.ajax({
+                    data: {
+                        cids: coachIds,
+                        timeStart: $('#timeStart').val(),
+                        timeEnd: $('#timeEnd').val()
+                    },
+                    datatype: "json",
+                    method: 'post',
+                    url: "exportCoachClockData",
+                    success: function (res) {
+                        console.log(res)
+                        if (res.code == 0) {
+                            layer.msg(res.msg, { icon: 1, time: 1300 });
+                            setTimeout(function () {
+                                var link = document.createElement('a');
+                                link.setAttribute("download", "");
+                                link.href = res.data.url;
+                                link.click();
+                            }, 1300)
+                        } else {
+                            layer.msg(res.msg, { icon: 2, time: 1300 });
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error)
+                        layer.msg('请求错误，请稍后重试!', { icon: 2, time: 1300 });
+                    }
+                });
+            }
+        })
+
         // 折线图
         function showChart(xData, seriesData) {
             var chartOptions = {
@@ -215,7 +263,6 @@
                     }]
                 }
             }
-            console.log(chartOptions)
             // 图表初始化函数
             var chart = Highcharts.chart('container', chartOptions);
         }

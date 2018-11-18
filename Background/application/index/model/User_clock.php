@@ -3,7 +3,7 @@ namespace app\index\model;
 
 use think\Model;
 
-class Clock extends Model
+class User_clock extends Model
 {
 
 }

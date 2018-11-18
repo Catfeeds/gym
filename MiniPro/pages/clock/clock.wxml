@@ -1,4 +1,4 @@
-<view class="container" wx:if="{{!showClockList}}">
+<view class="container">
   <!-- 打卡数据 -->
   <view class='data-section'>
     <view class='data-section-left'>
@@ -13,55 +13,15 @@
   <!-- 打卡按钮 -->
   <view class='clock-section' style="background-image: url('https://xnps.up.maikoo.cn/bg-clock.png')">
     <!-- 教练打卡 -->
-    <block wx:if="{{userType == 2}}">
-      <view class='clock-area' bindtap="{{isHaveUnFinish ? 'endClock' : 'startClock'}}">
-        <text class='clock-area-text'>{{clockText}}</text>
-        <text class='clock-area-time'>{{timeStr}}</text>
-      </view>
-    </block>
-    <!-- 会员打卡 -->
-    <block wx:else>
-      <view class='clock-area' bindtap="{{isHaveUnFinish ? 'endClock' : (selectedCourseIdx == -1 ? 'navToCourseChoose' : 'startClock')}}">
-        <text class='clock-area-text'>{{clockText}}</text>
-        <text class='clock-area-time'>{{timeStr}}</text>
-      </view>
-    </block>
+    <view class='clock-area' bindtap="{{hasUnFinish ? 'endClock' : 'startClock'}}">
+      <text class='clock-area-text'>{{clockText}}</text>
+      <text class='clock-area-time'>{{timeStr}}</text>
+    </view>
   </view>
   <!-- 课程选择后可更改打卡课程的文字跳转 -->
-  <block wx:if="{{isHaveUnFinish}}">
+  <block wx:if="{{hasUnFinish}}">
     <view class='clock-change-section'>
-      <text>打卡课程：{{unfinishClock.course_name}} {{unfinishClock.course_period + '分钟/课时'}}</text>
-      <text>打卡时间：{{unfinishClock.clock_start_at}}</text>
+      <text>打卡开始时间：{{unFinishClock.clock_start_at}}</text>
     </view>
   </block>
-  <block>
-    <view class='clock-change-section' wx:if="{{selectedCourseIdx != -1}}" bindtap='navToCourseChoose'>
-      当前选择课程：{{courseList[selectedCourseIdx].course_name}}
-    </view>
-  </block>
-
-</view>
-
-<!-- 需要打卡的课程选择 -->
-<view class='container list-container' wx:if="{{showClockList}}">
-  <view class='list-section'>
-    <block wx:for="{{courseList}}" wx:key="courseList">
-      <view class='list-item' bindtap='chooseCourse' data-idx="{{index}}">
-        <view class='text-container'>{{item.course_name}}
-          <text wx:if="{{item.status == 5}}">未到打卡时间</text>
-          <text wx:else>{{item.course_period + '分钟/次'}} {{'剩余' + item.course_left_times + '次'}}</text>
-        </view>
-        <view class='img-container'>
-          <image src="{{item.isChecked ? '/images/icon-radio-select.png' : '/images/icon-radio.png'}}"></image>
-        </view>
-      </view>
-    </block>
-  </view>
-  <!-- 确定选择课程的图标 -->
-  <view class='choose-btn'>
-    <form report-submit='true' bindsubmit='confirmCourse'>
-      <button form-type='submit'>确认选择</button>
-    </form>
-  </view>
-
 </view>

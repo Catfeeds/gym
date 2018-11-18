@@ -67,7 +67,6 @@ page {
   font-size: 28rpx;
   color: #7e68a9;
   line-height: 60rpx;
-  text-decoration: underline;
   display: flex;
   flex-direction: column;
 }

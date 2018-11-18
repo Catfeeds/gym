@@ -105,33 +105,27 @@
         function updateAboutus() {
             // 检测参数是否填写完整
             var aboutus = $("#picsrc").val();
-            if (aboutus == "") {
-                layer.msg('图片不能为空', { icon: 2, time: 1300 });
-                return false;
-            } else {
-                // 发送ajax
-                $.ajax({
-                    type: 'POST',
-                    url: 'updateAboutUs',
-                    dataType: 'json',
-                    data: {
-                        aboutus: aboutus
-                    },
-                    success: function (res) {
-                        console.log(res);
-                        if (res.code == 0) {
-                            layer.msg(res.msg, { icon: 1, time: 1300 });
-                            index = parent.layer.getFrameIndex(window.name);
-                            setTimeout('parent.layer.close(index);', 1300);
-                        } else {
-                            layer.msg(res.msg, { icon: 2, time: 1300 });
-                        }
-                    },
-                    error: function () {
-                        layer.msg('网络错误，请稍后重试！', { icon: 2, time: 1300 });
-                    },
-                });
-            }
+            $.ajax({
+                type: 'POST',
+                url: 'updateAboutUs',
+                dataType: 'json',
+                data: {
+                    aboutus: aboutus
+                },
+                success: function (res) {
+                    console.log(res);
+                    if (res.code == 0) {
+                        layer.msg(res.msg, { icon: 1, time: 1300 });
+                        index = parent.layer.getFrameIndex(window.name);
+                        setTimeout('location.replace(location.href);', 1300);
+                    } else {
+                        layer.msg(res.msg, { icon: 2, time: 1300 });
+                    }
+                },
+                error: function () {
+                    layer.msg('网络错误，请稍后重试！', { icon: 2, time: 1300 });
+                },
+            });
         }
         // 上传项目视频
         $('#video').change(function (event) {
@@ -305,7 +299,7 @@
                     swf: 'lib/webuploader/0.1.5/Uploader.swf',
                     chunked: false,
                     chunkSize: 512 * 1024,
-                    server: 'uploadProjectImg',
+                    server: 'uploadAboutUsImg',
 
                     accept: {
                         title: 'Images',

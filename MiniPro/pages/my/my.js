@@ -50,7 +50,7 @@ Page({
    */
   onShareAppMessage: function() {
     return {
-      title: app.globalData.setting.share_text || 'Reshape带你重塑身形~',
+      title: app.globalData.setting.share_text || 'Reshape重塑身形~',
       path: '/pages/index/index'
     }
   },

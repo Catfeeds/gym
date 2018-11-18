@@ -2,7 +2,7 @@
 
   <!-- 会员展示界面 -->
   <view class='info-cell-title'>
-    <text>会员信息</text>
+    <text>我的信息</text>
   </view>
   <block wx:if="{{isMember}}">
     <!-- 会员姓名 -->

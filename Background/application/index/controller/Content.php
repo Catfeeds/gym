@@ -295,8 +295,7 @@ class Content extends Controller
         }
         // 这里的保存 对于图片来讲 是拼接
         $oriAboutUs = Db::name('mini_setting')->where('setting_id', 1)->value('about_us');
-        $aboutus['about_us'] = $oriAboutUs . $aboutus['about_us'];
-
+        $aboutus['about_us'] = $oriAboutUs . ',' . $aboutus['about_us'];
         $update = Db::name('mini_setting')->where('setting_id', 1)->update($aboutus);
         if ($update) {
             Session::delete('aboutusVideo');
@@ -394,5 +393,26 @@ class Content extends Controller
         }
         return objReturn(400, $file->getError());
     }
+
+    public function uploadAboutUsImg()
+    {
+        $file = request()->file('file');
+        $dirName = '.' . DS . 'static' . DS . 'imgTemp' . DS;
+        // 移动到框架应用根目录/static/imgTemp/目录下
+        $info = $file->move($dirName);
+        if ($info) {
+            $fileInfo = $file->getInfo();
+           //获取图片的原名称
+            $oriName = explode('.', $fileInfo['name']);
+            $picSort = $oriName[0];
+            $fileName = $info->getSaveName();
+            $picSrc = DS . 'static' . DS . 'imgTemp' . DS . $fileName;
+
+            $res['pic'] = $picSrc . ':' . $picSort;
+            return objReturn(0, 'success', $res);
+        }
+        return json($file->getError());
+    }
+
 
 }

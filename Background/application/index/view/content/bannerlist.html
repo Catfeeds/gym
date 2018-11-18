@@ -24,13 +24,13 @@
 
 <body>
     <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 内容管理<span class="c-gray en">&gt;</span>
-        Banner <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);"
+        轮播图 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);"
             title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 
     <div class="page-container">
         <div class="cl pd-5 bg-1 bk-gray mt-20">
             <a href="javascript:;" onclick="addBanner()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>
-                添加Banner</a></span> <span class="r">共有数据：<strong>{:count($bannerList)}</strong>
+                添加轮播图</a></span> <span class="r">共有数据：<strong>{:count($bannerList)}</strong>
                 条</span> </div>
         <div class="mt-20">
             <table class="table table-border table-bordered table-hover table-bg table-sort">
@@ -207,7 +207,7 @@
         function addBanner() {
             var index = layer.open({
                 type: 2,
-                title: '添加Banner',
+                title: '添加轮播图',
                 content: 'banneradd',
                 end: function () {
                     location.replace(location.href);
@@ -217,7 +217,7 @@
         }
         /*banner-启用*/
         function activateBanner(obj, id) {
-            layer.confirm('确认变更当前Banner状态为已展示吗？', function (index) {
+            layer.confirm('确认变更当前轮播图状态为已展示吗？', function (index) {
                 $.post("activatBanner", { bannerId: id }, function (res) {
                     if (res.code == 0) {
                         $(obj).parents("td").html('<span class="label label-success radius" title="已展示" onClick="closeBanner(this,' + id + ');" style="cursor: pointer;">已展示</span>');
@@ -230,7 +230,7 @@
         }
         /*banner-不显示*/
         function closeBanner(obj, id) {
-            layer.confirm('确认变更当前Banner状态为不展示吗？', function (index) {
+            layer.confirm('确认变更当前轮播图状态为不展示吗？', function (index) {
                 $.post("closeBanner", { bannerId: id }, function (res) {
                     if (res.code == 0) {
                         $(obj).parents("td").html('<span class="label label-defaunt radius" title="未展示" onClick="activateBanner(this,' + id + ');" style="cursor: pointer;">未展示</span>');

@@ -48,8 +48,8 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3">门店坐标：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input value="{$setting.location}" placeholder="请输入门店坐标" autocomplete="off" style="width: 350px" type="text" class="input-text" maxlength="30"
-                        id="location" name="location" />
+                    <input value="{$setting.location}" placeholder="请输入门店坐标" autocomplete="off" style="width: 350px"
+                        type="text" class="input-text" maxlength="30" id="location" name="location" />
                     <span style="display:block;color:#db044c;">*格式为: 纬度,经度(例如:30.527540,114.346430)</span>
                     <span style="display:block;color:#db044c;">*中国纬度范围:18.000000~53.500000 中国经度范围:39.350000~48.430000</span>
                     <a target="_blank" href="http://lbs.qq.com/tool/getpoint/" style="display:block;text-decoration:none;color:#a0a3db;">点击获取地理坐标</a>
@@ -70,10 +70,17 @@
                 </div>
             </div>
             <div class="row cl">
-                <label class="form-label col-xs-4 col-sm-3">门店信息：</label>
+                <label class="form-label col-xs-4 col-sm-3">教练上班时间：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <textarea style="width:350px;" id="store_info" name="store_info" cols="" rows="" class="textarea"
-                        placeholder="500个字符以内" dragonfly="true" maxlength="500" onkeyup="textarealength(this,30)">{$setting.store_info}</textarea>
+                    <input class="input-text" style="width: 350px" id="timeStart" name="timeStart" onfocus="selectStart()"
+                        type="text" value="{$setting.coach_work_start_at}">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">教练下班时间：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input class="input-text" style="width: 350px" id="timeEnd" name="timeEnd" onfocus="selectEnd()"
+                        type="text" value="{$setting.coach_work_end_at}">
                 </div>
             </div>
             <div class="row cl">
@@ -98,9 +105,29 @@
     <script type="text/javascript" src="__ROOT__/assets/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
     <script type="text/javascript" src="__ROOT__/assets/lib/jquery.validation/1.14.0/messages_zh.js"></script>
     <script type="text/javascript" src="__ROOT__/assets/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="__ROOT__/assets/lib/My97DatePicker/4.8/WdatePicker.js"></script>
     <!--/_footer 作为公共模版分离出去-->
     <!--请在下方写此页面业务相关的脚本-->
     <script>
+
+        function selectStart() {
+            let timeEnd = $("#timeEnd").val();
+            if (!timeEnd) {
+                WdatePicker({ dateFmt: 'HH:mm' });
+            } else {
+                WdatePicker({ dateFmt: 'HH:mm', maxDate: timeEnd });
+            }
+        }
+
+        function selectEnd() {
+            let timeStart = $("#timeStart").val();
+            if (!timeStart) {
+                WdatePicker({ dateFmt: 'HH:mm' });
+            } else {
+                WdatePicker({ dateFmt: 'HH:mm', minDate: timeStart });
+            }
+        }
+
         /**
          * 字数限制
          */
@@ -146,6 +173,8 @@
             var store_info = $("#store_info").val();
             var location = $('#location').val();
             var notice = $('#mini_notice').val();
+            var coachStart = $('#timeStart').val();
+            var coachEnd = $('#timeEnd').val();
             var flag = $(".form-horizontal").valid();
             if (!flag) {
                 //没有通过验证
@@ -157,7 +186,7 @@
                     type: 'POST',
                     url: 'editMiniSetting',
                     typeData: 'JSON',
-                    data: { mini_name: mini_name, service_phone: service_phone, share_text: share_text, store_info: store_info, notice: notice, location: location },
+                    data: { mini_name: mini_name, service_phone: service_phone, share_text: share_text, store_info: store_info, notice: notice, location: location, coach_start: coachStart, coach_end: coachEnd },
                     success: function (res) {
                         if (res.code == 0) {
                             layer.alert(res.msg, { icon: 1, closeBtn: 0 }, function () {

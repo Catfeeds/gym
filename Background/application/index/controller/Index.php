@@ -8,6 +8,8 @@ use \think\Session;
 use app\index\model\Admin;
 use app\index\model\Power;
 use app\index\model\User;
+use think\Db;
+use app\index\model\Coach_clock;
 
 class Index extends Controller
 {
@@ -79,8 +81,15 @@ class Index extends Controller
         $user = new User;
         // 时间戳
         $todaytime = strtotime('today'); //当天时间戳
-        // 查询学生
-        // 初始化学生统计信息
+        // 查询今日打卡的教练列表
+        $coachClock = new Coach_clock;
+        $todayClockCoachList = $coachClock->alias('cc')->join('gym_user u', 'cc.uid = u.uid', 'LEFT')->where('cc.clock_start_at', 'between', [$todaytime, $todaytime + 86399])->field('cc.clock_start_at, u.user_avatar_url, u.user_name')->order('cc.clock_start_at asc')->select();
+        if ($todayClockCoachList && count($todayClockCoachList) > 0) {
+            $todayClockCoachList = collection($todayClockCoachList)->toArray();
+        } else {
+            $todayClockCoachList = [];
+        }
+        $this->assign('todayClockList', $todayClockCoachList);
         return $this->fetch();
     }
 

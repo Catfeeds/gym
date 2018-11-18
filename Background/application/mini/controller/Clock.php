@@ -36,17 +36,25 @@ class Clock extends Controller
             return objReturn(401, 'clock Overtime');
         }
         $uid = intval(request()->param('uid'));
-        $userType = intval(request()->param('userType'));
-        $courseId = intval(request()->param('courseId'));
         $location = request()->param('location');
-        // $formId = request()->param('formId');
-        $success = makeClock($uid, $userType, $courseId, $curTime, $location);
-        // Db::name('formid')->insert(['uid' => $uid, 'course_id' => $courseId, 'formid' => $formId, 'created_at' => $time]);
+        $today = strtotime('today');
+        // 判断教练今天是否已经打过卡
+        $todayClock = Db::name('coach_clock')->where('uid', $uid)->where('clock_start_at', 'between', [$today, $today + 86399])->count();
+        if ($todayClock > 0) {
+            return objReturn(405, 'today already clock');
+        }
+        // 判断当前是否到了教练上班打卡的时间
+        $workStartAt = Db::name('mini_setting')->where('setting_id', 1)->value('coach_work_start_at');
+        $workStartAt = $workStartAt + $today;
+        if ($curTime < $workStartAt) {
+            return objReturn(402, '未到上班时间');
+        }
+
+        $success = makeClock($uid, $curTime, $location);
         if ($success) {
             return objReturn(0, 'success');
-        } else {
-            return objReturn(400, 'failed');
         }
+        return objReturn(400, 'failed');
     }
 
     /**
@@ -62,17 +70,21 @@ class Clock extends Controller
         if ($timeStamp - $curTime > 5) {
             return objReturn(401, 'clock Overtime');
         }
+        // 判断当前是否是下班时间
+        $workEndAt = Db::name('mini_setting')->where('setting_id', 1)->value('coach_work_end_at');
+        $today = strtotime('today');
+        $workEndAt = $workEndAt + $today;
+        if ($curTime < $workEndAt) {
+            return objReturn(402, '未到下班时间');
+        }
         $uid = intval(request()->param('uid'));
         $clockId = intval(request()->param('clockId'));
         $location = request()->param('location');
-
         $success = endClock($clockId, $timeStamp, $location);
-
         if ($success) {
             return objReturn(0, 'success');
-        } else {
-            return objReturn(400, 'failed');
         }
+        return objReturn(400, 'failed');
     }
 
 }
