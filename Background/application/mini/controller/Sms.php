@@ -16,8 +16,8 @@ use think\File;
 class Sms extends Controller
 {
     // 腾讯云短信验证相关
-    const APPID = "1400138297";
-    const APPKEY = "deb7a501a6e413a6a73afccd64e29123";
+    const APPID = "1400160756";
+    const APPKEY = "0ce0359786ceb97ab9f6cf5041de16c5";
     const NUMBER_MIXED = 1;
     const NUMBER_PURE = 2;
 
@@ -63,7 +63,7 @@ class Sms extends Controller
         $dataObj['sig'] = hash("sha256", "appkey=" . self::APPKEY . "&random=" . $random . "&time=" . $curTime . "&mobile=" . $mobile, false);
         $dataObj['ext'] = "";
         $dataObj['extend'] = "";
-        $dataObj['msg'] = "【吸铁石兄弟少儿美术中心】" . $content;
+        $dataObj['msg'] = "【Reshape重塑形体】" . $content;
         $dataObj['tel'] = array("mobile" => $mobile, "nationcode" => "86");
         $dataObj['time'] = intval($curTime);
         $dataObj['type'] = 0; 

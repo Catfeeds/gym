@@ -254,25 +254,28 @@ function checkWorkClock($uid)
         $unfinishClock = Db::name('coach_clock')->where('uid', $uid)->where('status', 1)->field('clock_id, clock_start_at')->find();
         if ($unfinishClock) {
             $hasUnfinishClock = true;
-            // 判断是否需要自动结束打卡 
-            // 获取教练下班时间
-            $finishAt = Db::name('mini_setting')->where('setting_id', 1)->value('coach_work_end_at');
-            $finishAt = strtotime('today') + $finishAt;
-            // 判断是否需要自动结束打卡
-            // if ($finishAt < $curTime) {
-            //     $hasUnfinishClock = false;
-            //     $updateUserClock = Db::name('coach_clock')->where('clock_id', $unfinishClock['clock_id'])->update(['clock_end_at' => $finishAt]);
-            //     if (!$updateUserClock) {
-            //         throw new \Exception('Update User Clock Failed');
-            //     }
-            // } else {
-            //     // 整理返回数据
-            //     $unfinishClockInfo['clock_id'] = $unfinishClock['clock_id'];
-            //     $unfinishClockInfo['clock_start_at'] = date('Y-m-d H:i:s', $unfinishClock['clock_start_at']);
-            // }
-            // 整理返回数据
-            $unfinishClockInfo['clock_id'] = $unfinishClock['clock_id'];
-            $unfinishClockInfo['clock_start_at'] = date('Y-m-d H:i:s', $unfinishClock['clock_start_at']);
+            // 判断是否需要自动结束打卡 如果已经超过了24点还没有结束打卡，系统自动结束打卡
+            $todayTime = strtotime('today');
+            // 2 判断是否已经超过12点
+            if ($todayTime > $unfinishClock['clock_start_at']) {
+                // 超时情况下，系统打卡时间为23:59:59
+                $gapTime = $todayTime - $unfinishClock['clock_start_at'];
+                while ($gapTime > 86400) {
+                    $gapTime = $gapTime - 86400;
+                    $todayTime -= 86400;
+                }
+                $clockEndAt = $todayTime - 1;
+                $updateFinishClock = Db::name('coach_clock')->where('clock_id', $unfinishClock['clock_id'])->update(['clock_end_at' => $clockEndAt, 'status' => 2]);
+                if (!$updateFinishClock) {
+                    throw new \Exception('Update Coach Clock Failed');
+                }
+                $unfinishClockInfo = [];
+            } else {
+                // 在不许要自动结束打卡的情况下
+                // 整理返回数据
+                $unfinishClockInfo['clock_id'] = $unfinishClock['clock_id'];
+                $unfinishClockInfo['clock_start_at'] = date('Y-m-d H:i:s', $unfinishClock['clock_start_at']);
+            }
         }
     // 提交事务
         Db::commit();

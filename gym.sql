@@ -8,7 +8,7 @@
  Target Server Version : 50723
  File Encoding         : 65001
 
- Date: 01/11/2018 23:18:49
+ Date: 19/11/2018 22:52:38
 */
 
 SET NAMES utf8mb4;
@@ -45,7 +45,7 @@ CREATE TABLE `gym_banner`  (
   `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新的用户ID',
   `status` tinyint(1) NOT NULL DEFAULT 2 COMMENT '1展示2不展示3删除',
   PRIMARY KEY (`banner_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for gym_clause
@@ -57,26 +57,6 @@ CREATE TABLE `gym_clause`  (
   `update_at` char(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '更新时间',
   PRIMARY KEY (`clause_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for gym_clock
--- ----------------------------
-DROP TABLE IF EXISTS `gym_clock`;
-CREATE TABLE `gym_clock`  (
-  `clock_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uid` int(11) UNSIGNED NOT NULL COMMENT '打卡对应的用户ID',
-  `user_type` tinyint(4) NOT NULL DEFAULT 1 COMMENT '用户类别',
-  `course_id` int(11) UNSIGNED NOT NULL COMMENT '课程id',
-  `clock_start_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡开始时间',
-  `clock_end_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡结束时间',
-  `clock_start_location` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡开始时所在地点',
-  `clock_end_location` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡结束时所在地点',
-  `created_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '创建时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新的管理员ID',
-  `update_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '更新的时间',
-  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1开始打卡2结束打卡3删除',
-  PRIMARY KEY (`clock_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for gym_clock_count
@@ -106,6 +86,24 @@ CREATE TABLE `gym_coach`  (
   `update_by` char(11) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '更新信息的管理员账号',
   PRIMARY KEY (`coach_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for gym_coach_clock
+-- ----------------------------
+DROP TABLE IF EXISTS `gym_coach_clock`;
+CREATE TABLE `gym_coach_clock`  (
+  `clock_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '打卡对应的用户ID',
+  `clock_start_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡开始时间',
+  `clock_end_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡结束时间',
+  `clock_start_location` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡开始时所在地点',
+  `clock_end_location` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡结束时所在地点',
+  `created_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '创建时间',
+  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新的管理员ID',
+  `update_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '更新的时间',
+  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1开始打卡2结束打卡3删除',
+  PRIMARY KEY (`clock_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for gym_course
@@ -140,7 +138,7 @@ CREATE TABLE `gym_feedback`  (
   `reply_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '回复的管理员ID',
   `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1待回复2已回复3已删除',
   PRIMARY KEY (`idx`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for gym_formid
@@ -171,29 +169,13 @@ CREATE TABLE `gym_mini_setting`  (
   `location` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '门店坐标位置',
   `about_us` varchar(1500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '关于我们 图片',
   `about_us_video` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '关于我们 视频',
+  `coach_work_start_at` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '教练上班时间 距离当日00:00的秒数',
+  `coach_work_end_at` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '教练下班时间 距离当日00:00的秒数',
   `created_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '创建时间',
   `update_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '更新时间',
   `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新的管理员ID',
   PRIMARY KEY (`setting_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for gym_msg
--- ----------------------------
-DROP TABLE IF EXISTS `gym_msg`;
-CREATE TABLE `gym_msg`  (
-  `msg_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `msg_type` tinyint(4) NOT NULL DEFAULT 0 COMMENT '0公告1对指定用户发送',
-  `msg_content` varchar(140) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '消息内容',
-  `msg_img` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `target_uid` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '目标对象的uid 当type为1时有效',
-  `target_openid` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '目标对象的openid 当type为1时有效',
-  `send_at` char(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '发送时间',
-  `send_by` int(11) NOT NULL DEFAULT 0 COMMENT '发送者的ID',
-  `created_at` char(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '创建时间',
-  `status` tinyint(4) NOT NULL DEFAULT 2 COMMENT '1不发送 2发送 3删除',
-  PRIMARY KEY (`msg_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for gym_project
@@ -211,7 +193,7 @@ CREATE TABLE `gym_project`  (
   `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1展示2不展示3删除',
   `sort` tinyint(4) NOT NULL DEFAULT 0 COMMENT '项目排序0-100 大者优先',
   PRIMARY KEY (`project_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for gym_sms_log
@@ -251,7 +233,26 @@ CREATE TABLE `gym_user`  (
   `auth_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '认证时间',
   `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1未认证2已认证3已删除',
   PRIMARY KEY (`uid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for gym_user_clock
+-- ----------------------------
+DROP TABLE IF EXISTS `gym_user_clock`;
+CREATE TABLE `gym_user_clock`  (
+  `clock_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '打卡对应的用户ID',
+  `course_id` int(11) UNSIGNED NOT NULL COMMENT '课程id',
+  `clock_start_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡开始时间',
+  `clock_end_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡结束时间',
+  `clock_start_location` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡开始时所在地点',
+  `clock_end_location` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '打卡结束时所在地点',
+  `created_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '创建时间',
+  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新的管理员ID',
+  `update_at` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '更新的时间',
+  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1开始打卡2结束打卡3删除',
+  PRIMARY KEY (`clock_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for gym_user_course
@@ -270,6 +271,6 @@ CREATE TABLE `gym_user_course`  (
   `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新者',
   `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1正常2打卡结束3超时4已删除',
   PRIMARY KEY (`idx`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

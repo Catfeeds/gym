@@ -35,7 +35,7 @@
                 <label class="form-label col-xs-4 col-sm-3">小程序名称：</label>
                 <div class="formControls col-xs-8 col-sm-9">
                     <input value="{$setting.mini_name}" style="width:350px;" type="text" class="input-text" id="mini_name"
-                        name="mini_name" maxlength="10" placeholder="请输入小程序名称">
+                        name="mini_name" maxlength="20" placeholder="请输入小程序名称">
                 </div>
             </div>
             <div class="row cl">
@@ -144,7 +144,7 @@
             rules: {
                 mini_name: {
                     required: true,
-                    maxlength: 15
+                    maxlength: 20
                 },
                 service_phone: {
                     required: true,
