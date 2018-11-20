@@ -22,10 +22,8 @@ Page({
       mask: 'true'
     })
     util.post('clock/getClocklist', {
-      // uid: app.globalData.uid,
-      uid: 1,
-      // userType: app.globalData.userType,
-      userType: 1,
+      uid: app.globalData.uid,
+      userType: app.globalData.userType,
       pageNum: that.data.pageNum
     }).then(res => {
       if (res) {

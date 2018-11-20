@@ -22,8 +22,7 @@ Page({
       mask: 'true'
     })
     util.post('user/getCourse', {
-      // uid: app.globalData.uid,
-      uid: 1,
+      uid: app.globalData.uid,
       pageNum: that.data.pageNum
     }).then(res => {
       if (res) {

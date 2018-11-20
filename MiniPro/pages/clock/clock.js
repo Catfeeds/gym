@@ -65,11 +65,11 @@ Page({
         clockText: res.clockInfo.unFinishClock ? '下班打卡' : '上班打卡',
         workTime: res.clockInfo.coach_work_time || ""
       })
-    }).catch(res => {
+    }).catch(error => {
       console.log(res)
       util.modalPromisified({
         title: '系统提示',
-        content: '系统错误，请及时联系管理员',
+        content: error.toString(),
         showCancel: false
       })
     })

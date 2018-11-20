@@ -2,8 +2,6 @@
   "pages": [
     "pages/index/index",
     "pages/userauth/userauth",
-    "pages/message/message",
-    "pages/messagedetail/messagedetail",
     "pages/clause/clause",
     "pages/feedback/feedback",
     "pages/sendfeedback/sendfeedback",
@@ -18,7 +16,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#cab9d7",
-    "navigationBarTitleText": "Reshape重塑身形",
+    "navigationBarTitleText": "Reshape重塑形体",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
@@ -46,5 +44,6 @@
         "text": "我的"
       }
     ]
-  }
+  },
+  "debug": true
 }

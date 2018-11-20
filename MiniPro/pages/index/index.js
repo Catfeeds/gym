@@ -17,6 +17,24 @@ Page({
   },
 
   /**
+   * 检测用户是否认证
+   */
+  onShow: function() {
+    if (!app.globalData.isAuth) {
+      util.modalPromisified({
+        title: '系统提示',
+        content: '您需要先进行认证才可进行后续操作',
+        confirmText: '进行认证',
+        showCancel: false
+      }).then(res => {
+        wx.redirectTo({
+          url: '/pages/userauth/userauth'
+        })
+      })
+    }
+  },
+
+  /**
    * 获取首页界面详情 主要是获取banner
    */
   getIndex: function() {
@@ -26,25 +44,9 @@ Page({
       title: '请稍等',
       mask: true
     })
-    app.loadInfo().then(res => {
-      // 先校验身份
-      if (!app.globalData.isAuth) {
-        util.modalPromisified({
-          title: '系统提示',
-          content: '您需要先进行认证才可进行后续操作',
-          confirmText: '进行认证',
-          showCancel: false
-        }).then(res => {
-          wx.redirectTo({
-            url: '/pages/userauth/userauth'
-          })
-        })
-      } else {
-        return util.post('minibase/getIndex', {
-          uid: app.globalData.uid
-        }, 100)
-      }
-    }).then(res => {
+    util.post('minibase/getIndex', {
+      uid: app.globalData.uid
+    }, 100).then(res => {
       let banner = that.data.banner;
       that.setData({
         banner: res ? res : banner,
@@ -70,14 +72,9 @@ Page({
           })
         })
       } else {
-        util.modalPromisified({
-          title: '系统提示',
-          content: '网络错误，请尝试检查网络后重试',
-          confirmText: '重新连接'
-        }).then(res => {
-          if (res.confirm) {
-            that.getIndex();
-          }
+        wx.showLoading({
+          title: '网络错误',
+          icon: 'loading'
         })
       }
     })

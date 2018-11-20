@@ -18,6 +18,8 @@ App({
         updateManager.applyUpdate()
       })
     })
+
+    that.loadInfo();
   },
 
   /**
@@ -27,34 +29,43 @@ App({
   loadInfo: function() {
     var that = this;
     let util = require('/utils/util.js');
-    let promise = new Promise((resolve, reject) => {
-      //网络请求
-      // 用户信息请求
-      util.loginPromisified().then(res => {
-        if (res.code) {
-          return util.post('minibase/getUserAccount', {
-            openid: wx.getStorageSync('openid') || '',
-            code: res.code
-          }, 100)
-        }
-      }).then(res => {
-        wx.setStorageSync('openid', res.openid);
-        that.globalData.uid = res.uid;
-        that.globalData.isAuth = res.isAuth || false;
-        // 1 会员 2 教练
-        that.globalData.userType = res.user_type;
+    // 用户信息请求
+    util.loginPromisified().then(res => {
+      if (res.code) {
+        return util.post('minibase/getUserAccount', {
+          openid: wx.getStorageSync('openid') || '',
+          code: res.code
+        }, 100)
+      }
+    }).then(res => {
+      // 先校验身份
+      wx.setStorageSync('openid', res.openid);
+      that.globalData.uid = res.uid;
+      that.globalData.isAuth = res.isAuth || false;
+      // 1 会员 2 教练
+      that.globalData.userType = res.user_type;
+      if (!res.isAuth) {
+        util.modalPromisified({
+          title: '系统提示',
+          content: '您需要先进行认证才可进行后续操作',
+          confirmText: '进行认证',
+          showCancel: false
+        }).then(res => {
+          wx.redirectTo({
+            url: '/pages/userauth/userauth'
+          })
+        })
+      } else {
         return util.post('minibase/getSystemSetting', {
           openid: res.openid
         }, 100)
-      }).then(res => {
-        console.log(res)
-        that.globalData.setting = res || [];
-        resolve('yes');
-      }).catch(res => {
-        reject(res);
-      })
-    });
-    return promise;
+      }
+    }).then(res => {
+      console.log(res)
+      that.globalData.setting = res || [];
+    }).catch(res => {
+      console.log(res)
+    })
   },
 
   /**
@@ -63,5 +74,4 @@ App({
   globalData: {
     siteroot: 'https://test.kekexunxun.com/mini/'
   }
-
 })
