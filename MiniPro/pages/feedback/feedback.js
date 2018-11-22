@@ -10,7 +10,8 @@ Page({
 
   onShow: function() {
     this.setData({
-      pageNum: 0
+      pageNum: 0,
+      feedbackList: []
     })
     this.getUserFeedback();
   },

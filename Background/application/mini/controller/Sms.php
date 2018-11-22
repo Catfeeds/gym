@@ -48,7 +48,7 @@ class Sms extends Controller
         }
 
         // 测试环境直接返回
-        return objReturn(0, 'success', '123123');
+        // return objReturn(0, 'success', '123123');
 
         $random = rand(100000, 999999);
         $url = "https://yun.tim.qq.com/v5/tlssmssvr/sendsms?sdkappid=" . self::APPID . "&random=" . $random;

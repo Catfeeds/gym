@@ -72,7 +72,7 @@ class User extends Controller
         $feedbackList = getFeedBack($uid, $userType, $pageNum);
         if ($feedbackList) {
             foreach ($feedbackList as &$info) {
-                $info['img'] = config('SITEROOT') . '/static' . $info['img'];
+                if (!empty($info['img'])) $info['img'] = config('SITEROOT') . '/static' . $info['img'];
             }
         }
         return objReturn(0, 'success', $feedbackList);

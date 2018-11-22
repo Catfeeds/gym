@@ -17,24 +17,6 @@ Page({
   },
 
   /**
-   * 检测用户是否认证
-   */
-  onShow: function() {
-    if (!app.globalData.isAuth) {
-      util.modalPromisified({
-        title: '系统提示',
-        content: '您需要先进行认证才可进行后续操作',
-        confirmText: '进行认证',
-        showCancel: false
-      }).then(res => {
-        wx.redirectTo({
-          url: '/pages/userauth/userauth'
-        })
-      })
-    }
-  },
-
-  /**
    * 获取首页界面详情 主要是获取banner
    */
   getIndex: function() {
@@ -55,7 +37,7 @@ Page({
       // 根据系统设置 修改小程序名称
       if (app.globalData.setting) {
         wx.setNavigationBarTitle({
-          title: app.globalData.setting.mini_name,
+          title: app.globalData.setting.mini_name || 'Reshape重塑形体',
         })
       }
       // 获取项目列表
@@ -72,8 +54,8 @@ Page({
           })
         })
       } else {
-        wx.showLoading({
-          title: '网络错误',
+        wx.showToast({
+          title: '暂无数据',
           icon: 'loading'
         })
       }

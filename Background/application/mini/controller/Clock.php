@@ -22,7 +22,7 @@ class Clock extends Controller
         $pageNum = intval(request()->param('pageNum'));
         $userType = intval(request()->param('userType'));
         $uid = intval(request()->param('uid'));
-        $clockList = getClockList($uid, $userType, $pageNum);
+        $clockList = getClockList($uid, $pageNum);
         $clockList = !empty($clockList) ? $clockList : [];
         return objReturn(0, 'success', $clockList);
     }
@@ -44,9 +44,10 @@ class Clock extends Controller
             return objReturn(405, 'today already clock');
         }
         // 判断当前是否到了教练上班打卡的时间
-        $workStartAt = Db::name('mini_setting')->where('setting_id', 1)->value('coach_work_start_at');
-        $workStartAt = $workStartAt + $today;
-        if ($curTime < $workStartAt) {
+        $wordTime = Db::name('mini_setting')->where('setting_id', 1)->field('coach_work_start_at, coach_work_end_at')->find();
+        $workStartAt = $today + $wordTime['coach_work_start_at'];
+        $wordEndAt = $today + $wordTime['coach_work_end_at'];
+        if ($curTime < $workStartAt || $curTime > $wordEndAt) {
             return objReturn(402, '未到上班时间');
         }
 

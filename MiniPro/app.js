@@ -5,10 +5,11 @@ App({
 
     // 更新检测
     const updateManager = wx.getUpdateManager()
+
     updateManager.onCheckForUpdate(function(res) {
       // 请求完新版本信息的回调
-      // console.log(res.hasUpdate)
     })
+
     updateManager.onUpdateReady(function() {
       util.modalPromisified({
         title: '更新提示',
@@ -35,7 +36,7 @@ App({
         return util.post('minibase/getUserAccount', {
           openid: wx.getStorageSync('openid') || '',
           code: res.code
-        }, 100)
+        }, 0)
       }
     }).then(res => {
       // 先校验身份

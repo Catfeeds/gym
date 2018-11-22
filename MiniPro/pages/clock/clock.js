@@ -185,6 +185,12 @@ Page({
               content: '打卡失败，打卡超时',
               showCancel: false
             })
+          } else if (res.data.code == 402) {
+            util.modalPromisified({
+              title: '系统提示',
+              content: '打卡失败，不在打卡时间范围',
+              showCancel: false
+            })
           } else {
             wx.showToast({
               title: '打卡失败',

@@ -216,7 +216,7 @@ function getUserClockInfo($uid, $userType)
 {
     $curTime = time();
     // 获取用户连续不间断打卡次数
-    $nonStopCount = Db::name('clock_count')->where('uid', $uid)->where('user_type', $userType)->where('status', 2)->value('non_stop_count');
+    $nonStopCount = Db::name('clock_count')->where('uid', $uid)->where('user_type', $userType)->where('status', 1)->value('non_stop_count');
     $res['nonStopClockCount'] = $nonStopCount ? $nonStopCount : 0;
     // 获取用户总打卡次数
     $res['clockCount'] = Db::name('coach_clock')->where('uid', $uid)->field('clock_id')->count();

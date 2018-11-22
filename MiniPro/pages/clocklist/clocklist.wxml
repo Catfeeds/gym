@@ -2,24 +2,16 @@
   <block wx:for="{{clocklist}}" wx:key="clock_id">
     <view class='list-item'>
       <view class='list-item-line'>
-        <text class='list-item-left'>课程名称</text>
-        <text class='list-item-right'>{{item.course_name}}</text>
-      </view>
-      <view class='list-item-line'>
-        <text class='list-item-left'>课程周期</text>
-        <text class='list-item-right'>{{item.course_period + '分钟/课时'}}</text>
-      </view>
-      <view class='list-item-line'>
-        <text class='list-item-left'>运动时间</text>
-        <view class='list-item-right'>{{item.fit_time}}</view>
-      </view>
-      <view class='list-item-line'>
-        <text class='list-item-left'>打卡时间</text>
+        <text class='list-item-left'>开始时间</text>
         <text class='list-item-right'>{{item.clock_start_at}}</text>
       </view>
       <view class='list-item-line'>
         <text class='list-item-left'>结束时间</text>
         <text class='list-item-right'>{{item.clock_end_at}}</text>
+      </view>
+      <view class='list-item-line'>
+        <text class='list-item-left'>打卡时长</text>
+        <view class='list-item-right'>{{item.fit_time}}</view>
       </view>
       <view class='list-item-line'>
         <text class='list-item-left'>打卡地点</text>
