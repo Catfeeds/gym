@@ -82,14 +82,15 @@ Page({
         isCanGetCode: false,
         code: res
       })
-    }).catch(res => {
-      if (res.data.code == 402) {
+    }).catch(error => {
+      console.log(error);
+      if (error.data.code == 402) {
         util.modalPromisified({
           title: '系统提示',
           content: '手机号码错误，请核对后重试',
           showCancel: false
         })
-      } else if (res.data.code == 401) {
+      } else if (error.data.code == 401) {
         util.modalPromisified({
           title: '系统提示',
           content: '当前手机号不为该系统用户，请联系管理员或检查手机号后重试',
@@ -98,7 +99,7 @@ Page({
       } else {
         util.modalPromisified({
           title: '系统提示',
-          content: '网络错误，请检查网络后重试',
+          content: error.toString(),
           showCancel: false
         })
       }

@@ -21,7 +21,11 @@
   <!-- 课程选择后可更改打卡课程的文字跳转 -->
   <block wx:if="{{hasUnFinish}}">
     <view class='clock-change-section'>
-      <text>打卡开始时间：{{unFinishClock.clock_start_at}}</text>
+      <form report-submit='true' bindsubmit='testFormId'>
+        <button form-type='submit'>
+          <text>打卡开始时间：{{unFinishClock.clock_start_at}}</text>
+        </button>
+      </form>
     </view>
   </block>
 </view>

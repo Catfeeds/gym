@@ -28,7 +28,7 @@ Page({
     })
     util.post('minibase/getIndex', {
       uid: app.globalData.uid
-    }, 100).then(res => {
+    }, 0).then(res => {
       let banner = that.data.banner;
       that.setData({
         banner: res ? res : banner,
@@ -69,7 +69,7 @@ Page({
     var that = this;
     util.post('project/getProject', {
       uid: app.globalData.uid
-    }, 300).then(res => {
+    }, 200).then(res => {
       that.setData({
         projectList: that.data.projectList.concat(res || []),
         pageNum: that.data.pageNum + 1
