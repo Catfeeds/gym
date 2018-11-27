@@ -105,7 +105,7 @@ class User extends Controller
         $userInfo = request()->param('userInfo/a');
  
         // 数据构造
-        $user['user_nickname'] = $userInfo['nickName'];
+        $user['user_nickname'] = urlencode(htmlspecialchars($userInfo['nickName']));
         $user['user_avatar_url'] = $userInfo['avatarUrl'];
         $user['user_city'] = $userInfo['city'];
         $user['user_province'] = $userInfo['province'];

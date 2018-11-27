@@ -168,6 +168,7 @@ Page({
    * 获取用户信息
    */
   getUserInfo: function(evt) {
+    console.log(evt);
     var that = this;
     if (!evt.detail.userInfo) {
       util.modalPromisified({
@@ -186,6 +187,7 @@ Page({
       })
       return;
     }
+    console.log('start');
     wx.showLoading({
       title: '登录中',
       mask: true
@@ -199,6 +201,7 @@ Page({
       authname: that.data.userName,
       usertype: that.data.userType
     }).then(res => {
+      console.log('success');
       wx.showToast({
         title: '登陆成功',
         duration: 800
@@ -217,17 +220,19 @@ Page({
           })
         }
       })
-    }).catch(res => {
-      if (res.data.code == 402) {
+    }).catch(error => {
+      console.log('failed');
+      console.log(error);
+      if (error.data.code == 403) {
         util.modalPromisified({
           title: '系统提示',
-          content: '登陆失败，请及时联系管理员',
+          content: '当前用户不在系统，请联系管理员重试',
           showCancel: false
         })
       } else {
         util.modalPromisified({
           title: '系统提示',
-          content: '网络错误，登陆失败，请重新尝试',
+          content: error.toString(),
           showCancel: false
         })
       }
